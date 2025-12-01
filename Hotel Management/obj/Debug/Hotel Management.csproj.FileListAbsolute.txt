@@ -8,3 +8,13 @@ E:\Project\Hotel Management\Hotel Management\bin\Debug\Hotel Management.pdb
 E:\Project\Hotel Management\Hotel Management\obj\Debug\Hotel Management.exe
 E:\Project\Hotel Management\Hotel Management\obj\Debug\Hotel Management.pdb
 E:\Project\Hotel Management\Hotel Management\obj\Debug\Hotel Management.exe.config
+E:\Project\Hotel-Management\Hotel Management\bin\Debug\Hotel Management.exe.config
+E:\Project\Hotel-Management\Hotel Management\bin\Debug\Hotel Management.exe
+E:\Project\Hotel-Management\Hotel Management\bin\Debug\Hotel Management.pdb
+E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel Management.csproj.AssemblyReference.cache
+E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel Management.exe.config
+E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel_Management.Properties.Resources.resources
+E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel Management.csproj.GenerateResource.cache
+E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel Management.csproj.CoreCompileInputs.cache
+E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel Management.exe
+E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel Management.pdb

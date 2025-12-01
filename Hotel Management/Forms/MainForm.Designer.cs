@@ -1,5 +1,5 @@
-﻿using System.Windows.Forms;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace HotelManagement.Forms
 {
@@ -10,6 +10,7 @@ namespace HotelManagement.Forms
         private Panel panelTop;
         private Panel panelLeft;
         private Panel panelFilter;
+        private Panel panelDetailHost;
         private FlowLayoutPanel flowRooms;
 
         private Button btnAdmin;
@@ -24,12 +25,9 @@ namespace HotelManagement.Forms
 
         private Button btnFilterAll;
         private Button btnFilterTrong;
-        private Button btnFilterNhanPhong;
-        private Button btnFilterQuaHan;
+        private Button btnFilterCoKhach;
+        private Button btnFilterChuaDon;
         private Button btnFilterDaDat;
-        private Button btnFilterKhongDen;
-        private Button btnFilterBan;
-        private Button btnFilterDangSua;
 
         protected override void Dispose(bool disposing)
         {
@@ -55,14 +53,12 @@ namespace HotelManagement.Forms
             this.panelFilter = new Panel();
             this.btnFilterAll = new Button();
             this.btnFilterTrong = new Button();
-            this.btnFilterNhanPhong = new Button();
-            this.btnFilterQuaHan = new Button();
+            this.btnFilterCoKhach = new Button();
+            this.btnFilterChuaDon = new Button();
             this.btnFilterDaDat = new Button();
-            this.btnFilterKhongDen = new Button();
-            this.btnFilterBan = new Button();
-            this.btnFilterDangSua = new Button();
 
             this.flowRooms = new FlowLayoutPanel();
+            this.panelDetailHost = new Panel();
 
             // ===== MainForm =====
             this.components = new System.ComponentModel.Container();
@@ -95,14 +91,14 @@ namespace HotelManagement.Forms
             this.lblTitle.ForeColor = Color.White;
             this.lblTitle.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             this.lblTitle.Location = new Point(60, 18);
-            this.lblTitle.Text = "730 - ezCloudHotel";
+            this.lblTitle.Text = "Thanh Long - Hotel";
 
             // txtSearch
             this.txtSearch.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             this.txtSearch.Font = new Font("Segoe UI", 10F);
             this.txtSearch.Location = new Point(280, 16);
-            this.txtSearch.Width = 600;
-            this.txtSearch.Text = ""; // placeholder sẽ set trong MainForm.cs
+            this.txtSearch.Width = 650;
+            this.txtSearch.Text = "";
             this.txtSearch.ForeColor = Color.Black;
             this.txtSearch.KeyDown += new KeyEventHandler(this.txtSearch_KeyDown);
             this.txtSearch.GotFocus += new System.EventHandler(this.txtSearch_GotFocus);
@@ -117,7 +113,7 @@ namespace HotelManagement.Forms
             this.btnExit.Text = "Thoát";
             this.btnExit.Width = 70;
             this.btnExit.Height = 35;
-            this.btnExit.Location = new Point(this.ClientSize.Width - 80, 12);
+            this.btnExit.Location = new Point(1110, 12); // 1200 - 90
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
 
             this.panelTop.Controls.Add(this.btnAdmin);
@@ -131,7 +127,6 @@ namespace HotelManagement.Forms
             this.panelLeft.Width = 220;
             this.panelLeft.Padding = new Padding(0, 10, 0, 10);
 
-            // hàm style chung cho nút menu trái
             void StyleLeftMenu(Button btn, string text, int top)
             {
                 btn.FlatStyle = FlatStyle.Flat;
@@ -154,16 +149,13 @@ namespace HotelManagement.Forms
             menuTop += 40;
             StyleLeftMenu(this.btnReports, "Báo cáo", menuTop);
 
-            // gán event cho menu
             this.btnSoDoPhong.Click += new System.EventHandler(this.btnRooms_Click);
-            // Thống kê tạm thời show message (không cần sửa MainForm.cs)
             this.btnThongKe.Click += (s, e) =>
             {
                 MessageBox.Show("Chức năng thống kê sẽ được bổ sung sau.", "Thông báo");
             };
             this.btnReports.Click += new System.EventHandler(this.btnReports_Click);
 
-            // lblCurrentUser (dưới cùng)
             this.lblCurrentUser.AutoSize = true;
             this.lblCurrentUser.Font = new Font("Segoe UI", 9F);
             this.lblCurrentUser.ForeColor = Color.Gray;
@@ -182,7 +174,6 @@ namespace HotelManagement.Forms
             this.panelFilter.Height = 60;
             this.panelFilter.Padding = new Padding(10, 10, 10, 10);
 
-            // style chung cho nút filter
             void StyleFilter(Button btn, string text, Color color, int left)
             {
                 btn.FlatStyle = FlatStyle.Flat;
@@ -192,35 +183,32 @@ namespace HotelManagement.Forms
                 btn.BackColor = color;
                 btn.Text = text;
                 btn.Height = 30;
-                btn.Width = 110;
+                btn.Width = 130;
                 btn.Location = new Point(left, 15);
             }
 
             int filterLeft = 10;
             StyleFilter(this.btnFilterAll, "Tất cả", Color.FromArgb(158, 158, 158), filterLeft);
-            filterLeft += 115;
+            filterLeft += 135;
             StyleFilter(this.btnFilterTrong, "Trống", Color.FromArgb(76, 175, 80), filterLeft);
-            filterLeft += 115;
-            StyleFilter(this.btnFilterNhanPhong, "Nhận phòng", Color.FromArgb(33, 150, 243), filterLeft);
-            filterLeft += 115;
-            StyleFilter(this.btnFilterQuaHan, "Quá hạn", Color.FromArgb(244, 67, 54), filterLeft);
-            filterLeft += 115;
-            StyleFilter(this.btnFilterDaDat, "Đã đặt", Color.FromArgb(255, 152, 0), filterLeft);
-            filterLeft += 115;
-            StyleFilter(this.btnFilterKhongDen, "Không đến", Color.FromArgb(121, 85, 72), filterLeft);
-            filterLeft += 115;
-            StyleFilter(this.btnFilterBan, "Bẩn", Color.FromArgb(96, 125, 139), filterLeft);
-            filterLeft += 115;
-            StyleFilter(this.btnFilterDangSua, "Đang sửa", Color.FromArgb(63, 81, 181), filterLeft);
+            filterLeft += 135;
+            StyleFilter(this.btnFilterCoKhach, "Có khách", Color.FromArgb(33, 150, 243), filterLeft);
+            filterLeft += 135;
+            StyleFilter(this.btnFilterChuaDon, "Chưa dọn", Color.FromArgb(96, 125, 139), filterLeft);
+            filterLeft += 135;
+            StyleFilter(this.btnFilterDaDat, "Đã có khách đặt", Color.FromArgb(255, 152, 0), filterLeft);
+
+            this.btnFilterAll.Click += new System.EventHandler(this.btnFilterAll_Click);
+            this.btnFilterTrong.Click += new System.EventHandler(this.btnFilterTrong_Click);
+            this.btnFilterCoKhach.Click += new System.EventHandler(this.btnFilterCoKhach_Click);
+            this.btnFilterChuaDon.Click += new System.EventHandler(this.btnFilterChuaDon_Click);
+            this.btnFilterDaDat.Click += new System.EventHandler(this.btnFilterDaDat_Click);
 
             this.panelFilter.Controls.Add(this.btnFilterAll);
             this.panelFilter.Controls.Add(this.btnFilterTrong);
-            this.panelFilter.Controls.Add(this.btnFilterNhanPhong);
-            this.panelFilter.Controls.Add(this.btnFilterQuaHan);
+            this.panelFilter.Controls.Add(this.btnFilterCoKhach);
+            this.panelFilter.Controls.Add(this.btnFilterChuaDon);
             this.panelFilter.Controls.Add(this.btnFilterDaDat);
-            this.panelFilter.Controls.Add(this.btnFilterKhongDen);
-            this.panelFilter.Controls.Add(this.btnFilterBan);
-            this.panelFilter.Controls.Add(this.btnFilterDangSua);
 
             // ===== flowRooms =====
             this.flowRooms.Dock = DockStyle.Fill;
@@ -228,7 +216,13 @@ namespace HotelManagement.Forms
             this.flowRooms.Padding = new Padding(10);
             this.flowRooms.BackColor = Color.FromArgb(245, 245, 245);
 
+            // ===== panelDetailHost =====
+            this.panelDetailHost.Dock = DockStyle.Fill;
+            this.panelDetailHost.BackColor = Color.White;
+            this.panelDetailHost.Visible = false;
+
             // ===== Add controls vào Form =====
+            this.Controls.Add(this.panelDetailHost);
             this.Controls.Add(this.flowRooms);
             this.Controls.Add(this.panelFilter);
             this.Controls.Add(this.panelLeft);

@@ -1,0 +1,3215 @@
+======= EXPORT CODE WINFORMS =======
+Thoi gian: 30/11/2025 14:49:17,89
+Thu muc goc: E:\Project\Hotel-Management\Hotel Management
+Chi gom cac file: .cs .resx .config .csproj .sln .sql .json .xml .md .bat
+Bo qua thu muc: \bin\ \obj\ \packages\ \dist\ \build\ \out\ \node_modules\ .git\ .vs\
+
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\App.config
+--------------------------
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<connectionStrings>
+		<add name="HotelDb"
+			 connectionString="Data Source=ALUCARD;Initial Catalog=HotelDb;Integrated Security=True"
+			 providerName="System.Data.SqlClient" />
+	</connectionStrings>
+</configuration>
+
+
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Hotel Management.csproj
+--------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D57C892D-E5F8-426C-AB1D-E884C583FFAF}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Hotel_Management</RootNamespace>
+    <AssemblyName>Hotel Management</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Forms\RoomDetailForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RoomDetailForm.Designer.cs">
+      <DependentUpon>RoomDetailForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Data\DbHelper.cs" />
+    <Compile Include="Data\RoomDAL.cs" />
+    <Compile Include="Data\BookingDAL.cs" />
+    <Compile Include="Data\CustomerDAL.cs" />
+    <Compile Include="Data\InvoiceDAL.cs" />
+    <Compile Include="Data\UserDAL.cs" />
+    <Compile Include="Models\ComboBoxItem.cs" />
+    <Compile Include="Models\Booking.cs" />
+    <Compile Include="Models\Invoice.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Room.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
+
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Hotel Management.sln
+--------------------------
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36511.14 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel Management", "Hotel Management.csproj", "{D57C892D-E5F8-426C-AB1D-E884C583FFAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D57C892D-E5F8-426C-AB1D-E884C583FFAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D57C892D-E5F8-426C-AB1D-E884C583FFAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D57C892D-E5F8-426C-AB1D-E884C583FFAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D57C892D-E5F8-426C-AB1D-E884C583FFAF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CEB21CEF-7D0D-4E28-9960-100E0E94307C}
+	EndGlobalSection
+EndGlobal
+
+
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Program.cs
+--------------------------
+using System;
+using System.Windows.Forms;
+using HotelManagement.Forms; // namespace chứa MainForm
+
+namespace HotelManagement
+{
+    internal static class Program
+    {
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            // KHÔNG chạy LoginForm nữa
+            // Application.Run(new LoginForm());
+
+            // Chạy thẳng vào giao diện chính
+            Application.Run(new MainForm());
+        }
+    }
+}
+
+
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Data\BookingDAL.cs
+--------------------------
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using HotelManagement.Models;
+
+namespace HotelManagement.Data
+{
+    public class BookingDAL
+    {
+        public List<Booking> GetAll()
+        {
+            var list = new List<Booking>();
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"SELECT DatPhongID, KhachHangID, PhongID, NgayDen, NgayDiDuKien, NgayDiThucTe, TrangThai, TienCoc 
+                                 FROM DATPHONG";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                SqlDataReader rd = cmd.ExecuteReader();
+                while (rd.Read())
+                {
+                    list.Add(new Booking
+                    {
+                        DatPhongID = rd.GetInt32(0),
+                        KhachHangID = rd.GetInt32(1),
+                        PhongID = rd.GetInt32(2),
+                        NgayDen = rd.GetDateTime(3),
+                        NgayDiDuKien = rd.GetDateTime(4),
+                        NgayDiThucTe = rd.IsDBNull(5) ? (DateTime?)null : rd.GetDateTime(5),
+                        TrangThai = rd.GetInt32(6),
+                        TienCoc = rd.GetDecimal(7)
+                    });
+                }
+            }
+            return list;
+        }
+
+        // 0 = Đặt trước, 1 = Đang ở, 2 = Đã trả
+        public int CreateBooking(Booking b)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"INSERT INTO DATPHONG (KhachHangID, PhongID, NgayDen, NgayDiDuKien, NgayDiThucTe, TrangThai, TienCoc)
+                                 VALUES(@KhachHangID, @PhongID, @NgayDen, @NgayDiDuKien, NULL, @TrangThai, @TienCoc);
+                                 SELECT SCOPE_IDENTITY();";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@KhachHangID", b.KhachHangID);
+                cmd.Parameters.AddWithValue("@PhongID", b.PhongID);
+                cmd.Parameters.AddWithValue("@NgayDen", b.NgayDen);
+                cmd.Parameters.AddWithValue("@NgayDiDuKien", b.NgayDiDuKien);
+                cmd.Parameters.AddWithValue("@TrangThai", b.TrangThai); // thường là 0
+                cmd.Parameters.AddWithValue("@TienCoc", b.TienCoc);
+
+                int newId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                // Khi có booking mới (đặt trước) -> phòng chuyển sang "Đã có khách đặt" (3)
+                string queryRoom = @"UPDATE PHONG SET TrangThai = 3 WHERE PhongID = @PhongID";
+                SqlCommand cmdRoom = new SqlCommand(queryRoom, conn);
+                cmdRoom.Parameters.AddWithValue("@PhongID", b.PhongID);
+                cmdRoom.ExecuteNonQuery();
+
+                return newId;
+            }
+        }
+
+        public void UpdateStatus(int datPhongID, int status, DateTime? ngayDiThucTe)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"UPDATE DATPHONG
+                                 SET TrangThai = @TrangThai,
+                                     NgayDiThucTe = @NgayDiThucTe
+                                 WHERE DatPhongID = @DatPhongID";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@TrangThai", status);
+                if (ngayDiThucTe.HasValue)
+                    cmd.Parameters.AddWithValue("@NgayDiThucTe", ngayDiThucTe.Value);
+                else
+                    cmd.Parameters.AddWithValue("@NgayDiThucTe", DBNull.Value);
+                cmd.Parameters.AddWithValue("@DatPhongID", datPhongID);
+                cmd.ExecuteNonQuery();
+
+                // Cập nhật trạng thái PHONG tương ứng:
+                // 0 = Đặt trước (Đã có khách đặt) -> 3
+                // 1 = Đang ở -> 1 (Có khách)
+                // 2 = Đã trả -> 2 (Chưa dọn)
+                string queryRoom = "";
+
+                if (status == 0)        // đặt trước
+                    queryRoom = @"UPDATE PHONG SET TrangThai = 3 
+                                  WHERE PhongID = (SELECT PhongID FROM DATPHONG WHERE DatPhongID = @DatPhongID)";
+                else if (status == 1)   // đang ở
+                    queryRoom = @"UPDATE PHONG SET TrangThai = 1 
+                                  WHERE PhongID = (SELECT PhongID FROM DATPHONG WHERE DatPhongID = @DatPhongID)";
+                else if (status == 2)   // đã trả
+                    queryRoom = @"UPDATE PHONG SET TrangThai = 2 
+                                  WHERE PhongID = (SELECT PhongID FROM DATPHONG WHERE DatPhongID = @DatPhongID)";
+
+                if (!string.IsNullOrEmpty(queryRoom))
+                {
+                    SqlCommand cmdRoom = new SqlCommand(queryRoom, conn);
+                    cmdRoom.Parameters.AddWithValue("@DatPhongID", datPhongID);
+                    cmdRoom.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public Booking GetById(int id)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"SELECT DatPhongID, KhachHangID, PhongID, NgayDen, NgayDiDuKien, NgayDiThucTe, TrangThai, TienCoc
+                                 FROM DATPHONG
+                                 WHERE DatPhongID = @Id";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.Read())
+                {
+                    return new Booking
+                    {
+                        DatPhongID = rd.GetInt32(0),
+                        KhachHangID = rd.GetInt32(1),
+                        PhongID = rd.GetInt32(2),
+                        NgayDen = rd.GetDateTime(3),
+                        NgayDiDuKien = rd.GetDateTime(4),
+                        NgayDiThucTe = rd.IsDBNull(5) ? (DateTime?)null : rd.GetDateTime(5),
+                        TrangThai = rd.GetInt32(6),
+                        TienCoc = rd.GetDecimal(7)
+                    };
+                }
+            }
+            return null;
+        }
+
+        public decimal GetDonGiaNgayByPhong(int phongID)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"SELECT lp.DonGiaNgay
+                                 FROM PHONG p
+                                 JOIN LOAIPHONG lp ON p.LoaiPhongID = lp.LoaiPhongID
+                                 WHERE p.PhongID = @PhongID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@PhongID", phongID);
+                object result = cmd.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                    return Convert.ToDecimal(result);
+            }
+            return 0;
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Data\CustomerDAL.cs
+--------------------------
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using HotelManagement.Models;
+
+namespace HotelManagement.Data
+{
+    public class CustomerDAL
+    {
+        public List<Customer> GetAll()
+        {
+            var list = new List<Customer>();
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = "SELECT KhachHangID, HoTen, CCCD, DienThoai, DiaChi FROM KHACHHANG";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                SqlDataReader rd = cmd.ExecuteReader();
+                while (rd.Read())
+                {
+                    list.Add(new Customer
+                    {
+                        KhachHangID = rd.GetInt32(0),
+                        HoTen = rd.GetString(1),
+                        CCCD = rd.GetString(2),
+                        DienThoai = rd.IsDBNull(3) ? null : rd.GetString(3),
+                        DiaChi = rd.IsDBNull(4) ? null : rd.GetString(4)
+                    });
+                }
+            }
+            return list;
+        }
+
+        public void Insert(Customer c)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"INSERT INTO KHACHHANG (HoTen, CCCD, DienThoai, DiaChi)
+                                 VALUES(@HoTen, @CCCD, @DienThoai, @DiaChi)";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@HoTen", c.HoTen);
+                cmd.Parameters.AddWithValue("@CCCD", c.CCCD);
+                cmd.Parameters.AddWithValue("@DienThoai", (object)c.DienThoai ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@DiaChi", (object)c.DiaChi ?? DBNull.Value);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void Update(Customer c)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"UPDATE KHACHHANG
+                                 SET HoTen = @HoTen,
+                                     CCCD = @CCCD,
+                                     DienThoai = @DienThoai,
+                                     DiaChi = @DiaChi
+                                 WHERE KhachHangID = @KhachHangID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@HoTen", c.HoTen);
+                cmd.Parameters.AddWithValue("@CCCD", c.CCCD);
+                cmd.Parameters.AddWithValue("@DienThoai", (object)c.DienThoai ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@DiaChi", (object)c.DiaChi ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@KhachHangID", c.KhachHangID);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void Delete(int id)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = "DELETE FROM KHACHHANG WHERE KhachHangID = @Id";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Id", id);
+                cmd.ExecuteNonQuery();
+            }
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Data\DbHelper.cs
+--------------------------
+using System;
+using System.Data.SqlClient;
+using System.Windows.Forms;
+
+namespace HotelManagement.Data
+{
+    public static class DbHelper
+    {
+        // *** CHỖ NÀY BẠN CẦN CHỈNH LẠI THEO SQL SERVER CỦA BẠN ***
+
+        // Nếu bạn dùng SQL Server Express trên máy:
+        // private static readonly string _connectionString =
+        //     @"Data Source=.\SQLEXPRESS;Initial Catalog=HotelDb;Integrated Security=True";
+
+        // Nếu bạn dùng LocalDB (VS cài sẵn):
+        // private static readonly string _connectionString =
+        //     @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=HotelDb;Integrated Security=True";
+
+        // Tạm thời mình để LocalDB – nếu bạn đang dùng SQLEXPRESS thì đổi lại dòng trên.
+        private static readonly string _connectionString =
+            @"Data Source=ALUCARD;Initial Catalog=HotelDb;Integrated Security=True";
+
+        /// <summary>
+        /// Lấy SqlConnection đã mở sẵn.
+        /// Nếu lỗi sẽ hiện message box tiếng Việt và ném exception ra ngoài.
+        /// </summary>
+        public static SqlConnection GetConnection()
+        {
+            try
+            {
+                var conn = new SqlConnection(_connectionString);
+                conn.Open();
+                return conn;
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(
+                    "Không kết nối được đến SQL Server.\n" +
+                    "Vui lòng kiểm tra lại DbHelper._connectionString và database HotelDb.\n\n" +
+                    "Chi tiết lỗi:\n" + ex.Message,
+                    "Lỗi kết nối CSDL",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+
+                throw; // ném lỗi tiếp để code gọi biết là đã lỗi
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Đã xảy ra lỗi không mong muốn khi kết nối CSDL.\n\n" +
+                    "Chi tiết lỗi:\n" + ex.Message,
+                    "Lỗi kết nối CSDL",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+
+                throw;
+            }
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Data\InvoiceDAL.cs
+--------------------------
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using HotelManagement.Models;
+
+namespace HotelManagement.Data
+{
+    public class InvoiceDAL
+    {
+        public void CreateInvoice(Invoice invoice)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"INSERT INTO HOADON (DatPhongID, NgayLap, TongTien, DaThanhToan)
+                                 VALUES(@DatPhongID, @NgayLap, @TongTien, @DaThanhToan)";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@DatPhongID", invoice.DatPhongID);
+                cmd.Parameters.AddWithValue("@NgayLap", invoice.NgayLap);
+                cmd.Parameters.AddWithValue("@TongTien", invoice.TongTien);
+                cmd.Parameters.AddWithValue("@DaThanhToan", invoice.DaThanhToan);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public List<Invoice> GetInvoices(DateTime from, DateTime to)
+        {
+            var list = new List<Invoice>();
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"SELECT HoaDonID, DatPhongID, NgayLap, TongTien, DaThanhToan
+                                 FROM HOADON
+                                 WHERE NgayLap BETWEEN @From AND @To";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@From", from);
+                cmd.Parameters.AddWithValue("@To", to);
+
+                SqlDataReader rd = cmd.ExecuteReader();
+                while (rd.Read())
+                {
+                    list.Add(new Invoice
+                    {
+                        HoaDonID = rd.GetInt32(0),
+                        DatPhongID = rd.GetInt32(1),
+                        NgayLap = rd.GetDateTime(2),
+                        TongTien = rd.GetDecimal(3),
+                        DaThanhToan = rd.GetBoolean(4)
+                    });
+                }
+            }
+            return list;
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Data\RoomDAL.cs
+--------------------------
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using HotelManagement.Models;
+
+namespace HotelManagement.Data
+{
+    public class RoomDAL
+    {
+        // Lấy tất cả phòng
+        public List<Room> GetAll()
+        {
+            var list = new List<Room>();
+
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"SELECT PhongID, MaPhong, LoaiPhongID, Tang, TrangThai, GhiChu,
+                                        ThoiGianBatDau, KieuThue, TenKhachHienThi
+                                 FROM PHONG";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlDataReader rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        var room = new Room
+                        {
+                            PhongID = rd.GetInt32(0),
+                            MaPhong = rd.GetString(1),
+                            LoaiPhongID = rd.GetInt32(2),
+                            Tang = rd.GetInt32(3),
+                            TrangThai = rd.GetInt32(4),
+                            GhiChu = rd.IsDBNull(5) ? null : rd.GetString(5),
+                            ThoiGianBatDau = rd.IsDBNull(6) ? (DateTime?)null : rd.GetDateTime(6),
+                            KieuThue = rd.IsDBNull(7) ? (int?)null : rd.GetInt32(7),
+                            TenKhachHienThi = rd.IsDBNull(8) ? null : rd.GetString(8)
+                        };
+
+                        list.Add(room);
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        // Lấy 1 phòng theo ID (dùng nếu cần)
+        public Room GetById(int id)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"SELECT PhongID, MaPhong, LoaiPhongID, Tang, TrangThai, GhiChu,
+                                        ThoiGianBatDau, KieuThue, TenKhachHienThi
+                                 FROM PHONG
+                                 WHERE PhongID = @Id";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
+
+                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    {
+                        if (rd.Read())
+                        {
+                            return new Room
+                            {
+                                PhongID = rd.GetInt32(0),
+                                MaPhong = rd.GetString(1),
+                                LoaiPhongID = rd.GetInt32(2),
+                                Tang = rd.GetInt32(3),
+                                TrangThai = rd.GetInt32(4),
+                                GhiChu = rd.IsDBNull(5) ? null : rd.GetString(5),
+                                ThoiGianBatDau = rd.IsDBNull(6) ? (DateTime?)null : rd.GetDateTime(6),
+                                KieuThue = rd.IsDBNull(7) ? (int?)null : rd.GetInt32(7),
+                                TenKhachHienThi = rd.IsDBNull(8) ? null : rd.GetString(8)
+                            };
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // Thêm phòng mới
+        public void Insert(Room room)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"INSERT INTO PHONG
+                                 (MaPhong, LoaiPhongID, Tang, TrangThai, GhiChu,
+                                  ThoiGianBatDau, KieuThue, TenKhachHienThi)
+                                 VALUES
+                                 (@MaPhong, @LoaiPhongID, @Tang, @TrangThai, @GhiChu,
+                                  @ThoiGianBatDau, @KieuThue, @TenKhachHienThi)";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MaPhong", room.MaPhong);
+                    cmd.Parameters.AddWithValue("@LoaiPhongID", room.LoaiPhongID);
+                    cmd.Parameters.AddWithValue("@Tang", room.Tang);
+                    cmd.Parameters.AddWithValue("@TrangThai", room.TrangThai);
+
+                    if (string.IsNullOrWhiteSpace(room.GhiChu))
+                        cmd.Parameters.AddWithValue("@GhiChu", DBNull.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@GhiChu", room.GhiChu);
+
+                    if (room.ThoiGianBatDau.HasValue)
+                        cmd.Parameters.AddWithValue("@ThoiGianBatDau", room.ThoiGianBatDau.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@ThoiGianBatDau", DBNull.Value);
+
+                    if (room.KieuThue.HasValue)
+                        cmd.Parameters.AddWithValue("@KieuThue", room.KieuThue.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@KieuThue", DBNull.Value);
+
+                    if (string.IsNullOrWhiteSpace(room.TenKhachHienThi))
+                        cmd.Parameters.AddWithValue("@TenKhachHienThi", DBNull.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@TenKhachHienThi", room.TenKhachHienThi);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Cập nhật phòng (sử dụng khi quản lý danh mục phòng)
+        public void Update(Room room)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"UPDATE PHONG SET
+                                    MaPhong        = @MaPhong,
+                                    LoaiPhongID    = @LoaiPhongID,
+                                    Tang           = @Tang,
+                                    TrangThai      = @TrangThai,
+                                    GhiChu         = @GhiChu,
+                                    ThoiGianBatDau = @ThoiGianBatDau,
+                                    KieuThue       = @KieuThue,
+                                    TenKhachHienThi = @TenKhachHienThi
+                                 WHERE PhongID = @PhongID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@PhongID", room.PhongID);
+                    cmd.Parameters.AddWithValue("@MaPhong", room.MaPhong);
+                    cmd.Parameters.AddWithValue("@LoaiPhongID", room.LoaiPhongID);
+                    cmd.Parameters.AddWithValue("@Tang", room.Tang);
+                    cmd.Parameters.AddWithValue("@TrangThai", room.TrangThai);
+
+                    if (string.IsNullOrWhiteSpace(room.GhiChu))
+                        cmd.Parameters.AddWithValue("@GhiChu", DBNull.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@GhiChu", room.GhiChu);
+
+                    if (room.ThoiGianBatDau.HasValue)
+                        cmd.Parameters.AddWithValue("@ThoiGianBatDau", room.ThoiGianBatDau.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@ThoiGianBatDau", DBNull.Value);
+
+                    if (room.KieuThue.HasValue)
+                        cmd.Parameters.AddWithValue("@KieuThue", room.KieuThue.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@KieuThue", DBNull.Value);
+
+                    if (string.IsNullOrWhiteSpace(room.TenKhachHienThi))
+                        cmd.Parameters.AddWithValue("@TenKhachHienThi", DBNull.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@TenKhachHienThi", room.TenKhachHienThi);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Xoá phòng
+        public void Delete(int phongId)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"DELETE FROM PHONG WHERE PhongID = @PhongID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@PhongID", phongId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Cập nhật trạng thái + ghi chú + thời gian + kiểu thuê + tên khách
+        // Dùng trong RoomDetailForm khi nhấn Lưu
+        public void UpdateTrangThaiFull(int phongId,
+                                        int trangThai,
+                                        string ghiChu,
+                                        DateTime? thoiGianBatDau,
+                                        int? kieuThue,
+                                        string tenKhachHienThi)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"UPDATE PHONG SET
+                                    TrangThai       = @TrangThai,
+                                    GhiChu          = @GhiChu,
+                                    ThoiGianBatDau  = @ThoiGianBatDau,
+                                    KieuThue        = @KieuThue,
+                                    TenKhachHienThi = @TenKhachHienThi
+                                 WHERE PhongID = @PhongID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TrangThai", trangThai);
+
+                    if (string.IsNullOrWhiteSpace(ghiChu))
+                        cmd.Parameters.AddWithValue("@GhiChu", DBNull.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@GhiChu", ghiChu);
+
+                    if (thoiGianBatDau.HasValue)
+                        cmd.Parameters.AddWithValue("@ThoiGianBatDau", thoiGianBatDau.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@ThoiGianBatDau", DBNull.Value);
+
+                    if (kieuThue.HasValue)
+                        cmd.Parameters.AddWithValue("@KieuThue", kieuThue.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@KieuThue", DBNull.Value);
+
+                    if (string.IsNullOrWhiteSpace(tenKhachHienThi))
+                        cmd.Parameters.AddWithValue("@TenKhachHienThi", DBNull.Value);
+                    else
+                        cmd.Parameters.AddWithValue("@TenKhachHienThi", tenKhachHienThi);
+
+                    cmd.Parameters.AddWithValue("@PhongID", phongId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Data\UserDAL.cs
+--------------------------
+using System.Data.SqlClient;
+using HotelManagement.Models;
+
+namespace HotelManagement.Data
+{
+    public class UserDAL
+    {
+        public User Login(string username, string password)
+        {
+            using (SqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"SELECT UserID, Username, [Password], [Role]
+                                 FROM USERS
+                                 WHERE Username = @Username AND [Password] = @Password";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Username", username);
+                cmd.Parameters.AddWithValue("@Password", password);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    return new User
+                    {
+                        UserID = reader.GetInt32(0),
+                        Username = reader.GetString(1),
+                        Password = reader.GetString(2),
+                        Role = reader.GetString(3)
+                    };
+                }
+            }
+            return null; // không tìm thấy -> đăng nhập sai
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Forms\LoginForm.cs
+--------------------------
+using System;
+using System.Windows.Forms;
+using HotelManagement.Data;
+using HotelManagement.Models;
+
+namespace HotelManagement.Forms
+{
+    public partial class LoginForm : Form
+    {
+        private readonly UserDAL userDal = new UserDAL();
+
+        // Thuộc tính để MainForm đọc thông tin user sau khi đăng nhập
+        public User LoggedInUser { get; private set; }
+
+        public LoginForm()
+        {
+            InitializeComponent();
+        }
+
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            string username = txtUsername.Text.Trim();
+            string password = txtPassword.Text;
+
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                MessageBox.Show("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu");
+                return;
+            }
+
+            User user = userDal.Login(username, password);
+            if (user == null)
+            {
+                MessageBox.Show("Đăng nhập thất bại, sai tên đăng nhập hoặc mật khẩu");
+                return;
+            }
+
+            // Đăng nhập thành công: lưu lại user & trả về DialogResult.OK
+            LoggedInUser = user;
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            // Chỉ đóng dialog, không tắt toàn bộ ứng dụng
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Forms\LoginForm.Designer.cs
+--------------------------
+using System.Windows.Forms;
+
+namespace HotelManagement.Forms
+{
+    partial class LoginForm
+    {
+        private System.ComponentModel.IContainer components = null;
+        private Label lblUsername;
+        private Label lblPassword;
+        private TextBox txtUsername;
+        private TextBox txtPassword;
+        private Button btnLogin;
+        private Button btnExit;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+                components.Dispose();
+            base.Dispose(disposing);
+        }
+
+        private void InitializeComponent()
+        {
+            this.lblUsername = new Label();
+            this.lblPassword = new Label();
+            this.txtUsername = new TextBox();
+            this.txtPassword = new TextBox();
+            this.btnLogin = new Button();
+            this.btnExit = new Button();
+            this.SuspendLayout();
+            // 
+            // lblUsername
+            // 
+            this.lblUsername.AutoSize = true;
+            this.lblUsername.Location = new System.Drawing.Point(30, 30);
+            this.lblUsername.Name = "lblUsername";
+            this.lblUsername.Size = new System.Drawing.Size(96, 15);
+            this.lblUsername.TabIndex = 0;
+            this.lblUsername.Text = "Tên đăng nhập:";
+            // 
+            // txtUsername
+            // 
+            this.txtUsername.Location = new System.Drawing.Point(140, 27);
+            this.txtUsername.Name = "txtUsername";
+            this.txtUsername.Size = new System.Drawing.Size(180, 23);
+            this.txtUsername.TabIndex = 1;
+            // 
+            // lblPassword
+            // 
+            this.lblPassword.AutoSize = true;
+            this.lblPassword.Location = new System.Drawing.Point(30, 70);
+            this.lblPassword.Name = "lblPassword";
+            this.lblPassword.Size = new System.Drawing.Size(59, 15);
+            this.lblPassword.TabIndex = 2;
+            this.lblPassword.Text = "Mật khẩu:";
+            // 
+            // txtPassword
+            // 
+            this.txtPassword.Location = new System.Drawing.Point(140, 67);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.PasswordChar = '*';
+            this.txtPassword.Size = new System.Drawing.Size(180, 23);
+            this.txtPassword.TabIndex = 3;
+            // 
+            // btnLogin
+            // 
+            this.btnLogin.Location = new System.Drawing.Point(140, 110);
+            this.btnLogin.Name = "btnLogin";
+            this.btnLogin.Size = new System.Drawing.Size(80, 27);
+            this.btnLogin.TabIndex = 4;
+            this.btnLogin.Text = "Đăng nhập";
+            this.btnLogin.UseVisualStyleBackColor = true;
+            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
+            // 
+            // btnExit
+            // 
+            this.btnExit.Location = new System.Drawing.Point(240, 110);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(80, 27);
+            this.btnExit.TabIndex = 5;
+            this.btnExit.Text = "Thoát";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
+            // LoginForm
+            // 
+            this.AcceptButton = this.btnLogin;
+            this.ClientSize = new System.Drawing.Size(364, 161);
+            this.Controls.Add(this.btnExit);
+            this.Controls.Add(this.btnLogin);
+            this.Controls.Add(this.txtPassword);
+            this.Controls.Add(this.lblPassword);
+            this.Controls.Add(this.txtUsername);
+            this.Controls.Add(this.lblUsername);
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "LoginForm";
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.Text = "Đăng nhập";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Forms\MainForm.cs
+--------------------------
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
+using HotelManagement.Data;
+using HotelManagement.Models;
+
+namespace HotelManagement.Forms
+{
+    public partial class MainForm : Form
+    {
+        private User _currentUser;
+        private readonly RoomDAL _roomDal = new RoomDAL();
+
+        // null = tất cả, 0..3 = trạng thái phòng
+        private int? _currentFilterStatus = null;
+
+        // placeholder ô tìm kiếm
+        private readonly Color _placeholderColor = Color.Gray;
+        private readonly Color _normalColor = Color.Black;
+        private const string _placeholderText = "Nhập từ khóa tìm kiếm";
+
+        // Timer cập nhật đồng hồ phòng
+        private Timer _roomTimer;
+
+        // Lưu các label trong card phòng để Timer cập nhật
+        private class RoomTileInfo
+        {
+            public Room Room { get; set; }
+            public Label LblStartTime { get; set; } // dòng trên
+            public Label LblCenter { get; set; }    // dòng giữa
+            public Label LblElapsed { get; set; }   // dòng dưới
+        }
+
+        public MainForm()
+        {
+            InitializeComponent();
+
+            // user mặc định khi mở app trực tiếp
+            _currentUser = new User
+            {
+                Username = "Khách",
+                Role = "Letan"
+            };
+        }
+
+        public MainForm(User user) : this()
+        {
+            if (user != null)
+                _currentUser = user;
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            UpdateUserUI();
+            InitSearchPlaceholder();
+            LoadRoomTiles();
+            SetupRoomTimer();
+        }
+
+        #region UI người dùng
+
+        private void UpdateUserUI()
+        {
+            lblCurrentUser.Text = $"Người dùng: {_currentUser.Username} ({_currentUser.Role})";
+            btnReports.Enabled = _currentUser.Role == "Admin";
+        }
+
+        #endregion
+
+        #region Placeholder ô tìm kiếm
+
+        private void InitSearchPlaceholder()
+        {
+            if (string.IsNullOrWhiteSpace(txtSearch.Text))
+            {
+                txtSearch.Text = _placeholderText;
+                txtSearch.ForeColor = _placeholderColor;
+            }
+        }
+
+        private void txtSearch_GotFocus(object sender, EventArgs e)
+        {
+            if (txtSearch.ForeColor == _placeholderColor)
+            {
+                txtSearch.Text = "";
+                txtSearch.ForeColor = _normalColor;
+            }
+        }
+
+        private void txtSearch_LostFocus(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtSearch.Text))
+            {
+                txtSearch.Text = _placeholderText;
+                txtSearch.ForeColor = _placeholderColor;
+            }
+        }
+
+        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (txtSearch.ForeColor == _placeholderColor)
+                return;
+
+            if (e.KeyCode != Keys.Enter)
+                return;
+
+            string keyword = txtSearch.Text.Trim().ToLower();
+
+            foreach (Control c in flowRooms.Controls)
+            {
+                if (c is Panel panelTang)
+                {
+                    bool anyVisible = false;
+
+                    foreach (Control child in panelTang.Controls)
+                    {
+                        if (child is FlowLayoutPanel flp)
+                        {
+                            foreach (Control roomCard in flp.Controls)
+                            {
+                                if (roomCard is Panel roomPanel)
+                                {
+                                    string allText = "";
+                                    foreach (Control lbl in roomPanel.Controls)
+                                    {
+                                        allText += lbl.Text.ToLower() + " ";
+                                        if (lbl is Panel innerPanel)
+                                        {
+                                            foreach (Control innerChild in innerPanel.Controls)
+                                                allText += innerChild.Text.ToLower() + " ";
+                                        }
+                                    }
+
+                                    bool visible = string.IsNullOrEmpty(keyword) || allText.Contains(keyword);
+                                    roomPanel.Visible = visible;
+                                    if (visible) anyVisible = true;
+                                }
+                            }
+                        }
+                    }
+
+                    panelTang.Visible = anyVisible || string.IsNullOrEmpty(keyword);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Vẽ sơ đồ phòng theo tầng + đơn / đôi
+
+        private void LoadRoomTiles()
+        {
+            flowRooms.SuspendLayout();
+            flowRooms.Controls.Clear();
+
+            var rooms = _roomDal.GetAll();
+
+            if (_currentFilterStatus.HasValue)
+                rooms = rooms.FindAll(r => r.TrangThai == _currentFilterStatus.Value);
+
+            var tangGroups = rooms.GroupBy(r => r.Tang)
+                                  .OrderBy(g => g.Key);
+
+            foreach (var group in tangGroups)
+            {
+                int tang = group.Key;
+
+                Panel panelTang = new Panel();
+                int containerWidth = flowRooms.ClientSize.Width;
+                if (containerWidth <= 0)
+                    containerWidth = this.ClientSize.Width - panelLeft.Width - 40;
+
+                panelTang.Width = containerWidth - 40;
+                panelTang.Height = 340;
+                panelTang.Margin = new Padding(10, 5, 10, 10);
+                panelTang.BackColor = Color.White;
+                panelTang.BorderStyle = BorderStyle.None;
+
+                // Header Tầng
+                Panel header = new Panel();
+                header.Height = 28;
+                header.Width = panelTang.Width;
+                header.Location = new Point(0, 0);
+                header.BackColor = Color.White;
+
+                Panel accent = new Panel();
+                accent.Width = 4;
+                accent.Height = 20;
+                accent.BackColor = Color.FromArgb(63, 81, 181);
+                accent.Location = new Point(0, 4);
+
+                Label lblTang = new Label();
+                lblTang.AutoSize = true;
+                lblTang.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
+                lblTang.ForeColor = Color.FromArgb(55, 71, 79);
+                lblTang.Text = $"Tầng {tang}";
+                lblTang.Location = new Point(10, 4);
+
+                header.Controls.Add(accent);
+                header.Controls.Add(lblTang);
+
+                // Phòng đơn
+                Label lblDon = new Label();
+                lblDon.AutoSize = true;
+                lblDon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+                lblDon.ForeColor = Color.Gray;
+                lblDon.Text = "Phòng đơn";
+                lblDon.Location = new Point(10, 32);
+
+                FlowLayoutPanel flowDon = new FlowLayoutPanel();
+                flowDon.Location = new Point(10, 52);
+                flowDon.Width = panelTang.Width - 30;
+                flowDon.Height = 130;
+                flowDon.AutoScroll = false;
+                flowDon.WrapContents = false;
+                flowDon.FlowDirection = FlowDirection.LeftToRight;
+
+                // Phòng đôi
+                Label lblDoi = new Label();
+                lblDoi.AutoSize = true;
+                lblDoi.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+                lblDoi.ForeColor = Color.Gray;
+                lblDoi.Text = "Phòng đôi";
+                lblDoi.Location = new Point(10, 195);
+
+                FlowLayoutPanel flowDoi = new FlowLayoutPanel();
+                flowDoi.Location = new Point(10, 215);
+                flowDoi.Width = panelTang.Width - 30;
+                flowDoi.Height = 130;
+                flowDoi.AutoScroll = false;
+                flowDoi.WrapContents = false;
+                flowDoi.FlowDirection = FlowDirection.LeftToRight;
+
+                foreach (var room in group.OrderBy(r => r.MaPhong))
+                {
+                    Panel tile = CreateRoomTile(room);
+
+                    if (room.LoaiPhongID == 1)
+                        flowDon.Controls.Add(tile);
+                    else if (room.LoaiPhongID == 2)
+                        flowDoi.Controls.Add(tile);
+                    else
+                        flowDoi.Controls.Add(tile);
+                }
+
+                panelTang.Controls.Add(header);
+                panelTang.Controls.Add(lblDon);
+                panelTang.Controls.Add(flowDon);
+                panelTang.Controls.Add(lblDoi);
+                panelTang.Controls.Add(flowDoi);
+
+                flowRooms.Controls.Add(panelTang);
+            }
+
+            flowRooms.ResumeLayout();
+
+            // cập nhật text / thời gian ban đầu
+            if (_roomTimer != null)
+                RoomTimer_Tick(this, EventArgs.Empty);
+        }
+
+        private Color GetRoomBackColor(int trangThai)
+        {
+            switch (trangThai)
+            {
+                case 0:  // Trống
+                    return Color.FromArgb(76, 175, 80);
+                case 1:  // Có khách
+                    return Color.FromArgb(33, 150, 243);
+                case 2:  // Chưa dọn
+                    return Color.FromArgb(244, 67, 54);
+                case 3:  // Đã có khách đặt
+                    return Color.FromArgb(255, 152, 0);
+                default:
+                    return Color.FromArgb(158, 158, 158);
+            }
+        }
+
+        private string GetStatusIcon(int status)
+        {
+            // bạn có thể thay bằng icon thật, tạm dùng ký tự
+            switch (status)
+            {
+                case 0: return "✔";  // Trống
+                case 1: return "🛏"; // Có khách
+                case 2: return "🧹"; // Chưa dọn
+                case 3: return "📅"; // Đã đặt
+                default: return "";
+            }
+        }
+
+        private Panel CreateRoomTile(Room room)
+        {
+            Color baseColor = GetRoomBackColor(room.TrangThai);
+            Color lightColor = ControlPaint.Light(baseColor, 0.8f);
+            Color textColor = baseColor;
+
+            // ===== Card ngoài (trắng, viền nhẹ) =====
+            var panel = new Panel();
+            panel.Width = 260;
+            panel.Height = 80;
+            panel.Margin = new Padding(12, 8, 12, 8);
+            panel.BackColor = Color.White;
+
+            panel.Paint += (s, e) =>
+            {
+                using (var pen = new Pen(Color.FromArgb(210, 210, 210)))
+                {
+                    var rect = new Rectangle(0, 0, panel.Width - 1, panel.Height - 1);
+                    e.Graphics.DrawRectangle(pen, rect);
+                }
+            };
+
+            // ============= CỘT TRÁI: STD + SỐ PHÒNG + ICON =============
+            var leftPanel = new Panel();
+            leftPanel.Width = 70;
+            leftPanel.Dock = DockStyle.Left;
+            leftPanel.BackColor = baseColor;
+            leftPanel.Padding = new Padding(0, 4, 0, 4);
+
+            var lblStd = new Label();
+            lblStd.AutoSize = false;
+            lblStd.Dock = DockStyle.Top;
+            lblStd.Height = 18;
+            lblStd.TextAlign = ContentAlignment.MiddleCenter;
+            lblStd.Font = new Font("Segoe UI", 7.5f, FontStyle.Bold);
+            lblStd.ForeColor = Color.White;
+            lblStd.Text = "STD";
+
+            var lblIcon = new Label();
+            lblIcon.AutoSize = false;
+            lblIcon.Dock = DockStyle.Bottom;
+            lblIcon.Height = 20;
+            lblIcon.TextAlign = ContentAlignment.MiddleCenter;
+            lblIcon.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblIcon.ForeColor = Color.White;
+            lblIcon.Text = GetStatusIcon(room.TrangThai);
+
+            var lblCode = new Label();
+            lblCode.AutoSize = false;
+            lblCode.Dock = DockStyle.Fill;
+            lblCode.TextAlign = ContentAlignment.MiddleCenter;
+            lblCode.Font = new Font("Segoe UI Semibold", 16F, FontStyle.Bold);
+            lblCode.ForeColor = Color.White;
+            lblCode.Text = room.MaPhong;
+
+            leftPanel.Controls.Add(lblCode);   // fill
+            leftPanel.Controls.Add(lblIcon);   // bottom
+            leftPanel.Controls.Add(lblStd);    // top
+
+            // ================= CỘT PHẢI: TRẠNG THÁI =================
+            var rightPanel = new Panel();
+            rightPanel.Dock = DockStyle.Fill;
+            rightPanel.BackColor = lightColor;
+            rightPanel.Padding = new Padding(6, 6, 6, 6);
+
+            // Dòng 1: ngày giờ bắt đầu (khi có khách)
+            var lblStartTime = new Label();
+            lblStartTime.AutoSize = false;
+            lblStartTime.Height = 18;
+            lblStartTime.Dock = DockStyle.Top;
+            lblStartTime.TextAlign = ContentAlignment.MiddleCenter;
+            lblStartTime.Font = new Font("Segoe UI", 8F);
+            lblStartTime.ForeColor = Color.FromArgb(120, 0, 0, 0);
+            lblStartTime.Name = "lblStartTime";
+
+            // Dòng 2: chữ "Trống" / tên khách / trạng thái
+            var lblCenter = new Label();
+            lblCenter.AutoSize = false;
+            lblCenter.Dock = DockStyle.Fill;
+            lblCenter.TextAlign = ContentAlignment.MiddleCenter;
+            lblCenter.Font = new Font("Segoe UI", 12.5f, FontStyle.Bold);
+            lblCenter.ForeColor = textColor;
+            lblCenter.Name = "lblCenter";
+
+            // Dòng 3: đồng hồ HH : MM : SS
+            var lblElapsed = new Label();
+            lblElapsed.AutoSize = false;
+            lblElapsed.Height = 20;
+            lblElapsed.Dock = DockStyle.Bottom;
+            lblElapsed.TextAlign = ContentAlignment.BottomCenter;
+            lblElapsed.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblElapsed.ForeColor = Color.FromArgb(120, 0, 0, 0);
+            lblElapsed.Name = "lblElapsed";
+
+            rightPanel.Controls.Add(lblCenter);
+            rightPanel.Controls.Add(lblElapsed);
+            rightPanel.Controls.Add(lblStartTime);
+
+            panel.Controls.Add(rightPanel);
+            panel.Controls.Add(leftPanel);
+
+            // Tooltip nếu có ghi chú
+            if (!string.IsNullOrWhiteSpace(room.GhiChu))
+            {
+                var tooltip = new ToolTip();
+                tooltip.SetToolTip(panel, room.GhiChu);
+            }
+
+            panel.MouseEnter += (s, e) => { panel.BackColor = Color.FromArgb(250, 250, 250); };
+            panel.MouseLeave += (s, e) => { panel.BackColor = Color.White; };
+
+            // Gắn info cho timer
+            var info = new RoomTileInfo
+            {
+                Room = room,
+                LblStartTime = lblStartTime,
+                LblCenter = lblCenter,
+                LblElapsed = lblElapsed
+            };
+            panel.Tag = info;
+
+            // Gắn sự kiện Click cho panel và toàn bộ control con
+            AttachRoomClick(panel);
+
+            // Text ban đầu theo trạng thái
+            switch (room.TrangThai)
+            {
+                case 0:
+                    lblCenter.Text = "Trống";
+                    break;
+                case 2:
+                    lblCenter.Text = "Chưa dọn";
+                    break;
+                case 3:
+                    lblCenter.Text = "Đã có khách đặt";
+                    break;
+                case 1:
+                    lblCenter.Text = room.TenKhachHienThi ?? "";
+                    break;
+            }
+
+            return panel;
+        }
+
+        /// <summary>
+        /// Gắn sự kiện click cho control và toàn bộ control con.
+        /// Không đụng tới Tag đang lưu RoomTileInfo.
+        /// </summary>
+        private void AttachRoomClick(Control ctrl)
+        {
+            ctrl.Cursor = Cursors.Hand;
+            ctrl.Click -= RoomTile_Click;
+            ctrl.Click += RoomTile_Click;
+
+            foreach (Control child in ctrl.Controls)
+            {
+                AttachRoomClick(child);
+            }
+        }
+
+        /// <summary>
+        /// Handler chung: tìm RoomTileInfo gần nhất rồi mở RoomDetailForm.
+        /// </summary>
+        private void RoomTile_Click(object sender, EventArgs e)
+        {
+            if (sender is Control c)
+            {
+                Control cur = c;
+                RoomTileInfo info = null;
+
+                // leo lên trên tới khi gặp control có Tag là RoomTileInfo
+                while (cur != null && !(cur.Tag is RoomTileInfo))
+                    cur = cur.Parent;
+
+                if (cur != null && cur.Tag is RoomTileInfo ti)
+                    info = ti;
+
+                if (info != null && info.Room != null)
+                {
+                    ShowRoomDetail(info.Room);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Timer cập nhật đồng hồ phòng
+
+        private void SetupRoomTimer()
+        {
+            if (_roomTimer == null)
+            {
+                _roomTimer = new Timer();
+                _roomTimer.Interval = 1000; // 1 giây
+                _roomTimer.Tick += RoomTimer_Tick;
+                _roomTimer.Start();
+            }
+        }
+
+        private void RoomTimer_Tick(object sender, EventArgs e)
+        {
+            foreach (Control tangPanel in flowRooms.Controls)
+            {
+                if (tangPanel is Panel panelTang)
+                {
+                    foreach (Control child in panelTang.Controls)
+                    {
+                        if (child is FlowLayoutPanel flp)
+                        {
+                            foreach (Control roomPanel in flp.Controls)
+                            {
+                                if (roomPanel is Panel p && p.Tag is RoomTileInfo info)
+                                {
+                                    UpdateRoomTileTime(info);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void UpdateRoomTileTime(RoomTileInfo info)
+        {
+            var room = info.Room;
+
+            // Nếu có khách & có thời gian bắt đầu thì hiển thị đồng hồ
+            if (room.TrangThai == 1 && room.ThoiGianBatDau.HasValue)
+            {
+                DateTime start = room.ThoiGianBatDau.Value;
+                DateTime now = DateTime.Now;
+
+                info.LblStartTime.Text = start.ToString("dd/MM/yyyy, HH:mm");
+
+                if (room.KieuThue == 1 || room.KieuThue == 2)
+                    info.LblCenter.Text = room.TenKhachHienThi ?? "";
+                else
+                    info.LblCenter.Text = ""; // phòng giờ không hiện tên
+
+                TimeSpan diff = now - start;
+                if (diff.TotalSeconds < 0) diff = TimeSpan.Zero;
+
+                info.LblElapsed.Text = string.Format("{0:00} : {1:00} : {2:00}",
+                    (int)diff.TotalHours, diff.Minutes, diff.Seconds);
+            }
+            else
+            {
+                // Các trạng thái khác: không hiển thị thời gian
+                info.LblStartTime.Text = "";
+                info.LblElapsed.Text = "";
+
+                switch (room.TrangThai)
+                {
+                    case 0:
+                        info.LblCenter.Text = "Trống";
+                        break;
+                    case 2:
+                        info.LblCenter.Text = "Chưa dọn";
+                        break;
+                    case 3:
+                        info.LblCenter.Text = "Đã có khách đặt";
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Mở chi tiết phòng trong MainForm
+
+        private void ShowRoomDetail(Room room)
+        {
+            flowRooms.Visible = false;
+            panelFilter.Visible = false;
+
+            panelDetailHost.Controls.Clear();
+
+            var detail = new RoomDetailForm(room);
+            detail.TopLevel = false;
+            detail.FormBorderStyle = FormBorderStyle.None;
+            detail.Dock = DockStyle.Fill;
+
+            detail.BackRequested += (s, e) =>
+            {
+                panelDetailHost.Visible = false;
+                panelDetailHost.Controls.Clear();
+
+                panelFilter.Visible = true;
+                flowRooms.Visible = true;
+
+                LoadRoomTiles();
+            };
+
+            detail.Saved += (s, e) =>
+            {
+                // reload dữ liệu phòng rồi cập nhật UI
+                var updated = _roomDal.GetById(room.PhongID);
+                if (updated != null)
+                    room = updated;
+
+                LoadRoomTiles();
+            };
+
+            panelDetailHost.Visible = true;
+            panelDetailHost.Controls.Add(detail);
+            panelDetailHost.BringToFront();
+
+            detail.Show();
+        }
+
+        #endregion
+
+        #region Các nút menu / filter
+
+        private void btnRooms_Click(object sender, EventArgs e)
+        {
+            panelDetailHost.Visible = false;
+            panelDetailHost.Controls.Clear();
+
+            panelFilter.Visible = true;
+            flowRooms.Visible = true;
+
+            LoadRoomTiles();
+        }
+
+        private void btnReports_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Chức năng báo cáo sẽ được bổ sung sau.", "Thông báo");
+        }
+
+        private void btnAdmin_Click(object sender, EventArgs e)
+        {
+            using (var login = new LoginForm())
+            {
+                var result = login.ShowDialog(this);
+                if (result == DialogResult.OK && login.LoggedInUser != null)
+                {
+                    _currentUser = login.LoggedInUser;
+                    UpdateUserUI();
+                    MessageBox.Show($"Xin chào: {_currentUser.Username}", "Đăng nhập thành công");
+                }
+            }
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void btnFilterAll_Click(object sender, EventArgs e)
+        {
+            _currentFilterStatus = null;
+            LoadRoomTiles();
+        }
+
+        private void btnFilterTrong_Click(object sender, EventArgs e)
+        {
+            _currentFilterStatus = 0;
+            LoadRoomTiles();
+        }
+
+        private void btnFilterCoKhach_Click(object sender, EventArgs e)
+        {
+            _currentFilterStatus = 1;
+            LoadRoomTiles();
+        }
+
+        private void btnFilterChuaDon_Click(object sender, EventArgs e)
+        {
+            _currentFilterStatus = 2;
+            LoadRoomTiles();
+        }
+
+        private void btnFilterDaDat_Click(object sender, EventArgs e)
+        {
+            _currentFilterStatus = 3;
+            LoadRoomTiles();
+        }
+
+        #endregion
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Forms\MainForm.Designer.cs
+--------------------------
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace HotelManagement.Forms
+{
+    partial class MainForm
+    {
+        private System.ComponentModel.IContainer components = null;
+
+        private Panel panelTop;
+        private Panel panelLeft;
+        private Panel panelFilter;
+        private Panel panelDetailHost;
+        private FlowLayoutPanel flowRooms;
+
+        private Button btnAdmin;
+        private Button btnExit;
+        private Label lblTitle;
+        private TextBox txtSearch;
+
+        private Button btnSoDoPhong;
+        private Button btnThongKe;
+        private Button btnReports;
+        private Label lblCurrentUser;
+
+        private Button btnFilterAll;
+        private Button btnFilterTrong;
+        private Button btnFilterCoKhach;
+        private Button btnFilterChuaDon;
+        private Button btnFilterDaDat;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+                components.Dispose();
+            base.Dispose(disposing);
+        }
+
+        private void InitializeComponent()
+        {
+            this.panelTop = new Panel();
+            this.btnAdmin = new Button();
+            this.lblTitle = new Label();
+            this.txtSearch = new TextBox();
+            this.btnExit = new Button();
+
+            this.panelLeft = new Panel();
+            this.btnSoDoPhong = new Button();
+            this.btnThongKe = new Button();
+            this.btnReports = new Button();
+            this.lblCurrentUser = new Label();
+
+            this.panelFilter = new Panel();
+            this.btnFilterAll = new Button();
+            this.btnFilterTrong = new Button();
+            this.btnFilterCoKhach = new Button();
+            this.btnFilterChuaDon = new Button();
+            this.btnFilterDaDat = new Button();
+
+            this.flowRooms = new FlowLayoutPanel();
+            this.panelDetailHost = new Panel();
+
+            // ===== MainForm =====
+            this.components = new System.ComponentModel.Container();
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1200, 700);
+            this.Text = "Quản lý khách sạn";
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.BackColor = Color.FromArgb(245, 245, 245);
+            this.Load += new System.EventHandler(this.MainForm_Load);
+
+            // ===== panelTop =====
+            this.panelTop.BackColor = Color.FromArgb(63, 81, 181);
+            this.panelTop.Dock = DockStyle.Top;
+            this.panelTop.Height = 60;
+            this.panelTop.Padding = new Padding(10, 10, 10, 10);
+
+            // btnAdmin
+            this.btnAdmin.FlatStyle = FlatStyle.Flat;
+            this.btnAdmin.FlatAppearance.BorderSize = 0;
+            this.btnAdmin.ForeColor = Color.White;
+            this.btnAdmin.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnAdmin.Text = "≡";
+            this.btnAdmin.Width = 40;
+            this.btnAdmin.Height = 40;
+            this.btnAdmin.Location = new Point(10, 10);
+            this.btnAdmin.Click += new System.EventHandler(this.btnAdmin_Click);
+
+            // lblTitle
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.ForeColor = Color.White;
+            this.lblTitle.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            this.lblTitle.Location = new Point(60, 18);
+            this.lblTitle.Text = "Thanh Long - Hotel";
+
+            // txtSearch
+            this.txtSearch.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            this.txtSearch.Font = new Font("Segoe UI", 10F);
+            this.txtSearch.Location = new Point(280, 16);
+            this.txtSearch.Width = 650;
+            this.txtSearch.Text = "";
+            this.txtSearch.ForeColor = Color.Black;
+            this.txtSearch.KeyDown += new KeyEventHandler(this.txtSearch_KeyDown);
+            this.txtSearch.GotFocus += new System.EventHandler(this.txtSearch_GotFocus);
+            this.txtSearch.LostFocus += new System.EventHandler(this.txtSearch_LostFocus);
+
+            // btnExit
+            this.btnExit.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            this.btnExit.FlatStyle = FlatStyle.Flat;
+            this.btnExit.FlatAppearance.BorderSize = 0;
+            this.btnExit.ForeColor = Color.White;
+            this.btnExit.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnExit.Text = "Thoát";
+            this.btnExit.Width = 70;
+            this.btnExit.Height = 35;
+            this.btnExit.Location = new Point(1110, 12); // 1200 - 90
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+
+            this.panelTop.Controls.Add(this.btnAdmin);
+            this.panelTop.Controls.Add(this.lblTitle);
+            this.panelTop.Controls.Add(this.txtSearch);
+            this.panelTop.Controls.Add(this.btnExit);
+
+            // ===== panelLeft =====
+            this.panelLeft.BackColor = Color.FromArgb(248, 249, 252);
+            this.panelLeft.Dock = DockStyle.Left;
+            this.panelLeft.Width = 220;
+            this.panelLeft.Padding = new Padding(0, 10, 0, 10);
+
+            void StyleLeftMenu(Button btn, string text, int top)
+            {
+                btn.FlatStyle = FlatStyle.Flat;
+                btn.FlatAppearance.BorderSize = 0;
+                btn.TextAlign = ContentAlignment.MiddleLeft;
+                btn.Font = new Font("Segoe UI", 10F);
+                btn.ForeColor = Color.FromArgb(55, 71, 79);
+                btn.BackColor = Color.Transparent;
+                btn.Text = text;
+                btn.Width = this.panelLeft.Width;
+                btn.Height = 36;
+                btn.Location = new Point(0, top);
+                btn.Padding = new Padding(20, 0, 0, 0);
+            }
+
+            int menuTop = 10;
+            StyleLeftMenu(this.btnSoDoPhong, "Sơ đồ phòng", menuTop);
+            menuTop += 40;
+            StyleLeftMenu(this.btnThongKe, "Thống kê", menuTop);
+            menuTop += 40;
+            StyleLeftMenu(this.btnReports, "Báo cáo", menuTop);
+
+            this.btnSoDoPhong.Click += new System.EventHandler(this.btnRooms_Click);
+            this.btnThongKe.Click += (s, e) =>
+            {
+                MessageBox.Show("Chức năng thống kê sẽ được bổ sung sau.", "Thông báo");
+            };
+            this.btnReports.Click += new System.EventHandler(this.btnReports_Click);
+
+            this.lblCurrentUser.AutoSize = true;
+            this.lblCurrentUser.Font = new Font("Segoe UI", 9F);
+            this.lblCurrentUser.ForeColor = Color.Gray;
+            this.lblCurrentUser.Location = new Point(12, this.panelLeft.Height - 30);
+            this.lblCurrentUser.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
+            this.lblCurrentUser.Text = "Người dùng: (khách)";
+
+            this.panelLeft.Controls.Add(this.btnSoDoPhong);
+            this.panelLeft.Controls.Add(this.btnThongKe);
+            this.panelLeft.Controls.Add(this.btnReports);
+            this.panelLeft.Controls.Add(this.lblCurrentUser);
+
+            // ===== panelFilter =====
+            this.panelFilter.BackColor = Color.White;
+            this.panelFilter.Dock = DockStyle.Top;
+            this.panelFilter.Height = 60;
+            this.panelFilter.Padding = new Padding(10, 10, 10, 10);
+
+            void StyleFilter(Button btn, string text, Color color, int left)
+            {
+                btn.FlatStyle = FlatStyle.Flat;
+                btn.FlatAppearance.BorderSize = 0;
+                btn.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+                btn.ForeColor = Color.White;
+                btn.BackColor = color;
+                btn.Text = text;
+                btn.Height = 30;
+                btn.Width = 130;
+                btn.Location = new Point(left, 15);
+            }
+
+            int filterLeft = 10;
+            StyleFilter(this.btnFilterAll, "Tất cả", Color.FromArgb(158, 158, 158), filterLeft);
+            filterLeft += 135;
+            StyleFilter(this.btnFilterTrong, "Trống", Color.FromArgb(76, 175, 80), filterLeft);
+            filterLeft += 135;
+            StyleFilter(this.btnFilterCoKhach, "Có khách", Color.FromArgb(33, 150, 243), filterLeft);
+            filterLeft += 135;
+            StyleFilter(this.btnFilterChuaDon, "Chưa dọn", Color.FromArgb(96, 125, 139), filterLeft);
+            filterLeft += 135;
+            StyleFilter(this.btnFilterDaDat, "Đã có khách đặt", Color.FromArgb(255, 152, 0), filterLeft);
+
+            this.btnFilterAll.Click += new System.EventHandler(this.btnFilterAll_Click);
+            this.btnFilterTrong.Click += new System.EventHandler(this.btnFilterTrong_Click);
+            this.btnFilterCoKhach.Click += new System.EventHandler(this.btnFilterCoKhach_Click);
+            this.btnFilterChuaDon.Click += new System.EventHandler(this.btnFilterChuaDon_Click);
+            this.btnFilterDaDat.Click += new System.EventHandler(this.btnFilterDaDat_Click);
+
+            this.panelFilter.Controls.Add(this.btnFilterAll);
+            this.panelFilter.Controls.Add(this.btnFilterTrong);
+            this.panelFilter.Controls.Add(this.btnFilterCoKhach);
+            this.panelFilter.Controls.Add(this.btnFilterChuaDon);
+            this.panelFilter.Controls.Add(this.btnFilterDaDat);
+
+            // ===== flowRooms =====
+            this.flowRooms.Dock = DockStyle.Fill;
+            this.flowRooms.AutoScroll = true;
+            this.flowRooms.Padding = new Padding(10);
+            this.flowRooms.BackColor = Color.FromArgb(245, 245, 245);
+
+            // ===== panelDetailHost =====
+            this.panelDetailHost.Dock = DockStyle.Fill;
+            this.panelDetailHost.BackColor = Color.White;
+            this.panelDetailHost.Visible = false;
+
+            // ===== Add controls vào Form =====
+            this.Controls.Add(this.panelDetailHost);
+            this.Controls.Add(this.flowRooms);
+            this.Controls.Add(this.panelFilter);
+            this.Controls.Add(this.panelLeft);
+            this.Controls.Add(this.panelTop);
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Forms\RoomDetailForm.cs
+--------------------------
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+using HotelManagement.Data;
+using HotelManagement.Models;
+
+namespace HotelManagement.Forms
+{
+    public partial class RoomDetailForm : Form
+    {
+        private readonly Room _room;
+        private readonly RoomDAL _roomDal = new RoomDAL();
+
+        // Giá
+        private const decimal GIA_DEM = 200000m;
+        private const decimal GIA_NGAY = 250000m;
+        private const decimal GIA_GIO_DAU = 70000m;
+        private const decimal GIA_GIO_SAU = 20000m;
+
+        private const decimal GIA_NUOC_NGOT = 20000m;
+        private const decimal GIA_NUOC_SUOI = 10000m;
+
+        private int _selectedStatus;
+        private DateTime? _startTime;          // thời gian bắt đầu ở
+        private Timer _timer;
+
+        public event EventHandler BackRequested;
+        public event EventHandler Saved;
+
+        public RoomDetailForm(Room room)
+        {
+            _room = room;
+            InitializeComponent();
+        }
+
+        private void RoomDetailForm_Load(object sender, EventArgs e)
+        {
+            lblRoomCode.Text = _room.MaPhong;
+            lblRoomType.Text = _room.LoaiPhongID == 1 ? "Phòng đơn" :
+                               _room.LoaiPhongID == 2 ? "Phòng đôi" : "Khác";
+            lblFloor.Text = "Tầng " + _room.Tang;
+
+            txtGhiChu.Text = _room.GhiChu ?? "";
+
+            _selectedStatus = _room.TrangThai;
+            _startTime = _room.ThoiGianBatDau;
+
+            // Nếu đang Có khách mà chưa có thời gian bắt đầu -> lấy hiện tại
+            if (_selectedStatus == 1 && !_startTime.HasValue)
+                _startTime = DateTime.Now;
+
+            UpdateStatusButtons();
+
+            // mặc định: thuê giờ, vì bạn muốn tính real-time theo giờ
+            rdoGio.Checked = true;
+            UpdateCustomerInputEnabled();
+
+            dtpNgayDen.Value = DateTime.Now;
+            dtpNgayDi.Value = DateTime.Now.AddDays(1);
+            nudSoGio.Value = 1;
+
+            nudNuocNgot.Value = 0;
+            nudNuocSuoi.Value = 0;
+
+            // Timer cập nhật theo giây
+            _timer = new Timer();
+            _timer.Interval = 1000; // 1s
+            _timer.Tick += Timer_Tick;
+            _timer.Start();
+
+            TinhTien(); // init
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            // Chỉ cập nhật real-time khi phòng đang Có khách + mode Giờ
+            if (_selectedStatus == 1 && _startTime.HasValue && rdoGio.Checked)
+            {
+                DateTime now = DateTime.Now;
+                lblStartTime.Text = _startTime.Value.ToString("dd/MM/yyyy HH:mm:ss");
+                lblEndTime.Text = now.ToString("dd/MM/yyyy HH:mm:ss");
+
+                TimeSpan diff = now - _startTime.Value;
+                if (diff.TotalSeconds < 0) diff = TimeSpan.Zero;
+
+                lblDuration.Text = string.Format("{0:00}:{1:00}:{2:00}",
+                    (int)diff.TotalHours,
+                    diff.Minutes,
+                    diff.Seconds);
+
+                // Tính tiền phòng theo giờ real-time
+                int soGio = Math.Max(1, (int)Math.Ceiling(diff.TotalHours));
+                decimal tienPhong = soGio == 1
+                    ? GIA_GIO_DAU
+                    : GIA_GIO_DAU + (soGio - 1) * GIA_GIO_SAU;
+
+                decimal tienDichVu = TinhTienNuoc();
+                UpdateTienHienThi(tienPhong, tienDichVu, tienPhong + tienDichVu);
+            }
+        }
+
+        private void UpdateCustomerInputEnabled()
+        {
+            bool needCustomer = rdoDem.Checked || rdoNgay.Checked;
+            txtTenKhach.Enabled = needCustomer;
+            txtCCCD.Enabled = needCustomer;
+            btnChonAnh.Enabled = needCustomer;
+
+            if (!needCustomer)
+            {
+                txtTenKhach.Text = "";
+                txtCCCD.Text = "";
+                picCCCD.Image = null;
+            }
+        }
+
+        #region Nút trạng thái
+
+        private void UpdateStatusButtons()
+        {
+            // Màu chuẩn (đã chỉnh)
+            Color cTrong = Color.FromArgb(76, 175, 80);   // xanh lá
+            Color cCoKhach = Color.FromArgb(33, 150, 243);  // xanh dương
+            Color cChuaDon = Color.FromArgb(255, 138, 128); // đỏ nhạt
+            Color cDaDat = Color.FromArgb(255, 152, 0);   // cam
+
+            ResetStatusButtonStyle(btnStatusTrong, cTrong);
+            ResetStatusButtonStyle(btnStatusCoKhach, cCoKhach);
+            ResetStatusButtonStyle(btnStatusChuaDon, cChuaDon);
+            ResetStatusButtonStyle(btnStatusDaDat, cDaDat);
+
+            // bôi đậm nút đang chọn
+            Button selected = null;
+            Color selectedColor = cTrong;
+
+            switch (_selectedStatus)
+            {
+                case 0: selected = btnStatusTrong; selectedColor = cTrong; break;
+                case 1: selected = btnStatusCoKhach; selectedColor = cCoKhach; break;
+                case 2: selected = btnStatusChuaDon; selectedColor = cChuaDon; break;
+                case 3: selected = btnStatusDaDat; selectedColor = cDaDat; break;
+            }
+
+            if (selected != null)
+            {
+                selected.BackColor = selectedColor;
+                selected.ForeColor = Color.White;
+                selected.FlatAppearance.BorderSize = 2;
+                selected.FlatAppearance.BorderColor = Color.FromArgb(33, 33, 33);
+            }
+
+            // thông tin hiển thị trạng thái hiện tại
+            lblCurrentStatus.Text = "Trạng thái phòng: " + GetStatusText(_selectedStatus);
+        }
+
+        private void ResetStatusButtonStyle(Button btn, Color baseColor)
+        {
+            btn.BackColor = baseColor;
+            btn.ForeColor = Color.White;
+            btn.FlatStyle = FlatStyle.Flat;
+            btn.FlatAppearance.BorderSize = 0;
+            btn.FlatAppearance.MouseOverBackColor = ControlPaint.Light(baseColor, 0.2f);
+            btn.FlatAppearance.MouseDownBackColor = ControlPaint.Dark(baseColor, 0.1f);
+        }
+
+        private string GetStatusText(int st)
+        {
+            switch (st)
+            {
+                case 0: return "Trống";
+                case 1: return "Có khách";
+                case 2: return "Chưa dọn";
+                case 3: return "Đã có khách đặt";
+                default: return "Không rõ";
+            }
+        }
+
+        private void btnStatusTrong_Click(object sender, EventArgs e)
+        {
+            _selectedStatus = 0;
+            _startTime = null;
+            UpdateStatusButtons();
+        }
+
+        private void btnStatusCoKhach_Click(object sender, EventArgs e)
+        {
+            // Nếu trước đó là Trống => bắt đầu đếm thời gian từ bây giờ
+            if (_room.TrangThai == 0 && _selectedStatus != 1)
+                _startTime = DateTime.Now;
+            else if (!_startTime.HasValue)
+                _startTime = DateTime.Now;
+
+            _selectedStatus = 1;
+            UpdateStatusButtons();
+        }
+
+        private void btnStatusChuaDon_Click(object sender, EventArgs e)
+        {
+            _selectedStatus = 2;
+            _startTime = null; // phòng không còn tính giờ
+            UpdateStatusButtons();
+        }
+
+        private void btnStatusDaDat_Click(object sender, EventArgs e)
+        {
+            _selectedStatus = 3;
+            _startTime = null;
+            UpdateStatusButtons();
+        }
+
+        #endregion
+
+        #region Nút chọn mode thuê
+
+        private void rdoDem_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateCustomerInputEnabled();
+            TinhTien();
+        }
+
+        private void rdoNgay_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateCustomerInputEnabled();
+            TinhTien();
+        }
+
+        private void rdoGio_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateCustomerInputEnabled();
+            TinhTien();
+        }
+
+        #endregion
+
+        #region Nước uống & tiền
+
+        private decimal TinhTienNuoc()
+        {
+            int slNuocNgot = (int)nudNuocNgot.Value;
+            int slNuocSuoi = (int)nudNuocSuoi.Value;
+
+            return slNuocNgot * GIA_NUOC_NGOT + slNuocSuoi * GIA_NUOC_SUOI;
+        }
+
+        private void UpdateTienHienThi(decimal tienPhong, decimal tienDichVu, decimal tong)
+        {
+            lblTienPhong.Text = tienPhong.ToString("N0") + " đ";
+            lblTienDichVu.Text = tienDichVu.ToString("N0") + " đ";
+            lblTongTien.Text = tong.ToString("N0") + " đ";
+        }
+
+        private void TinhTien()
+        {
+            decimal tienPhong = 0;
+
+            if (rdoDem.Checked)
+            {
+                int soDem = Math.Max(1, (int)Math.Ceiling((dtpNgayDi.Value - dtpNgayDen.Value).TotalDays));
+                tienPhong = soDem * GIA_DEM;
+            }
+            else if (rdoNgay.Checked)
+            {
+                int soNgay = Math.Max(1, (int)Math.Ceiling((dtpNgayDi.Value - dtpNgayDen.Value).TotalDays));
+                tienPhong = soNgay * GIA_NGAY;
+            }
+            else if (rdoGio.Checked)
+            {
+                // nếu đang Có khách và đã có startTime thì để Timer lo;
+                if (!(_selectedStatus == 1 && _startTime.HasValue))
+                {
+                    int soGio = (int)nudSoGio.Value;
+                    if (soGio <= 1) tienPhong = GIA_GIO_DAU;
+                    else tienPhong = GIA_GIO_DAU + (soGio - 1) * GIA_GIO_SAU;
+                }
+            }
+
+            decimal tienDichVu = TinhTienNuoc();
+            UpdateTienHienThi(tienPhong, tienDichVu, tienPhong + tienDichVu);
+        }
+
+        private void nudNuocNgot_ValueChanged(object sender, EventArgs e)
+        {
+            TinhTien();
+        }
+
+        private void nudNuocSuoi_ValueChanged(object sender, EventArgs e)
+        {
+            TinhTien();
+        }
+
+        private void btnTinhTien_Click(object sender, EventArgs e)
+        {
+            TinhTien();
+        }
+
+        #endregion
+
+        #region Lưu & Quay lại
+
+        private void btnLuu_Click(object sender, EventArgs e)
+        {
+            // Bắt buộc tên khách khi thuê ngày/đêm
+            if ((rdoDem.Checked || rdoNgay.Checked) &&
+                string.IsNullOrWhiteSpace(txtTenKhach.Text))
+            {
+                MessageBox.Show("Vui lòng nhập tên khách khi thuê ngày/đêm.",
+                    "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int? kieuThue = null;
+            string tenKhachHienThi = null;
+
+            if (rdoDem.Checked)
+            {
+                kieuThue = 1; // đêm
+                tenKhachHienThi = txtTenKhach.Text.Trim();
+            }
+            else if (rdoNgay.Checked)
+            {
+                kieuThue = 2; // ngày
+                tenKhachHienThi = txtTenKhach.Text.Trim();
+            }
+            else if (rdoGio.Checked)
+            {
+                kieuThue = 3; // giờ
+                tenKhachHienThi = null;
+            }
+
+            // Cập nhật DB
+            _roomDal.UpdateTrangThaiFull(
+                _room.PhongID,
+                _selectedStatus,
+                txtGhiChu.Text,
+                (_selectedStatus == 1 ? _startTime : (DateTime?)null),
+                kieuThue,
+                tenKhachHienThi);
+
+            // Cập nhật object local
+            _room.TrangThai = _selectedStatus;
+            _room.GhiChu = txtGhiChu.Text;
+            _room.ThoiGianBatDau = (_selectedStatus == 1 ? _startTime : null);
+            _room.KieuThue = kieuThue;
+            _room.TenKhachHienThi = tenKhachHienThi;
+
+            Saved?.Invoke(this, EventArgs.Empty);
+
+            MessageBox.Show("Đã lưu trạng thái phòng.", "Thông báo",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            BackRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            BackRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        #endregion
+
+        private void btnChonAnh_Click(object sender, EventArgs e)
+        {
+            using (var ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Image files|*.jpg;*.jpeg;*.png;*.bmp";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        picCCCD.Image = Image.FromFile(ofd.FileName);
+                        picCCCD.Tag = ofd.FileName;
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Không thể mở hình ảnh.", "Lỗi",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Forms\RoomDetailForm.Designer.cs
+--------------------------
+using System.Windows.Forms;
+using System.Drawing;
+
+namespace HotelManagement.Forms
+{
+    partial class RoomDetailForm
+    {
+        private System.ComponentModel.IContainer components = null;
+
+        private Label lblTitle;
+        private Label lblRoomCode;
+        private Label lblRoomType;
+        private Label lblFloor;
+
+        private Button btnBack;
+
+        // trạng thái
+        private Label lblCurrentStatus;
+        private Button btnStatusTrong;
+        private Button btnStatusCoKhach;
+        private Button btnStatusChuaDon;
+        private Button btnStatusDaDat;
+
+        private Label lblGhiChu;
+        private TextBox txtGhiChu;
+
+        private GroupBox grpThue;
+        private RadioButton rdoDem;
+        private RadioButton rdoNgay;
+        private RadioButton rdoGio;
+        private Label lblNgayDen;
+        private Label lblNgayDi;
+        private DateTimePicker dtpNgayDen;
+        private DateTimePicker dtpNgayDi;
+        private Label lblSoGio;
+        private NumericUpDown nudSoGio;
+
+        private GroupBox grpKhach;
+        private Label lblTenKhach;
+        private TextBox txtTenKhach;
+        private Label lblCCCD;
+        private TextBox txtCCCD;
+        private Button btnChonAnh;
+        private PictureBox picCCCD;
+
+        private GroupBox grpDichVu;
+        private Label lblNuocNgot;
+        private Label lblNuocSuoi;
+        private NumericUpDown nudNuocNgot;
+        private NumericUpDown nudNuocSuoi;
+        private Label lblNuocNgotGia;
+        private Label lblNuocSuoiGia;
+
+        private GroupBox grpThanhTien;
+        private Label labelTienPhong;
+        private Label labelTienDichVu;
+        private Label labelTongTien;
+        private Label lblTienPhong;
+        private Label lblTienDichVu;
+        private Label lblTongTien;
+
+        private Label lblStartCaption;
+        private Label lblEndCaption;
+        private Label lblDurationCaption;
+        private Label lblStartTime;
+        private Label lblEndTime;
+        private Label lblDuration;
+
+        private Button btnTinhTien;
+        private Button btnLuu;
+        private Button btnHuy;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+                components.Dispose();
+            base.Dispose(disposing);
+        }
+
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+
+            this.lblTitle = new Label();
+            this.lblRoomCode = new Label();
+            this.lblRoomType = new Label();
+            this.lblFloor = new Label();
+            this.btnBack = new Button();
+
+            this.lblCurrentStatus = new Label();
+            this.btnStatusTrong = new Button();
+            this.btnStatusCoKhach = new Button();
+            this.btnStatusChuaDon = new Button();
+            this.btnStatusDaDat = new Button();
+
+            this.lblGhiChu = new Label();
+            this.txtGhiChu = new TextBox();
+
+            this.grpThue = new GroupBox();
+            this.rdoDem = new RadioButton();
+            this.rdoNgay = new RadioButton();
+            this.rdoGio = new RadioButton();
+            this.lblNgayDen = new Label();
+            this.lblNgayDi = new Label();
+            this.dtpNgayDen = new DateTimePicker();
+            this.dtpNgayDi = new DateTimePicker();
+            this.lblSoGio = new Label();
+            this.nudSoGio = new NumericUpDown();
+
+            this.grpKhach = new GroupBox();
+            this.lblTenKhach = new Label();
+            this.txtTenKhach = new TextBox();
+            this.lblCCCD = new Label();
+            this.txtCCCD = new TextBox();
+            this.btnChonAnh = new Button();
+            this.picCCCD = new PictureBox();
+
+            this.grpDichVu = new GroupBox();
+            this.lblNuocNgot = new Label();
+            this.lblNuocSuoi = new Label();
+            this.nudNuocNgot = new NumericUpDown();
+            this.nudNuocSuoi = new NumericUpDown();
+            this.lblNuocNgotGia = new Label();
+            this.lblNuocSuoiGia = new Label();
+
+            this.grpThanhTien = new GroupBox();
+            this.labelTienPhong = new Label();
+            this.labelTienDichVu = new Label();
+            this.labelTongTien = new Label();
+            this.lblTienPhong = new Label();
+            this.lblTienDichVu = new Label();
+            this.lblTongTien = new Label();
+
+            this.lblStartCaption = new Label();
+            this.lblEndCaption = new Label();
+            this.lblDurationCaption = new Label();
+            this.lblStartTime = new Label();
+            this.lblEndTime = new Label();
+            this.lblDuration = new Label();
+
+            this.btnTinhTien = new Button();
+            this.btnLuu = new Button();
+            this.btnHuy = new Button();
+
+            ((System.ComponentModel.ISupportInitialize)(this.nudSoGio)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNuocNgot)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNuocSuoi)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picCCCD)).BeginInit();
+
+            this.SuspendLayout();
+
+            // Form
+            this.AutoScaleMode = AutoScaleMode.Font;
+            this.ClientSize = new Size(900, 520);
+            this.BackColor = Color.White;
+            this.StartPosition = FormStartPosition.Manual;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.Load += new System.EventHandler(this.RoomDetailForm_Load);
+
+            // Back
+            this.btnBack.Text = "◀ Quay lại";
+            this.btnBack.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnBack.BackColor = Color.Transparent;
+            this.btnBack.FlatStyle = FlatStyle.Flat;
+            this.btnBack.FlatAppearance.BorderSize = 0;
+            this.btnBack.ForeColor = Color.FromArgb(63, 81, 181);
+            this.btnBack.Location = new Point(10, 10);
+            this.btnBack.Size = new Size(90, 28);
+            this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
+
+            // Title
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
+            this.lblTitle.ForeColor = Color.FromArgb(63, 81, 181);
+            this.lblTitle.Text = "Thông tin phòng";
+            this.lblTitle.Location = new Point(120, 12);
+
+            this.lblRoomCode.AutoSize = true;
+            this.lblRoomCode.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
+            this.lblRoomCode.Location = new Point(120, 40);
+
+            this.lblRoomType.AutoSize = true;
+            this.lblRoomType.Font = new Font("Segoe UI", 10F);
+            this.lblRoomType.ForeColor = Color.Gray;
+            this.lblRoomType.Location = new Point(120, 75);
+
+            this.lblFloor.AutoSize = true;
+            this.lblFloor.Font = new Font("Segoe UI", 10F);
+            this.lblFloor.ForeColor = Color.Gray;
+            this.lblFloor.Location = new Point(220, 75);
+
+            // ===== Trạng thái =====
+            this.lblCurrentStatus.AutoSize = true;
+            this.lblCurrentStatus.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            this.lblCurrentStatus.ForeColor = Color.FromArgb(55, 71, 79);
+            this.lblCurrentStatus.Text = "Trạng thái phòng:";
+            this.lblCurrentStatus.Location = new Point(350, 16);
+
+            int stTop = 46;
+            int stLeft = 350;
+            int stWidth = 110;
+            int stHeight = 36;
+            int stGap = 8;
+
+            // Trống
+            this.btnStatusTrong.Text = "Trống";
+            this.btnStatusTrong.Location = new Point(stLeft, stTop);
+            this.btnStatusTrong.Size = new Size(stWidth, stHeight);
+            this.btnStatusTrong.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnStatusTrong.Click += new System.EventHandler(this.btnStatusTrong_Click);
+
+            // Có khách
+            this.btnStatusCoKhach.Text = "Có khách";
+            this.btnStatusCoKhach.Location = new Point(stLeft + (stWidth + stGap), stTop);
+            this.btnStatusCoKhach.Size = new Size(stWidth, stHeight);
+            this.btnStatusCoKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnStatusCoKhach.Click += new System.EventHandler(this.btnStatusCoKhach_Click);
+
+            // Chưa dọn
+            this.btnStatusChuaDon.Text = "Chưa dọn";
+            this.btnStatusChuaDon.Location = new Point(stLeft + 2 * (stWidth + stGap), stTop);
+            this.btnStatusChuaDon.Size = new Size(stWidth, stHeight);
+            this.btnStatusChuaDon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnStatusChuaDon.Click += new System.EventHandler(this.btnStatusChuaDon_Click);
+
+            // Đã đặt
+            this.btnStatusDaDat.Text = "Đã đặt";
+            this.btnStatusDaDat.Location = new Point(stLeft + 3 * (stWidth + stGap), stTop);
+            this.btnStatusDaDat.Size = new Size(stWidth, stHeight);
+            this.btnStatusDaDat.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnStatusDaDat.Click += new System.EventHandler(this.btnStatusDaDat_Click);
+
+            // Ghi chú
+            this.lblGhiChu.AutoSize = true;
+            this.lblGhiChu.Font = new Font("Segoe UI", 9F);
+            this.lblGhiChu.Text = "Ghi chú";
+            this.lblGhiChu.Location = new Point(120, 100);
+
+            this.txtGhiChu.Font = new Font("Segoe UI", 9F);
+            this.txtGhiChu.Location = new Point(170, 97);
+            this.txtGhiChu.Width = 700;
+            this.txtGhiChu.Height = 50;
+            this.txtGhiChu.Multiline = true;
+
+            // Group thuê
+            this.grpThue.Text = "Thông tin thuê phòng";
+            this.grpThue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.grpThue.Location = new Point(20, 155);
+            this.grpThue.Size = new Size(420, 180);
+
+            this.rdoDem.Text = "Đêm";
+            this.rdoDem.Location = new Point(20, 25);
+            this.rdoDem.CheckedChanged += new System.EventHandler(this.rdoDem_CheckedChanged);
+
+            this.rdoNgay.Text = "Ngày";
+            this.rdoNgay.Location = new Point(90, 25);
+            this.rdoNgay.CheckedChanged += new System.EventHandler(this.rdoNgay_CheckedChanged);
+
+            this.rdoGio.Text = "Giờ";
+            this.rdoGio.Location = new Point(160, 25);
+            this.rdoGio.CheckedChanged += new System.EventHandler(this.rdoGio_CheckedChanged);
+
+            this.lblNgayDen.Text = "Ngày đến";
+            this.lblNgayDen.Location = new Point(20, 60);
+
+            this.dtpNgayDen.Format = DateTimePickerFormat.Custom;
+            this.dtpNgayDen.CustomFormat = "dd/MM/yyyy HH:mm";
+            this.dtpNgayDen.Location = new Point(100, 56);
+            this.dtpNgayDen.Width = 200;
+
+            this.lblNgayDi.Text = "Ngày đi";
+            this.lblNgayDi.Location = new Point(20, 90);
+            this.dtpNgayDi.Format = DateTimePickerFormat.Custom;
+            this.dtpNgayDi.CustomFormat = "dd/MM/yyyy HH:mm";
+            this.dtpNgayDi.Location = new Point(100, 86);
+            this.dtpNgayDi.Width = 200;
+
+            this.lblSoGio.Text = "Số giờ";
+            this.lblSoGio.Location = new Point(20, 120);
+
+            this.nudSoGio.Location = new Point(100, 116);
+            this.nudSoGio.Minimum = 1;
+            this.nudSoGio.Maximum = 24;
+            this.nudSoGio.Value = 1;
+
+            this.grpThue.Controls.Add(this.rdoDem);
+            this.grpThue.Controls.Add(this.rdoNgay);
+            this.grpThue.Controls.Add(this.rdoGio);
+            this.grpThue.Controls.Add(this.lblNgayDen);
+            this.grpThue.Controls.Add(this.dtpNgayDen);
+            this.grpThue.Controls.Add(this.lblNgayDi);
+            this.grpThue.Controls.Add(this.dtpNgayDi);
+            this.grpThue.Controls.Add(this.lblSoGio);
+            this.grpThue.Controls.Add(this.nudSoGio);
+
+            // Group khách
+            this.grpKhach.Text = "Thông tin khách (bắt buộc khi thuê ngày / đêm)";
+            this.grpKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.grpKhach.Location = new Point(460, 155);
+            this.grpKhach.Size = new Size(410, 180);
+
+            this.lblTenKhach.Text = "Tên khách";
+            this.lblTenKhach.Location = new Point(15, 30);
+            this.txtTenKhach.Location = new Point(90, 27);
+            this.txtTenKhach.Width = 300;
+
+            this.lblCCCD.Text = "Số CCCD";
+            this.lblCCCD.Location = new Point(15, 60);
+            this.txtCCCD.Location = new Point(90, 57);
+            this.txtCCCD.Width = 300;
+
+            this.btnChonAnh.Text = "Chọn ảnh CCCD";
+            this.btnChonAnh.Location = new Point(15, 90);
+            this.btnChonAnh.Size = new Size(120, 25);
+            this.btnChonAnh.Click += new System.EventHandler(this.btnChonAnh_Click);
+
+            this.picCCCD.Location = new Point(150, 90);
+            this.picCCCD.Size = new Size(240, 80);
+            this.picCCCD.BorderStyle = BorderStyle.FixedSingle;
+            this.picCCCD.SizeMode = PictureBoxSizeMode.Zoom;
+
+            this.grpKhach.Controls.Add(this.lblTenKhach);
+            this.grpKhach.Controls.Add(this.txtTenKhach);
+            this.grpKhach.Controls.Add(this.lblCCCD);
+            this.grpKhach.Controls.Add(this.txtCCCD);
+            this.grpKhach.Controls.Add(this.btnChonAnh);
+            this.grpKhach.Controls.Add(this.picCCCD);
+
+            // Group nước
+            this.grpDichVu.Text = "Nước uống";
+            this.grpDichVu.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.grpDichVu.Location = new Point(20, 345);
+            this.grpDichVu.Size = new Size(260, 130);
+
+            this.lblNuocNgot.Text = "Nước ngọt";
+            this.lblNuocNgot.Location = new Point(15, 30);
+            this.nudNuocNgot.Location = new Point(90, 26);
+            this.nudNuocNgot.Minimum = 0;
+            this.nudNuocNgot.Maximum = 100;
+            this.nudNuocNgot.ValueChanged += new System.EventHandler(this.nudNuocNgot_ValueChanged);
+
+            this.lblNuocNgotGia.Text = "20.000 đ / chai";
+            this.lblNuocNgotGia.Font = new Font("Segoe UI", 8F);
+            this.lblNuocNgotGia.ForeColor = Color.Gray;
+            this.lblNuocNgotGia.Location = new Point(90, 50);
+
+            this.lblNuocSuoi.Text = "Nước suối";
+            this.lblNuocSuoi.Location = new Point(15, 75);
+            this.nudNuocSuoi.Location = new Point(90, 71);
+            this.nudNuocSuoi.Minimum = 0;
+            this.nudNuocSuoi.Maximum = 100;
+            this.nudNuocSuoi.ValueChanged += new System.EventHandler(this.nudNuocSuoi_ValueChanged);
+
+            this.lblNuocSuoiGia.Text = "10.000 đ / chai";
+            this.lblNuocSuoiGia.Font = new Font("Segoe UI", 8F);
+            this.lblNuocSuoiGia.ForeColor = Color.Gray;
+            this.lblNuocSuoiGia.Location = new Point(90, 95);
+
+            this.grpDichVu.Controls.Add(this.lblNuocNgot);
+            this.grpDichVu.Controls.Add(this.nudNuocNgot);
+            this.grpDichVu.Controls.Add(this.lblNuocNgotGia);
+            this.grpDichVu.Controls.Add(this.lblNuocSuoi);
+            this.grpDichVu.Controls.Add(this.nudNuocSuoi);
+            this.grpDichVu.Controls.Add(this.lblNuocSuoiGia);
+
+            // Group thanh toán
+            this.grpThanhTien.Text = "Thanh toán";
+            this.grpThanhTien.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.grpThanhTien.Location = new Point(300, 345);
+            this.grpThanhTien.Size = new Size(360, 130);
+
+            this.labelTienPhong.Text = "Tiền phòng:";
+            this.labelTienPhong.Location = new Point(20, 28);
+
+            this.lblTienPhong.Text = "0 đ";
+            this.lblTienPhong.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            this.lblTienPhong.Location = new Point(120, 28);
+
+            this.labelTienDichVu.Text = "Tiền nước:";
+            this.labelTienDichVu.Location = new Point(20, 50);
+
+            this.lblTienDichVu.Text = "0 đ";
+            this.lblTienDichVu.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            this.lblTienDichVu.Location = new Point(120, 50);
+
+            this.labelTongTien.Text = "Tổng cộng:";
+            this.labelTongTien.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.labelTongTien.Location = new Point(20, 75);
+
+            this.lblTongTien.Text = "0 đ";
+            this.lblTongTien.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            this.lblTongTien.ForeColor = Color.FromArgb(244, 67, 54);
+            this.lblTongTien.Location = new Point(120, 75);
+
+            this.grpThanhTien.Controls.Add(this.labelTienPhong);
+            this.grpThanhTien.Controls.Add(this.lblTienPhong);
+            this.grpThanhTien.Controls.Add(this.labelTienDichVu);
+            this.grpThanhTien.Controls.Add(this.lblTienDichVu);
+            this.grpThanhTien.Controls.Add(this.labelTongTien);
+            this.grpThanhTien.Controls.Add(this.lblTongTien);
+
+            // Thời gian bắt đầu / kết thúc / tổng
+            int tTop = 350;
+            this.lblStartCaption.Text = "Bắt đầu:";
+            this.lblStartCaption.Location = new Point(680, tTop);
+            this.lblStartTime.Location = new Point(740, tTop);
+            this.lblStartTime.AutoSize = true;
+
+            this.lblEndCaption.Text = "Hiện tại:";
+            this.lblEndCaption.Location = new Point(680, tTop + 20);
+            this.lblEndTime.Location = new Point(740, tTop + 20);
+            this.lblEndTime.AutoSize = true;
+
+            this.lblDurationCaption.Text = "Thời gian:";
+            this.lblDurationCaption.Location = new Point(680, tTop + 40);
+            this.lblDuration.Location = new Point(740, tTop + 40);
+            this.lblDuration.AutoSize = true;
+
+            // Buttons dưới
+            this.btnTinhTien.Text = "Tính tiền";
+            this.btnTinhTien.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnTinhTien.BackColor = Color.FromArgb(3, 155, 229);
+            this.btnTinhTien.ForeColor = Color.White;
+            this.btnTinhTien.FlatStyle = FlatStyle.Flat;
+            this.btnTinhTien.FlatAppearance.BorderSize = 0;
+            this.btnTinhTien.Location = new Point(680, 410);
+            this.btnTinhTien.Size = new Size(90, 30);
+            this.btnTinhTien.Click += new System.EventHandler(this.btnTinhTien_Click);
+
+            this.btnLuu.Text = "Lưu";
+            this.btnLuu.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnLuu.BackColor = Color.FromArgb(76, 175, 80);
+            this.btnLuu.ForeColor = Color.White;
+            this.btnLuu.FlatStyle = FlatStyle.Flat;
+            this.btnLuu.FlatAppearance.BorderSize = 0;
+            this.btnLuu.Location = new Point(680, 445);
+            this.btnLuu.Size = new Size(90, 30);
+            this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
+
+            this.btnHuy.Text = "Hủy";
+            this.btnHuy.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnHuy.BackColor = Color.FromArgb(189, 189, 189);
+            this.btnHuy.ForeColor = Color.White;
+            this.btnHuy.FlatStyle = FlatStyle.Flat;
+            this.btnHuy.FlatAppearance.BorderSize = 0;
+            this.btnHuy.Location = new Point(780, 445);
+            this.btnHuy.Size = new Size(90, 30);
+            this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
+
+            // Add controls
+            this.Controls.Add(this.btnBack);
+            this.Controls.Add(this.lblTitle);
+            this.Controls.Add(this.lblRoomCode);
+            this.Controls.Add(this.lblRoomType);
+            this.Controls.Add(this.lblFloor);
+
+            this.Controls.Add(this.lblCurrentStatus);
+            this.Controls.Add(this.btnStatusTrong);
+            this.Controls.Add(this.btnStatusCoKhach);
+            this.Controls.Add(this.btnStatusChuaDon);
+            this.Controls.Add(this.btnStatusDaDat);
+
+            this.Controls.Add(this.lblGhiChu);
+            this.Controls.Add(this.txtGhiChu);
+
+            this.Controls.Add(this.grpThue);
+            this.Controls.Add(this.grpKhach);
+            this.Controls.Add(this.grpDichVu);
+            this.Controls.Add(this.grpThanhTien);
+
+            this.Controls.Add(this.lblStartCaption);
+            this.Controls.Add(this.lblStartTime);
+            this.Controls.Add(this.lblEndCaption);
+            this.Controls.Add(this.lblEndTime);
+            this.Controls.Add(this.lblDurationCaption);
+            this.Controls.Add(this.lblDuration);
+
+            this.Controls.Add(this.btnTinhTien);
+            this.Controls.Add(this.btnLuu);
+            this.Controls.Add(this.btnHuy);
+
+            ((System.ComponentModel.ISupportInitialize)(this.nudSoGio)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNuocNgot)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudNuocSuoi)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picCCCD)).EndInit();
+
+            this.ResumeLayout(false);
+            this.PerformLayout();
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Models\Booking.cs
+--------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HotelManagement.Models
+{
+    public class Booking
+    {
+        public int DatPhongID { get; set; }
+        public int KhachHangID { get; set; }
+        public int PhongID { get; set; }
+        public DateTime NgayDen { get; set; }
+        public DateTime NgayDiDuKien { get; set; }
+        public DateTime? NgayDiThucTe { get; set; }
+        public int TrangThai { get; set; }
+        public decimal TienCoc { get; set; }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Models\ComboBoxItem.cs
+--------------------------
+namespace HotelManagement
+{
+    // Class nhỏ để hiển thị (Text) trong ComboBox nhưng lưu (Value)
+    public class ComboBoxItem
+    {
+        public object Value { get; set; }
+        public string Text { get; set; }
+
+        public override string ToString()
+        {
+            return Text; // ComboBox hiển thị Text
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Models\Customer.cs
+--------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HotelManagement.Models
+{
+    public class Customer
+    {
+        public int KhachHangID { get; set; }
+        public string HoTen { get; set; }
+        public string CCCD { get; set; }
+        public byte[] HinhCCCD { get; set; }
+        public string DienThoai { get; set; }
+        public string DiaChi { get; set; }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Models\Invoice.cs
+--------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HotelManagement.Models
+{
+    public class Invoice
+    {
+        public int HoaDonID { get; set; }
+        public int DatPhongID { get; set; }
+        public DateTime NgayLap { get; set; }
+        public decimal TongTien { get; set; }
+        public bool DaThanhToan { get; set; }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Models\Room.cs
+--------------------------
+using System;
+
+namespace HotelManagement.Models
+{
+    public class Room
+    {
+        public int PhongID { get; set; }
+        public string MaPhong { get; set; }
+        public int LoaiPhongID { get; set; }
+        public int Tang { get; set; }
+        public int TrangThai { get; set; }
+        public string GhiChu { get; set; }
+        public DateTime? ThoiGianBatDau { get; set; }
+
+        // NEW: kiểu thuê & tên khách hiển thị
+        // 1 = Đêm, 2 = Ngày, 3 = Giờ, null = chưa xác định
+        public int? KieuThue { get; set; }
+        public string TenKhachHienThi { get; set; }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Models\User.cs
+--------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HotelManagement.Models
+{
+    public class User
+    {
+        public int UserID { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; } // demo: lưu plain text
+        public string Role { get; set; }     // "Admin" hoặc "Letan"
+    }
+}
+
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Properties\AssemblyInfo.cs
+--------------------------
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+// General Information about an assembly is controlled through the following
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyTitle("Hotel Management")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("MANHPC.COM")]
+[assembly: AssemblyProduct("Hotel Management")]
+[assembly: AssemblyCopyright("Copyright © MANHPC.COM 2025")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+
+// Setting ComVisible to false makes the types in this assembly not visible
+// to COM components.  If you need to access a type in this assembly from
+// COM, set the ComVisible attribute to true on that type.
+[assembly: ComVisible(false)]
+
+// The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: Guid("d57c892d-e5f8-426c-ab1d-e884c583ffaf")]
+
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version
+//      Build Number
+//      Revision
+//
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Properties\Resources.Designer.cs
+--------------------------
+//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//     Runtime Version:4.0.30319.42000
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+namespace Hotel_Management.Properties
+{
+
+
+    /// <summary>
+    ///   A strongly-typed resource class, for looking up localized strings, etc.
+    /// </summary>
+    // This class was auto-generated by the StronglyTypedResourceBuilder
+    // class via a tool like ResGen or Visual Studio.
+    // To add or remove a member, edit your .ResX file then rerun ResGen
+    // with the /str option, or rebuild your VS project.
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+    internal class Resources
+    {
+
+        private static global::System.Resources.ResourceManager resourceMan;
+
+        private static global::System.Globalization.CultureInfo resourceCulture;
+
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        internal Resources()
+        {
+        }
+
+        /// <summary>
+        ///   Returns the cached ResourceManager instance used by this class.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Resources.ResourceManager ResourceManager
+        {
+            get
+            {
+                if ((resourceMan == null))
+                {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Hotel_Management.Properties.Resources", typeof(Resources).Assembly);
+                    resourceMan = temp;
+                }
+                return resourceMan;
+            }
+        }
+
+        /// <summary>
+        ///   Overrides the current thread's CurrentUICulture property for all
+        ///   resource lookups using this strongly typed resource class.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Globalization.CultureInfo Culture
+        {
+            get
+            {
+                return resourceCulture;
+            }
+            set
+            {
+                resourceCulture = value;
+            }
+        }
+    }
+}
+
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Properties\Resources.resx
+--------------------------
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+</root>
+.
+---------- FILE ----------
+E:\Project\Hotel-Management\Hotel Management\Properties\Settings.Designer.cs
+--------------------------
+//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//     Runtime Version:4.0.30319.42000
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+namespace Hotel_Management.Properties
+{
+
+
+    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "11.0.0.0")]
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
+    {
+
+        private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
+
+        public static Settings Default
+        {
+            get
+            {
+                return defaultInstance;
+            }
+        }
+    }
+}
+
+.
+======= HET =======
