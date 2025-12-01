@@ -11,11 +11,11 @@ namespace HotelManagement.Forms
         private Label lblRoomCode;
         private Label lblRoomType;
         private Label lblFloor;
-
         private Button btnBack;
 
         // trạng thái
         private Label lblCurrentStatus;
+        private Label lblCurrentStatusDesc;
         private Button btnStatusTrong;
         private Button btnStatusCoKhach;
         private Button btnStatusChuaDon;
@@ -28,12 +28,8 @@ namespace HotelManagement.Forms
         private RadioButton rdoDem;
         private RadioButton rdoNgay;
         private RadioButton rdoGio;
-        private Label lblNgayDen;
-        private Label lblNgayDi;
-        private DateTimePicker dtpNgayDen;
-        private DateTimePicker dtpNgayDi;
-        private Label lblSoGio;
-        private NumericUpDown nudSoGio;
+        private Label lblSoLuong;
+        private NumericUpDown nudSoLuong;
 
         private GroupBox grpKhach;
         private Label lblTenKhach;
@@ -88,6 +84,7 @@ namespace HotelManagement.Forms
             this.btnBack = new Button();
 
             this.lblCurrentStatus = new Label();
+            this.lblCurrentStatusDesc = new Label();
             this.btnStatusTrong = new Button();
             this.btnStatusCoKhach = new Button();
             this.btnStatusChuaDon = new Button();
@@ -100,12 +97,8 @@ namespace HotelManagement.Forms
             this.rdoDem = new RadioButton();
             this.rdoNgay = new RadioButton();
             this.rdoGio = new RadioButton();
-            this.lblNgayDen = new Label();
-            this.lblNgayDi = new Label();
-            this.dtpNgayDen = new DateTimePicker();
-            this.dtpNgayDi = new DateTimePicker();
-            this.lblSoGio = new Label();
-            this.nudSoGio = new NumericUpDown();
+            this.lblSoLuong = new Label();
+            this.nudSoLuong = new NumericUpDown();
 
             this.grpKhach = new GroupBox();
             this.lblTenKhach = new Label();
@@ -142,7 +135,7 @@ namespace HotelManagement.Forms
             this.btnLuu = new Button();
             this.btnHuy = new Button();
 
-            ((System.ComponentModel.ISupportInitialize)(this.nudSoGio)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSoLuong)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNuocNgot)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNuocSuoi)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picCCCD)).BeginInit();
@@ -151,7 +144,7 @@ namespace HotelManagement.Forms
 
             // Form
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new Size(900, 520);
+            this.ClientSize = new Size(1000, 580);
             this.BackColor = Color.White;
             this.StartPosition = FormStartPosition.Manual;
             this.FormBorderStyle = FormBorderStyle.None;
@@ -165,7 +158,7 @@ namespace HotelManagement.Forms
             this.btnBack.FlatAppearance.BorderSize = 0;
             this.btnBack.ForeColor = Color.FromArgb(63, 81, 181);
             this.btnBack.Location = new Point(10, 10);
-            this.btnBack.Size = new Size(90, 28);
+            this.btnBack.Size = new Size(100, 30);
             this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
 
             // Title
@@ -173,149 +166,150 @@ namespace HotelManagement.Forms
             this.lblTitle.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             this.lblTitle.ForeColor = Color.FromArgb(63, 81, 181);
             this.lblTitle.Text = "Thông tin phòng";
-            this.lblTitle.Location = new Point(120, 12);
+            this.lblTitle.Location = new Point(130, 10);
 
+            // Room code
             this.lblRoomCode.AutoSize = true;
-            this.lblRoomCode.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
-            this.lblRoomCode.Location = new Point(120, 40);
+            this.lblRoomCode.Font = new Font("Segoe UI Semibold", 22F, FontStyle.Bold);
+            this.lblRoomCode.ForeColor = Color.FromArgb(33, 33, 33);
+            this.lblRoomCode.Location = new Point(130, 40);
 
+            // Room type & floor
             this.lblRoomType.AutoSize = true;
             this.lblRoomType.Font = new Font("Segoe UI", 10F);
             this.lblRoomType.ForeColor = Color.Gray;
-            this.lblRoomType.Location = new Point(120, 75);
+            this.lblRoomType.Location = new Point(130, 80);
 
             this.lblFloor.AutoSize = true;
             this.lblFloor.Font = new Font("Segoe UI", 10F);
             this.lblFloor.ForeColor = Color.Gray;
-            this.lblFloor.Location = new Point(220, 75);
+            this.lblFloor.Location = new Point(230, 80);
 
-            // ===== Trạng thái =====
+            // Trạng thái label
             this.lblCurrentStatus.AutoSize = true;
-            this.lblCurrentStatus.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            this.lblCurrentStatus.ForeColor = Color.FromArgb(55, 71, 79);
-            this.lblCurrentStatus.Text = "Trạng thái phòng:";
-            this.lblCurrentStatus.Location = new Point(350, 16);
+            this.lblCurrentStatus.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.lblCurrentStatus.Location = new Point(430, 15);
+            this.lblCurrentStatus.Text = "Trạng thái phòng";
 
-            int stTop = 46;
-            int stLeft = 350;
+            this.lblCurrentStatusDesc.AutoSize = true;
+            this.lblCurrentStatusDesc.Font = new Font("Segoe UI", 10F);
+            this.lblCurrentStatusDesc.ForeColor = Color.Gray;
+            this.lblCurrentStatusDesc.Location = new Point(430, 35);
+            this.lblCurrentStatusDesc.Text = "Trống";
+
+            int stTop = 60;
             int stWidth = 110;
-            int stHeight = 36;
-            int stGap = 8;
+            int stHeight = 40;
+            int stLeft = 430;
+            int stSpacing = 10;
 
-            // Trống
+            // Nút Trống
             this.btnStatusTrong.Text = "Trống";
             this.btnStatusTrong.Location = new Point(stLeft, stTop);
             this.btnStatusTrong.Size = new Size(stWidth, stHeight);
-            this.btnStatusTrong.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnStatusTrong.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             this.btnStatusTrong.Click += new System.EventHandler(this.btnStatusTrong_Click);
 
-            // Có khách
+            // Nút Có khách
             this.btnStatusCoKhach.Text = "Có khách";
-            this.btnStatusCoKhach.Location = new Point(stLeft + (stWidth + stGap), stTop);
+            this.btnStatusCoKhach.Location = new Point(stLeft + (stWidth + stSpacing), stTop);
             this.btnStatusCoKhach.Size = new Size(stWidth, stHeight);
-            this.btnStatusCoKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnStatusCoKhach.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             this.btnStatusCoKhach.Click += new System.EventHandler(this.btnStatusCoKhach_Click);
 
-            // Chưa dọn
+            // Nút Chưa dọn
             this.btnStatusChuaDon.Text = "Chưa dọn";
-            this.btnStatusChuaDon.Location = new Point(stLeft + 2 * (stWidth + stGap), stTop);
+            this.btnStatusChuaDon.Location = new Point(stLeft + 2 * (stWidth + stSpacing), stTop);
             this.btnStatusChuaDon.Size = new Size(stWidth, stHeight);
-            this.btnStatusChuaDon.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnStatusChuaDon.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             this.btnStatusChuaDon.Click += new System.EventHandler(this.btnStatusChuaDon_Click);
 
-            // Đã đặt
+            // Nút Đã đặt
             this.btnStatusDaDat.Text = "Đã đặt";
-            this.btnStatusDaDat.Location = new Point(stLeft + 3 * (stWidth + stGap), stTop);
+            this.btnStatusDaDat.Location = new Point(stLeft + 3 * (stWidth + stSpacing), stTop);
             this.btnStatusDaDat.Size = new Size(stWidth, stHeight);
-            this.btnStatusDaDat.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            this.btnStatusDaDat.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             this.btnStatusDaDat.Click += new System.EventHandler(this.btnStatusDaDat_Click);
 
             // Ghi chú
             this.lblGhiChu.AutoSize = true;
             this.lblGhiChu.Font = new Font("Segoe UI", 9F);
             this.lblGhiChu.Text = "Ghi chú";
-            this.lblGhiChu.Location = new Point(120, 100);
+            this.lblGhiChu.Location = new Point(130, 110);
 
             this.txtGhiChu.Font = new Font("Segoe UI", 9F);
-            this.txtGhiChu.Location = new Point(170, 97);
-            this.txtGhiChu.Width = 700;
-            this.txtGhiChu.Height = 50;
+            this.txtGhiChu.Location = new Point(130, 128);
             this.txtGhiChu.Multiline = true;
+            this.txtGhiChu.Size = new Size(840, 50);
+            this.txtGhiChu.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
-            // Group thuê
+            // === Group Thuê ===
             this.grpThue.Text = "Thông tin thuê phòng";
             this.grpThue.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            this.grpThue.Location = new Point(20, 155);
-            this.grpThue.Size = new Size(420, 180);
+            this.grpThue.Location = new Point(20, 190);
+            this.grpThue.Size = new Size(460, 170);
+            this.grpThue.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             this.rdoDem.Text = "Đêm";
             this.rdoDem.Location = new Point(20, 25);
+            this.rdoDem.AutoSize = true;
             this.rdoDem.CheckedChanged += new System.EventHandler(this.rdoDem_CheckedChanged);
 
             this.rdoNgay.Text = "Ngày";
             this.rdoNgay.Location = new Point(90, 25);
+            this.rdoNgay.AutoSize = true;
             this.rdoNgay.CheckedChanged += new System.EventHandler(this.rdoNgay_CheckedChanged);
 
             this.rdoGio.Text = "Giờ";
-            this.rdoGio.Location = new Point(160, 25);
+            this.rdoGio.Location = new Point(170, 25);
+            this.rdoGio.AutoSize = true;
             this.rdoGio.CheckedChanged += new System.EventHandler(this.rdoGio_CheckedChanged);
 
-            this.lblNgayDen.Text = "Ngày đến";
-            this.lblNgayDen.Location = new Point(20, 60);
+            this.lblSoLuong.Text = "Số giờ";
+            this.lblSoLuong.Location = new Point(20, 70);
+            this.lblSoLuong.AutoSize = true;
 
-            this.dtpNgayDen.Format = DateTimePickerFormat.Custom;
-            this.dtpNgayDen.CustomFormat = "dd/MM/yyyy HH:mm";
-            this.dtpNgayDen.Location = new Point(100, 56);
-            this.dtpNgayDen.Width = 200;
-
-            this.lblNgayDi.Text = "Ngày đi";
-            this.lblNgayDi.Location = new Point(20, 90);
-            this.dtpNgayDi.Format = DateTimePickerFormat.Custom;
-            this.dtpNgayDi.CustomFormat = "dd/MM/yyyy HH:mm";
-            this.dtpNgayDi.Location = new Point(100, 86);
-            this.dtpNgayDi.Width = 200;
-
-            this.lblSoGio.Text = "Số giờ";
-            this.lblSoGio.Location = new Point(20, 120);
-
-            this.nudSoGio.Location = new Point(100, 116);
-            this.nudSoGio.Minimum = 1;
-            this.nudSoGio.Maximum = 24;
-            this.nudSoGio.Value = 1;
+            this.nudSoLuong.Location = new Point(90, 66);
+            this.nudSoLuong.Minimum = 1;
+            this.nudSoLuong.Maximum = 999;
+            this.nudSoLuong.Value = 1;
+            this.nudSoLuong.Size = new Size(80, 23);
+            this.nudSoLuong.ValueChanged += new System.EventHandler(this.nudSoLuong_ValueChanged);
 
             this.grpThue.Controls.Add(this.rdoDem);
             this.grpThue.Controls.Add(this.rdoNgay);
             this.grpThue.Controls.Add(this.rdoGio);
-            this.grpThue.Controls.Add(this.lblNgayDen);
-            this.grpThue.Controls.Add(this.dtpNgayDen);
-            this.grpThue.Controls.Add(this.lblNgayDi);
-            this.grpThue.Controls.Add(this.dtpNgayDi);
-            this.grpThue.Controls.Add(this.lblSoGio);
-            this.grpThue.Controls.Add(this.nudSoGio);
+            this.grpThue.Controls.Add(this.lblSoLuong);
+            this.grpThue.Controls.Add(this.nudSoLuong);
 
-            // Group khách
+            // === Group Khách ===
             this.grpKhach.Text = "Thông tin khách (bắt buộc khi thuê ngày / đêm)";
             this.grpKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            this.grpKhach.Location = new Point(460, 155);
-            this.grpKhach.Size = new Size(410, 180);
+            this.grpKhach.Location = new Point(500, 190);
+            this.grpKhach.Size = new Size(470, 170);
+            this.grpKhach.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             this.lblTenKhach.Text = "Tên khách";
-            this.lblTenKhach.Location = new Point(15, 30);
-            this.txtTenKhach.Location = new Point(90, 27);
-            this.txtTenKhach.Width = 300;
+            this.lblTenKhach.Location = new Point(20, 30);
+            this.lblTenKhach.AutoSize = true;
+
+            this.txtTenKhach.Location = new Point(100, 27);
+            this.txtTenKhach.Size = new Size(350, 23);
 
             this.lblCCCD.Text = "Số CCCD";
-            this.lblCCCD.Location = new Point(15, 60);
-            this.txtCCCD.Location = new Point(90, 57);
-            this.txtCCCD.Width = 300;
+            this.lblCCCD.Location = new Point(20, 60);
+            this.lblCCCD.AutoSize = true;
+
+            this.txtCCCD.Location = new Point(100, 57);
+            this.txtCCCD.Size = new Size(350, 23);
 
             this.btnChonAnh.Text = "Chọn ảnh CCCD";
-            this.btnChonAnh.Location = new Point(15, 90);
-            this.btnChonAnh.Size = new Size(120, 25);
+            this.btnChonAnh.Location = new Point(20, 95);
+            this.btnChonAnh.Size = new Size(120, 27);
             this.btnChonAnh.Click += new System.EventHandler(this.btnChonAnh_Click);
 
             this.picCCCD.Location = new Point(150, 90);
-            this.picCCCD.Size = new Size(240, 80);
+            this.picCCCD.Size = new Size(300, 70);
             this.picCCCD.BorderStyle = BorderStyle.FixedSingle;
             this.picCCCD.SizeMode = PictureBoxSizeMode.Zoom;
 
@@ -326,35 +320,42 @@ namespace HotelManagement.Forms
             this.grpKhach.Controls.Add(this.btnChonAnh);
             this.grpKhach.Controls.Add(this.picCCCD);
 
-            // Group nước
+            // === Group Nước uống ===
             this.grpDichVu.Text = "Nước uống";
             this.grpDichVu.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            this.grpDichVu.Location = new Point(20, 345);
-            this.grpDichVu.Size = new Size(260, 130);
+            this.grpDichVu.Location = new Point(20, 370);
+            this.grpDichVu.Size = new Size(260, 150);
+            this.grpDichVu.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
 
             this.lblNuocNgot.Text = "Nước ngọt";
-            this.lblNuocNgot.Location = new Point(15, 30);
-            this.nudNuocNgot.Location = new Point(90, 26);
+            this.lblNuocNgot.Location = new Point(20, 30);
+            this.lblNuocNgot.AutoSize = true;
+
+            this.nudNuocNgot.Location = new Point(100, 26);
             this.nudNuocNgot.Minimum = 0;
-            this.nudNuocNgot.Maximum = 100;
+            this.nudNuocNgot.Maximum = 999;
             this.nudNuocNgot.ValueChanged += new System.EventHandler(this.nudNuocNgot_ValueChanged);
 
             this.lblNuocNgotGia.Text = "20.000 đ / chai";
             this.lblNuocNgotGia.Font = new Font("Segoe UI", 8F);
             this.lblNuocNgotGia.ForeColor = Color.Gray;
-            this.lblNuocNgotGia.Location = new Point(90, 50);
+            this.lblNuocNgotGia.Location = new Point(100, 50);
+            this.lblNuocNgotGia.AutoSize = true;
 
             this.lblNuocSuoi.Text = "Nước suối";
-            this.lblNuocSuoi.Location = new Point(15, 75);
-            this.nudNuocSuoi.Location = new Point(90, 71);
+            this.lblNuocSuoi.Location = new Point(20, 85);
+            this.lblNuocSuoi.AutoSize = true;
+
+            this.nudNuocSuoi.Location = new Point(100, 81);
             this.nudNuocSuoi.Minimum = 0;
-            this.nudNuocSuoi.Maximum = 100;
+            this.nudNuocSuoi.Maximum = 999;
             this.nudNuocSuoi.ValueChanged += new System.EventHandler(this.nudNuocSuoi_ValueChanged);
 
             this.lblNuocSuoiGia.Text = "10.000 đ / chai";
             this.lblNuocSuoiGia.Font = new Font("Segoe UI", 8F);
             this.lblNuocSuoiGia.ForeColor = Color.Gray;
-            this.lblNuocSuoiGia.Location = new Point(90, 95);
+            this.lblNuocSuoiGia.Location = new Point(100, 105);
+            this.lblNuocSuoiGia.AutoSize = true;
 
             this.grpDichVu.Controls.Add(this.lblNuocNgot);
             this.grpDichVu.Controls.Add(this.nudNuocNgot);
@@ -363,34 +364,41 @@ namespace HotelManagement.Forms
             this.grpDichVu.Controls.Add(this.nudNuocSuoi);
             this.grpDichVu.Controls.Add(this.lblNuocSuoiGia);
 
-            // Group thanh toán
+            // === Group Thanh toán ===
             this.grpThanhTien.Text = "Thanh toán";
             this.grpThanhTien.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            this.grpThanhTien.Location = new Point(300, 345);
-            this.grpThanhTien.Size = new Size(360, 130);
+            this.grpThanhTien.Location = new Point(300, 370);
+            this.grpThanhTien.Size = new Size(360, 150);
+            this.grpThanhTien.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
 
             this.labelTienPhong.Text = "Tiền phòng:";
-            this.labelTienPhong.Location = new Point(20, 28);
+            this.labelTienPhong.Location = new Point(20, 30);
+            this.labelTienPhong.AutoSize = true;
 
             this.lblTienPhong.Text = "0 đ";
             this.lblTienPhong.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            this.lblTienPhong.Location = new Point(120, 28);
+            this.lblTienPhong.Location = new Point(130, 30);
+            this.lblTienPhong.AutoSize = true;
 
             this.labelTienDichVu.Text = "Tiền nước:";
-            this.labelTienDichVu.Location = new Point(20, 50);
+            this.labelTienDichVu.Location = new Point(20, 55);
+            this.labelTienDichVu.AutoSize = true;
 
             this.lblTienDichVu.Text = "0 đ";
             this.lblTienDichVu.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            this.lblTienDichVu.Location = new Point(120, 50);
+            this.lblTienDichVu.Location = new Point(130, 55);
+            this.lblTienDichVu.AutoSize = true;
 
             this.labelTongTien.Text = "Tổng cộng:";
             this.labelTongTien.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.labelTongTien.Location = new Point(20, 75);
+            this.labelTongTien.Location = new Point(20, 82);
+            this.labelTongTien.AutoSize = true;
 
             this.lblTongTien.Text = "0 đ";
             this.lblTongTien.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
             this.lblTongTien.ForeColor = Color.FromArgb(244, 67, 54);
-            this.lblTongTien.Location = new Point(120, 75);
+            this.lblTongTien.Location = new Point(130, 80);
+            this.lblTongTien.AutoSize = true;
 
             this.grpThanhTien.Controls.Add(this.labelTienPhong);
             this.grpThanhTien.Controls.Add(this.lblTienPhong);
@@ -399,20 +407,26 @@ namespace HotelManagement.Forms
             this.grpThanhTien.Controls.Add(this.labelTongTien);
             this.grpThanhTien.Controls.Add(this.lblTongTien);
 
-            // Thời gian bắt đầu / kết thúc / tổng
-            int tTop = 350;
+            // Thời gian bắt đầu / hiện tại / tổng
+            int tTop = 380;
             this.lblStartCaption.Text = "Bắt đầu:";
             this.lblStartCaption.Location = new Point(680, tTop);
+            this.lblStartCaption.AutoSize = true;
+
             this.lblStartTime.Location = new Point(740, tTop);
             this.lblStartTime.AutoSize = true;
 
             this.lblEndCaption.Text = "Hiện tại:";
             this.lblEndCaption.Location = new Point(680, tTop + 20);
+            this.lblEndCaption.AutoSize = true;
+
             this.lblEndTime.Location = new Point(740, tTop + 20);
             this.lblEndTime.AutoSize = true;
 
             this.lblDurationCaption.Text = "Thời gian:";
             this.lblDurationCaption.Location = new Point(680, tTop + 40);
+            this.lblDurationCaption.AutoSize = true;
+
             this.lblDuration.Location = new Point(740, tTop + 40);
             this.lblDuration.AutoSize = true;
 
@@ -423,8 +437,9 @@ namespace HotelManagement.Forms
             this.btnTinhTien.ForeColor = Color.White;
             this.btnTinhTien.FlatStyle = FlatStyle.Flat;
             this.btnTinhTien.FlatAppearance.BorderSize = 0;
-            this.btnTinhTien.Location = new Point(680, 410);
-            this.btnTinhTien.Size = new Size(90, 30);
+            this.btnTinhTien.Location = new Point(680, 430);
+            this.btnTinhTien.Size = new Size(100, 32);
+            this.btnTinhTien.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             this.btnTinhTien.Click += new System.EventHandler(this.btnTinhTien_Click);
 
             this.btnLuu.Text = "Lưu";
@@ -433,8 +448,9 @@ namespace HotelManagement.Forms
             this.btnLuu.ForeColor = Color.White;
             this.btnLuu.FlatStyle = FlatStyle.Flat;
             this.btnLuu.FlatAppearance.BorderSize = 0;
-            this.btnLuu.Location = new Point(680, 445);
-            this.btnLuu.Size = new Size(90, 30);
+            this.btnLuu.Location = new Point(680, 470);
+            this.btnLuu.Size = new Size(100, 32);
+            this.btnLuu.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
 
             this.btnHuy.Text = "Hủy";
@@ -443,8 +459,9 @@ namespace HotelManagement.Forms
             this.btnHuy.ForeColor = Color.White;
             this.btnHuy.FlatStyle = FlatStyle.Flat;
             this.btnHuy.FlatAppearance.BorderSize = 0;
-            this.btnHuy.Location = new Point(780, 445);
-            this.btnHuy.Size = new Size(90, 30);
+            this.btnHuy.Location = new Point(790, 470);
+            this.btnHuy.Size = new Size(100, 32);
+            this.btnHuy.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
 
             // Add controls
@@ -455,6 +472,7 @@ namespace HotelManagement.Forms
             this.Controls.Add(this.lblFloor);
 
             this.Controls.Add(this.lblCurrentStatus);
+            this.Controls.Add(this.lblCurrentStatusDesc);
             this.Controls.Add(this.btnStatusTrong);
             this.Controls.Add(this.btnStatusCoKhach);
             this.Controls.Add(this.btnStatusChuaDon);
@@ -479,7 +497,7 @@ namespace HotelManagement.Forms
             this.Controls.Add(this.btnLuu);
             this.Controls.Add(this.btnHuy);
 
-            ((System.ComponentModel.ISupportInitialize)(this.nudSoGio)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSoLuong)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNuocNgot)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudNuocSuoi)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picCCCD)).EndInit();
