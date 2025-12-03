@@ -441,14 +441,19 @@ namespace HotelManagement.Forms
 
         private string CalcRemainText(Room room)
         {
-            if (room.TrangThai != 1 || !room.ThoiGianBatDau.HasValue) return null;
+            // Chỉ tính khi có khách và có thời gian bắt đầu
+            if (room.TrangThai != 1 || !room.ThoiGianBatDau.HasValue)
+                return null;
 
-            int? slTmp = ParseSoLuong(room.GhiChu);
-            int sl = slTmp.HasValue ? slTmp.Value : 1;
+            int sl;
+            if (!TryParseSoLuongFromNote(room.GhiChu, out sl))
+                sl = 1;
+
             DateTime start = room.ThoiGianBatDau.Value;
             DateTime now = DateTime.Now;
 
-            if (room.KieuThue == 1) // đêm
+            // Thuê ĐÊM
+            if (room.KieuThue == 1)
             {
                 DateTime end = start.AddDays(sl);
                 TimeSpan left = end - now;
@@ -456,7 +461,9 @@ namespace HotelManagement.Forms
                 if (nights <= 0) return "Quá hạn";
                 return "Còn " + nights + " đêm";
             }
-            if (room.KieuThue == 2) // ngày
+
+            // Thuê NGÀY
+            if (room.KieuThue == 2)
             {
                 DateTime end = start.AddDays(sl);
                 TimeSpan left = end - now;
@@ -464,15 +471,28 @@ namespace HotelManagement.Forms
                 if (days <= 0) return "Quá hạn";
                 return "Còn " + days + " ngày";
             }
-            if (room.KieuThue == 3) // giờ
+
+            // Thuê GIỜ: KHÔNG hiển thị “Còn X giờ” trên màn hình chính
+            if (room.KieuThue == 3)
             {
-                DateTime end = start.AddHours(sl);
-                TimeSpan left = end - now;
-                int hours = (int)Math.Ceiling(left.TotalHours);
-                if (hours <= 0) return "Quá hạn";
-                return "Còn " + hours + " giờ";
+                return null;
             }
+
             return null;
+        }
+        private bool TryParseSoLuongFromNote(string ghiChu, out int value)
+        {
+            value = 0;
+            if (string.IsNullOrWhiteSpace(ghiChu)) return false;
+
+            var m = System.Text.RegularExpressions.Regex.Match(
+                ghiChu, @"SL=(\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            if (!m.Success) return false;
+
+            if (!int.TryParse(m.Groups[1].Value, out value)) return false;
+
+            return true;
         }
 
         #endregion

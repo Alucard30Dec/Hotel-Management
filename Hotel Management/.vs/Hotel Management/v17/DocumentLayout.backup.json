@@ -1,36 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "E:\\Project\\Hotel-Management\\Hotel Management\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|E:\\Project\\Hotel-Management\\Hotel Management\\forms\\roomdetailform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|solutionrelative:forms\\roomdetailform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|E:\\Project\\Hotel-Management\\Hotel Management\\forms\\roomdetailform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|solutionrelative:forms\\roomdetailform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|e:\\project\\hotel-management\\hotel management\\forms\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|solutionrelative:forms\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|E:\\Project\\Hotel-Management\\Hotel Management\\forms\\mainform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|solutionrelative:forms\\mainform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|E:\\Project\\Hotel-Management\\Hotel Management\\forms\\roomdetailform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|solutionrelative:forms\\roomdetailform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|E:\\Project\\Hotel-Management\\Hotel Management\\forms\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|solutionrelative:forms\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|E:\\Project\\Hotel-Management\\Hotel Management\\forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|solutionrelative:forms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -38,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -47,92 +18,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "RoomDetailForm.Designer.cs",
-              "DocumentMoniker": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\RoomDetailForm.Designer.cs",
-              "RelativeDocumentMoniker": "Forms\\RoomDetailForm.Designer.cs",
-              "ToolTip": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\RoomDetailForm.Designer.cs",
-              "RelativeToolTip": "Forms\\RoomDetailForm.Designer.cs",
-              "ViewState": "AgIAAN8BAAAAAAAAAAAgwP0BAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-30T07:25:25.566Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "RoomDetailForm.cs",
-              "DocumentMoniker": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\RoomDetailForm.cs",
-              "RelativeDocumentMoniker": "Forms\\RoomDetailForm.cs",
-              "ToolTip": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\RoomDetailForm.cs",
-              "RelativeToolTip": "Forms\\RoomDetailForm.cs",
-              "ViewState": "AgIAAIEBAAAAAAAAAAAgwJ8BAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-30T07:24:59.74Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MainForm.Designer.cs",
-              "DocumentMoniker": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\MainForm.Designer.cs",
-              "RelativeDocumentMoniker": "Forms\\MainForm.Designer.cs",
-              "ToolTip": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\MainForm.Designer.cs",
-              "RelativeToolTip": "Forms\\MainForm.Designer.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAADwvywAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-30T06:20:41.555Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MainForm.cs",
-              "DocumentMoniker": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\MainForm.cs",
-              "RelativeDocumentMoniker": "Forms\\MainForm.cs",
-              "ToolTip": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\MainForm.cs",
-              "RelativeToolTip": "Forms\\MainForm.cs",
-              "ViewState": "AgIAALMBAAAAAAAAAAAQwMIBAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-30T06:12:40.27Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "RoomDetailForm.cs [Design]",
-              "DocumentMoniker": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\RoomDetailForm.cs",
-              "RelativeDocumentMoniker": "Forms\\RoomDetailForm.cs",
-              "ToolTip": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\RoomDetailForm.cs [Design]",
-              "RelativeToolTip": "Forms\\RoomDetailForm.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T09:29:46.509Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "LoginForm.cs [Design]",
-              "DocumentMoniker": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\LoginForm.cs",
-              "RelativeDocumentMoniker": "Forms\\LoginForm.cs",
-              "ToolTip": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\LoginForm.cs [Design]",
-              "RelativeToolTip": "Forms\\LoginForm.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-30T07:36:36.634Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "MainForm.cs [Design]",
-              "DocumentMoniker": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\MainForm.cs",
-              "RelativeDocumentMoniker": "Forms\\MainForm.cs",
-              "ToolTip": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\MainForm.cs [Design]",
-              "RelativeToolTip": "Forms\\MainForm.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-30T07:36:36.88Z"
             }
           ]
         }

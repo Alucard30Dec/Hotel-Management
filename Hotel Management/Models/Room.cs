@@ -12,8 +12,8 @@ namespace HotelManagement.Models
         public string GhiChu { get; set; }
         public DateTime? ThoiGianBatDau { get; set; }
 
-        // NEW: kiểu thuê & tên khách hiển thị
-        // 1 = Đêm, 2 = Ngày, 3 = Giờ, null = chưa xác định
+        // Kiểu thuê & tên khách hiển thị
+        // 1 = Đêm, 2 = Giờ, null = chưa xác định
         public int? KieuThue { get; set; }
         public string TenKhachHienThi { get; set; }
     }

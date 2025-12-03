@@ -22,7 +22,7 @@ namespace HotelManagement.Forms
         private const decimal GIA_NUOC_SUOI = 10000m;
 
         private int _selectedStatus;
-        private DateTime? _startTime;   // thời gian bắt đầu ở
+        private DateTime? _startTime;   // thời gian bắt đầu
         private Timer _timer;
 
         public event EventHandler BackRequested;
@@ -38,29 +38,30 @@ namespace HotelManagement.Forms
         {
             // Header
             lblRoomCode.Text = _room.MaPhong;
-            lblRoomType.Text = _room.LoaiPhongID == 1 ? "Phòng đơn" :
-                               _room.LoaiPhongID == 2 ? "Phòng đôi" : "Khác";
+            lblRoomType.Text = _room.LoaiPhongID == 1 ? "Phòng đơn"
+                              : _room.LoaiPhongID == 2 ? "Phòng đôi"
+                              : "Khác";
             lblFloor.Text = "Tầng " + _room.Tang;
 
-            txtGhiChu.Text = _room.GhiChu ?? string.Empty;
+            txtGhiChu.Text = _room.GhiChu ?? "";
 
-            // Trạng thái & thời gian bắt đầu
+            // Trạng thái/giờ bắt đầu
             _selectedStatus = _room.TrangThai;
             _startTime = _room.ThoiGianBatDau;
 
             if (_selectedStatus == 1 && !_startTime.HasValue)
                 _startTime = DateTime.Now;
 
-            // Mặc định kiểu thuê: Giờ (để thấy realtime rõ nhất)
+            // Mặc định kiểu thuê: Giờ (để tính realtime)
             rdoGio.Checked = true;
             ApplyHireModeUI();
-            LoadSoLuongFromNote(); // nếu trước đó đã lưu SL vào ghi chú
+            LoadSoLuongFromNote(); // nếu trước đó lưu SL vào ghi chú
 
             UpdateStatusButtons();
 
             // Timer realtime
             _timer = new Timer();
-            _timer.Interval = 1000; // 1s
+            _timer.Interval = 1000;
             _timer.Tick += Timer_Tick;
             _timer.Start();
 
@@ -69,7 +70,7 @@ namespace HotelManagement.Forms
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            // Chỉ cập nhật realtime khi phòng đang "Có khách" và kiểu thuê giờ
+            // CHỈ realtime khi: Có khách + Thuê giờ + đã có thời điểm bắt đầu
             if (_selectedStatus == 1 && _startTime.HasValue && rdoGio.Checked)
             {
                 DateTime now = DateTime.Now;
@@ -92,7 +93,7 @@ namespace HotelManagement.Forms
             }
         }
 
-        #region Trạng thái (4 nút lớn)
+        #region Trạng thái (nút)
 
         private void UpdateStatusButtons()
         {
@@ -110,18 +111,10 @@ namespace HotelManagement.Forms
             Button selected = btnStatusTrong;
             switch (_selectedStatus)
             {
-                case 0:
-                    selected = btnStatusTrong;
-                    break;
-                case 1:
-                    selected = btnStatusCoKhach;
-                    break;
-                case 2:
-                    selected = btnStatusChuaDon;
-                    break;
-                case 3:
-                    selected = btnStatusDaDat;
-                    break;
+                case 0: selected = btnStatusTrong; break;
+                case 1: selected = btnStatusCoKhach; break;
+                case 2: selected = btnStatusChuaDon; break;
+                case 3: selected = btnStatusDaDat; break;
             }
 
             selected.FlatAppearance.BorderSize = 3;
@@ -160,7 +153,7 @@ namespace HotelManagement.Forms
 
         private void btnStatusCoKhach_Click(object sender, EventArgs e)
         {
-            // Nếu trước đó là Trống => bắt đầu đếm từ bây giờ
+            // Nếu từ Trống chuyển sang Có khách => giờ bắt đầu = hiện tại
             if (_room.TrangThai == 0 && _selectedStatus != 1)
                 _startTime = DateTime.Now;
             else if (!_startTime.HasValue)
@@ -186,21 +179,36 @@ namespace HotelManagement.Forms
 
         #endregion
 
-        #region Thuê: Đêm / Ngày / Giờ + Số lượng
+        #region Kiểu thuê (Đêm / Ngày / Giờ)
 
         private void ApplyHireModeUI()
         {
             bool needCustomer = rdoDem.Checked || rdoNgay.Checked;
+
             txtTenKhach.Enabled = needCustomer;
             txtCCCD.Enabled = needCustomer;
             btnChonAnh.Enabled = needCustomer;
 
-            if (rdoDem.Checked)
-                lblSoLuong.Text = "Số đêm";
-            else if (rdoNgay.Checked)
-                lblSoLuong.Text = "Số ngày";
+            // Khi thuê GIỜ: KHÔNG chọn số giờ cố định -> ẩn control số lượng
+            if (rdoGio.Checked)
+            {
+                lblSoLuong.Visible = false;
+                nudSoLuong.Visible = false;
+            }
             else
-                lblSoLuong.Text = "Số giờ";
+            {
+                lblSoLuong.Visible = true;
+                nudSoLuong.Visible = true;
+
+                if (rdoDem.Checked) lblSoLuong.Text = "Số đêm";
+                else if (rdoNgay.Checked) lblSoLuong.Text = "Số ngày";
+            }
+
+            // Nếu đang thuê giờ & có khách mà chưa có thời điểm bắt đầu => set = Now
+            if (rdoGio.Checked && _selectedStatus == 1 && !_startTime.HasValue)
+            {
+                _startTime = DateTime.Now;
+            }
         }
 
         private void rdoDem_CheckedChanged(object sender, EventArgs e)
@@ -241,7 +249,7 @@ namespace HotelManagement.Forms
 
         private void TinhTien()
         {
-            decimal tienPhong = 0;
+            decimal tienPhong = 0m;
             int sl = (int)nudSoLuong.Value;
 
             if (rdoDem.Checked)
@@ -254,10 +262,19 @@ namespace HotelManagement.Forms
             }
             else if (rdoGio.Checked)
             {
-                if (sl <= 1)
-                    tienPhong = GIA_GIO_DAU;
+                // Thuê giờ:
+                // Nếu đã Có khách + có thời điểm bắt đầu => để Timer_Tick tính realtime, không lấy số giờ cố định
+                if (_selectedStatus == 1 && _startTime.HasValue)
+                {
+                    decimal tienDichVuRealtime = TinhTienNuoc();
+                    // Timer_Tick sẽ gọi UpdateTienHienThi mỗi giây, ở đây không cần set lại
+                    return;
+                }
                 else
-                    tienPhong = GIA_GIO_DAU + (sl - 1) * GIA_GIO_SAU;
+                {
+                    // Chưa bắt đầu (VD: đặt trước) -> không tính tiền giờ cố định
+                    tienPhong = 0m;
+                }
             }
 
             decimal tienDichVu = TinhTienNuoc();
@@ -286,10 +303,11 @@ namespace HotelManagement.Forms
 
         #endregion
 
-        #region Lưu / Quay lại
+        #region Lưu / quay lại
 
         private void btnLuu_Click(object sender, EventArgs e)
         {
+            // Thuê ngày/đêm bắt buộc nhập tên khách
             if ((rdoDem.Checked || rdoNgay.Checked) &&
                 string.IsNullOrWhiteSpace(txtTenKhach.Text))
             {
@@ -315,9 +333,18 @@ namespace HotelManagement.Forms
             {
                 kieuThue = 3; // giờ
                 tenKhach = null;
+
+                // Khi lưu mà đang thuê giờ + Có khách nhưng chưa set startTime => set = Now
+                if (_selectedStatus == 1 && !_startTime.HasValue)
+                    _startTime = DateTime.Now;
             }
 
-            string ghiChu = UpsertSoLuongToNote(txtGhiChu.Text, (int)nudSoLuong.Value);
+            // Ghi SL vào ghi chú CHỈ khi thuê đêm/ngày
+            string ghiChu = txtGhiChu.Text;
+            if (rdoDem.Checked || rdoNgay.Checked)
+            {
+                ghiChu = UpsertSoLuongToNote(ghiChu, (int)nudSoLuong.Value);
+            }
 
             _roomDal.UpdateTrangThaiFull(
                 _room.PhongID,
@@ -325,8 +352,7 @@ namespace HotelManagement.Forms
                 ghiChu,
                 (_selectedStatus == 1 ? _startTime : (DateTime?)null),
                 kieuThue,
-                tenKhach
-            );
+                tenKhach);
 
             // cập nhật object local
             _room.TrangThai = _selectedStatus;
@@ -335,8 +361,7 @@ namespace HotelManagement.Forms
             _room.KieuThue = kieuThue;
             _room.TenKhachHienThi = tenKhach;
 
-            if (Saved != null)
-                Saved(this, EventArgs.Empty);
+            if (Saved != null) Saved(this, EventArgs.Empty);
 
             MessageBox.Show("Đã lưu trạng thái phòng.", "Thông báo",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -344,8 +369,7 @@ namespace HotelManagement.Forms
 
         private static string UpsertSoLuongToNote(string note, int soLuong)
         {
-            if (note == null)
-                note = string.Empty;
+            if (note == null) note = "";
 
             if (Regex.IsMatch(note, @"SL=\d+", RegexOptions.IgnoreCase))
             {
@@ -361,14 +385,12 @@ namespace HotelManagement.Forms
 
         private void btnHuy_Click(object sender, EventArgs e)
         {
-            if (BackRequested != null)
-                BackRequested(this, EventArgs.Empty);
+            if (BackRequested != null) BackRequested(this, EventArgs.Empty);
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            if (BackRequested != null)
-                BackRequested(this, EventArgs.Empty);
+            if (BackRequested != null) BackRequested(this, EventArgs.Empty);
         }
 
         #endregion
@@ -396,18 +418,17 @@ namespace HotelManagement.Forms
 
         private void LoadSoLuongFromNote()
         {
-            if (string.IsNullOrWhiteSpace(_room.GhiChu))
-                return;
+            if (string.IsNullOrWhiteSpace(_room.GhiChu)) return;
 
-            Match m = Regex.Match(_room.GhiChu, @"SL=(\d+)", RegexOptions.IgnoreCase);
+            var m = Regex.Match(_room.GhiChu, @"SL=(\d+)", RegexOptions.IgnoreCase);
             if (m.Success)
             {
-                int value;
-                if (int.TryParse(m.Groups[1].Value, out value))
+                int v;
+                if (int.TryParse(m.Groups[1].Value, out v))
                 {
-                    if (value < (int)nudSoLuong.Minimum) value = (int)nudSoLuong.Minimum;
-                    if (value > (int)nudSoLuong.Maximum) value = (int)nudSoLuong.Maximum;
-                    nudSoLuong.Value = value;
+                    if (v < (int)nudSoLuong.Minimum) v = (int)nudSoLuong.Minimum;
+                    if (v > (int)nudSoLuong.Maximum) v = (int)nudSoLuong.Maximum;
+                    nudSoLuong.Value = v;
                 }
             }
         }
