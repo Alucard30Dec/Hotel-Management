@@ -13,7 +13,7 @@ namespace HotelManagement.Models
         public DateTime? ThoiGianBatDau { get; set; }
 
         // Kiểu thuê & tên khách hiển thị
-        // 1 = Đêm, 2 = Giờ, null = chưa xác định
+        // 1 = Đêm, 3 = Giờ, (2 để dành/không dùng), null = chưa xác định
         public int? KieuThue { get; set; }
         public string TenKhachHienThi { get; set; }
     }

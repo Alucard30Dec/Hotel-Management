@@ -25,6 +25,28 @@ namespace HotelManagement.Forms
         // Timer update đồng hồ thời gian
         private Timer _roomTimer;
 
+        // ====== HẰNG SỐ GIÁ ======
+        // Phòng đơn: LoaiPhongID = 1
+        // Phòng đôi : LoaiPhongID = 2
+        private const decimal GIA_DEM_DON_SAU_18 = 200000m;
+        private const decimal GIA_DEM_DON_TRUOC_18 = 250000m;
+        private const decimal GIA_DEM_DON_NHIEU = 250000m;
+
+        private const decimal GIA_DEM_DOI_SAU_18 = 300000m;
+        private const decimal GIA_DEM_DOI_TRUOC_18 = 350000m;
+        private const decimal GIA_DEM_DOI_NHIEU = 350000m;
+
+        private const decimal GIA_GIO_DON_DAU = 70000m;
+        private const decimal GIA_GIO_DON_SAU = 20000m;
+
+        private const decimal GIA_GIO_DOI_DAU = 120000m;
+        private const decimal GIA_GIO_DOI_SAU = 30000m;
+
+        private const decimal GIA_NUOC_NGOT = 20000m;
+        private const decimal GIA_NUOC_SUOI = 10000m;
+
+        private const decimal PHU_THU_TRA_TRE = 40000m;
+
         // Lưu các nhãn trong card phòng để tick timer cập nhật
         private class RoomTileInfo
         {
@@ -261,15 +283,30 @@ namespace HotelManagement.Forms
             }
         }
 
-        // Đọc/ghi SL=<n> trong ghi chú
-        private static int? ParseSoLuong(string ghiChu)
+        // Đọc/ghi tag KEY=VALUE trong ghi chú
+        private static int GetIntTag(string text, string key, int defaultVal = 0)
         {
-            if (string.IsNullOrWhiteSpace(ghiChu)) return null;
-            var m = Regex.Match(ghiChu, @"SL=(\d+)", RegexOptions.IgnoreCase);
-            if (!m.Success) return null;
-            int v;
-            if (int.TryParse(m.Groups[1].Value, out v)) return v;
-            return null;
+            if (string.IsNullOrEmpty(text)) return defaultVal;
+            var m = Regex.Match(text, @"\b" + key + @"\s*=\s*(\d+)", RegexOptions.IgnoreCase);
+            if (m.Success && int.TryParse(m.Groups[1].Value, out int v))
+                return v;
+            return defaultVal;
+        }
+        private static decimal GetDecimalTag(string text, string key, decimal defaultVal = 0m)
+        {
+            if (string.IsNullOrEmpty(text)) return defaultVal;
+            var m = Regex.Match(text, @"\b" + key + @"\s*=\s*(\d+)", RegexOptions.IgnoreCase);
+            if (m.Success && decimal.TryParse(m.Groups[1].Value, out decimal v))
+                return v;
+            return defaultVal;
+        }
+        private static string RemoveSystemTags(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return "";
+            string pattern = @"(\s*\|\s*)?(SL|NN|NS|DT)\s*=\s*[^|]*";
+            string result = Regex.Replace(text, pattern, "", RegexOptions.IgnoreCase).Trim();
+            if (result.EndsWith("|")) result = result.TrimEnd('|').Trim();
+            return result;
         }
 
         private static string CombineCenter(string main, string remain, string note)
@@ -280,6 +317,101 @@ namespace HotelManagement.Forms
             if (!string.IsNullOrWhiteSpace(note))
                 main = main + "\n" + note;
             return main;
+        }
+
+        private decimal TinhTienDemForRoom(Room room, DateTime start, int soDem)
+        {
+            if (soDem <= 0) return 0m;
+
+            bool laPhongDon = room.LoaiPhongID == 1;
+            decimal tong = 0m;
+
+            if (soDem == 1)
+            {
+                bool sau18h = start.TimeOfDay >= new TimeSpan(18, 0, 0);
+                if (laPhongDon)
+                    tong = sau18h ? GIA_DEM_DON_SAU_18 : GIA_DEM_DON_TRUOC_18;
+                else
+                    tong = sau18h ? GIA_DEM_DOI_SAU_18 : GIA_DEM_DOI_TRUOC_18;
+            }
+            else
+            {
+                decimal giaMoiDem = laPhongDon ? GIA_DEM_DON_NHIEU : GIA_DEM_DOI_NHIEU;
+                tong = giaMoiDem * soDem;
+            }
+
+            // Phụ thu trả trễ (sau 12h trưa ngày trả chuẩn)
+            DateTime now = DateTime.Now;
+            DateTime ngayTraChuan = start.Date.AddDays(soDem).AddHours(12);
+            if (now > ngayTraChuan)
+                tong += PHU_THU_TRA_TRE;
+
+            return tong;
+        }
+
+        /// <summary>
+        /// Dòng phụ hiển thị dưới tên khách: còn đêm & tiền chưa thu (đêm) hoặc tổng phải thu (giờ).
+        /// </summary>
+        private string CalcExtraText(Room room)
+        {
+            if (room.TrangThai != 1 || !room.ThoiGianBatDau.HasValue || !room.KieuThue.HasValue)
+                return null;
+
+            int kieu = room.KieuThue.Value;
+            DateTime start = room.ThoiGianBatDau.Value;
+
+            // ĐÊM
+            if (kieu == 1)
+            {
+                int soDem = GetIntTag(room.GhiChu, "SL", 1);
+                if (soDem <= 0) soDem = 1;
+
+                decimal tienPhong = TinhTienDemForRoom(room, start, soDem);
+
+                int nn = GetIntTag(room.GhiChu, "NN", 0);
+                int ns = GetIntTag(room.GhiChu, "NS", 0);
+                decimal tienNuoc = nn * GIA_NUOC_NGOT + ns * GIA_NUOC_SUOI;
+
+                decimal daThu = GetDecimalTag(room.GhiChu, "DT", 0m);
+                decimal conLai = Math.Max(0, tienPhong + tienNuoc - daThu);
+
+                DateTime end = start.Date.AddDays(soDem);
+                TimeSpan left = end - DateTime.Now;
+                int nightsLeft = (int)Math.Ceiling(left.TotalDays);
+                string line1 = nightsLeft <= 0 ? "Quá hạn" : "Còn " + nightsLeft + " đêm";
+                string line2 = "Chưa thu: " + conLai.ToString("N0") + " đ";
+
+                return line1 + "\n" + line2;
+            }
+
+            // GIỜ – hiển thị tổng phải thu (tiền phòng + nước - đã thu)
+            if (kieu == 3)
+            {
+                DateTime now = DateTime.Now;
+                if (now < start) now = start;
+
+                TimeSpan diff = now - start;
+                int soGio = Math.Max(1, (int)Math.Ceiling(diff.TotalHours));
+
+                bool laPhongDon = room.LoaiPhongID == 1;
+                decimal giaGioDau = laPhongDon ? GIA_GIO_DON_DAU : GIA_GIO_DOI_DAU;
+                decimal giaGioSau = laPhongDon ? GIA_GIO_DON_SAU : GIA_GIO_DOI_SAU;
+
+                decimal tienPhong = (soGio <= 1)
+                    ? giaGioDau
+                    : giaGioDau + (soGio - 1) * giaGioSau;
+
+                int nn = GetIntTag(room.GhiChu, "NN", 0);
+                int ns = GetIntTag(room.GhiChu, "NS", 0);
+                decimal tienNuoc = nn * GIA_NUOC_NGOT + ns * GIA_NUOC_SUOI;
+
+                decimal daThu = GetDecimalTag(room.GhiChu, "DT", 0m);
+                decimal conLai = Math.Max(0, tienPhong + tienNuoc - daThu);
+
+                return "Phải thu: " + conLai.ToString("N0") + " đ";
+            }
+
+            return null;
         }
 
         private Panel CreateRoomTile(Room room)
@@ -314,7 +446,7 @@ namespace HotelManagement.Forms
                 TextAlign = ContentAlignment.MiddleCenter,
                 Font = new Font("Segoe UI", 7.5f, FontStyle.Bold),
                 ForeColor = Color.White,
-                Text = "STD"   // nếu muốn bỏ thì để Text = "" hoặc comment dòng này
+                Text = "STD"
             };
 
             var lblIcon = new Label
@@ -380,27 +512,38 @@ namespace HotelManagement.Forms
             panel.Controls.Add(rightPanel);
             panel.Controls.Add(leftPanel);
 
-            // Tooltip ghi chú (nếu có)
+            // Tooltip ghi chú (nếu có – chỉ phần note, bỏ tag hệ thống)
             if (!string.IsNullOrWhiteSpace(room.GhiChu))
             {
                 var tip = new ToolTip();
-                tip.SetToolTip(panel, room.GhiChu);
+                tip.SetToolTip(panel, RemoveSystemTags(room.GhiChu));
             }
 
             // hover
             panel.MouseEnter += (s, e) => panel.BackColor = Color.FromArgb(250, 250, 250);
             panel.MouseLeave += (s, e) => panel.BackColor = Color.White;
 
-            // click mở chi tiết (gắn cho cả con)
+            // click / double click hành vi theo trạng thái
             void AttachClick(Control c)
             {
                 c.Cursor = Cursors.Hand;
-                c.Click += (s, e) => ShowRoomDetail(room);
+
+                if (room.TrangThai == 2) // Chưa dọn: single click không làm gì, double click -> Trống
+                {
+                    c.Click += (s, e) => { /* ignore */ };
+                    c.DoubleClick += (s, e) => SetRoomFromDirtyToEmpty(room);
+                }
+                else
+                {
+                    // Trống / Có khách / Đã đặt: single click mở chi tiết
+                    c.Click += (s, e) => ShowRoomDetail(room);
+                }
+
                 foreach (Control k in c.Controls) AttachClick(k);
             }
             AttachClick(panel);
 
-            // text ban đầu – **đã bỏ switch expression, dùng switch thường**
+            // text ban đầu
             string center;
             switch (room.TrangThai)
             {
@@ -421,10 +564,13 @@ namespace HotelManagement.Forms
                     break;
             }
 
-            string remain = CalcRemainText(room);
-            string note = (room.TrangThai == 1 && !string.IsNullOrWhiteSpace(room.GhiChu)) ? "(Có ghi chú)" : null;
+            string extra = CalcExtraText(room);
+            string note = (room.TrangThai == 1 && !string.IsNullOrWhiteSpace(room.GhiChu) &&
+                           !string.IsNullOrWhiteSpace(RemoveSystemTags(room.GhiChu)))
+                          ? "(Có ghi chú)"
+                          : null;
 
-            lblCenter.Text = CombineCenter(center, remain, note);
+            lblCenter.Text = CombineCenter(center, extra, note);
 
             // Lưu info cho Timer
             var info = new RoomTileInfo
@@ -439,60 +585,27 @@ namespace HotelManagement.Forms
             return panel;
         }
 
-        private string CalcRemainText(Room room)
+        private void SetRoomFromDirtyToEmpty(Room room)
         {
-            // Chỉ tính khi có khách và có thời gian bắt đầu
-            if (room.TrangThai != 1 || !room.ThoiGianBatDau.HasValue)
-                return null;
+            // từ "Chưa dọn" -> "Trống" khi double click
+            room.TrangThai = 0;
+            room.ThoiGianBatDau = null;
+            room.KieuThue = null;
+            room.TenKhachHienThi = null;
 
-            int sl;
-            if (!TryParseSoLuongFromNote(room.GhiChu, out sl))
-                sl = 1;
+            string ghiChu = RemoveSystemTags(room.GhiChu);
 
-            DateTime start = room.ThoiGianBatDau.Value;
-            DateTime now = DateTime.Now;
+            _roomDal.UpdateTrangThaiFull(
+                room.PhongID,
+                room.TrangThai,
+                ghiChu,
+                null,
+                null,
+                null);
 
-            // Thuê ĐÊM
-            if (room.KieuThue == 1)
-            {
-                DateTime end = start.AddDays(sl);
-                TimeSpan left = end - now;
-                int nights = (int)Math.Ceiling(left.TotalDays);
-                if (nights <= 0) return "Quá hạn";
-                return "Còn " + nights + " đêm";
-            }
+            room.GhiChu = ghiChu;
 
-            // Thuê NGÀY
-            if (room.KieuThue == 2)
-            {
-                DateTime end = start.AddDays(sl);
-                TimeSpan left = end - now;
-                int days = (int)Math.Ceiling(left.TotalDays);
-                if (days <= 0) return "Quá hạn";
-                return "Còn " + days + " ngày";
-            }
-
-            // Thuê GIỜ: KHÔNG hiển thị “Còn X giờ” trên màn hình chính
-            if (room.KieuThue == 3)
-            {
-                return null;
-            }
-
-            return null;
-        }
-        private bool TryParseSoLuongFromNote(string ghiChu, out int value)
-        {
-            value = 0;
-            if (string.IsNullOrWhiteSpace(ghiChu)) return false;
-
-            var m = System.Text.RegularExpressions.Regex.Match(
-                ghiChu, @"SL=(\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-
-            if (!m.Success) return false;
-
-            if (!int.TryParse(m.Groups[1].Value, out value)) return false;
-
-            return true;
+            LoadRoomTiles();
         }
 
         #endregion
@@ -577,15 +690,18 @@ namespace HotelManagement.Forms
 
                 info.LblStartTime.Text = start.ToString("dd/MM/yyyy, HH:mm");
 
-                // tên (đêm/ngày hiện tên; giờ không hiện tên)
+                // tên (đêm hiện tên; giờ không hiện tên riêng – sẽ hiển thị "Có khách" nếu trống)
                 string main = (r.KieuThue == 3) ? "" : (r.TenKhachHienThi ?? "");
-                string remain = CalcRemainText(r);
-                string note = (!string.IsNullOrWhiteSpace(r.GhiChu)) ? "(Có ghi chú)" : null;
+                string extra = CalcExtraText(r);
+                string note = (!string.IsNullOrWhiteSpace(r.GhiChu) &&
+                               !string.IsNullOrWhiteSpace(RemoveSystemTags(r.GhiChu)))
+                              ? "(Có ghi chú)"
+                              : null;
 
                 if (string.IsNullOrWhiteSpace(main))
                     main = "Có khách";
 
-                info.LblCenter.Text = CombineCenter(main, remain, note);
+                info.LblCenter.Text = CombineCenter(main, extra, note);
 
                 TimeSpan diff = now - start;
                 if (diff.TotalSeconds < 0) diff = TimeSpan.Zero;
@@ -597,7 +713,6 @@ namespace HotelManagement.Forms
                 info.LblStartTime.Text = "";
                 info.LblElapsed.Text = "";
 
-                // ĐÃ BỎ switch expression, dùng switch thường
                 string text;
                 switch (r.TrangThai)
                 {
@@ -624,6 +739,24 @@ namespace HotelManagement.Forms
 
         private void ShowRoomDetail(Room room)
         {
+            // Khi phòng đang TRỐNG được click lần đầu:
+            // -> mặc định chuyển sang thuê GIỜ + Có khách + bắt đầu tính giờ.
+            if (room.TrangThai == 0)
+            {
+                room.TrangThai = 1;          // Có khách
+                room.KieuThue = 3;           // Thuê giờ
+                room.ThoiGianBatDau = DateTime.Now;
+                room.TenKhachHienThi = null; // thuê giờ không bắt buộc tên
+
+                _roomDal.UpdateTrangThaiFull(
+                    room.PhongID,
+                    room.TrangThai,
+                    room.GhiChu,
+                    room.ThoiGianBatDau,
+                    room.KieuThue,
+                    room.TenKhachHienThi);
+            }
+
             // Ẩn danh sách, hiện khung detail
             flowRooms.Visible = false;
             panelFilter.Visible = false;

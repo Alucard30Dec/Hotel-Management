@@ -12,14 +12,27 @@ namespace HotelManagement.Forms
         private readonly Room _room;
         private readonly RoomDAL _roomDal = new RoomDAL();
 
-        // Giá mặc định
-        private const decimal GIA_DEM = 200000m;
-        private const decimal GIA_NGAY = 250000m;
-        private const decimal GIA_GIO_DAU = 70000m;
-        private const decimal GIA_GIO_SAU = 20000m;
+        // Giá theo yêu cầu
+        // Phòng đơn: LoaiPhongID = 1
+        // Phòng đôi : LoaiPhongID = 2
+        private const decimal GIA_DEM_DON_SAU_18 = 200000m;
+        private const decimal GIA_DEM_DON_TRUOC_18 = 250000m;
+        private const decimal GIA_DEM_DON_NHIEU = 250000m;
+
+        private const decimal GIA_DEM_DOI_SAU_18 = 300000m;
+        private const decimal GIA_DEM_DOI_TRUOC_18 = 350000m;
+        private const decimal GIA_DEM_DOI_NHIEU = 350000m;
+
+        private const decimal GIA_GIO_DON_DAU = 70000m;
+        private const decimal GIA_GIO_DON_SAU = 20000m;
+
+        private const decimal GIA_GIO_DOI_DAU = 120000m;
+        private const decimal GIA_GIO_DOI_SAU = 30000m;
 
         private const decimal GIA_NUOC_NGOT = 20000m;
         private const decimal GIA_NUOC_SUOI = 10000m;
+
+        private const decimal PHU_THU_TRA_TRE = 40000m;
 
         private int _selectedStatus;
         private DateTime? _startTime;   // thời gian bắt đầu
@@ -43,8 +56,6 @@ namespace HotelManagement.Forms
                               : "Khác";
             lblFloor.Text = "Tầng " + _room.Tang;
 
-            txtGhiChu.Text = _room.GhiChu ?? "";
-
             // Trạng thái/giờ bắt đầu
             _selectedStatus = _room.TrangThai;
             _startTime = _room.ThoiGianBatDau;
@@ -52,10 +63,14 @@ namespace HotelManagement.Forms
             if (_selectedStatus == 1 && !_startTime.HasValue)
                 _startTime = DateTime.Now;
 
-            // Mặc định kiểu thuê: Giờ (để tính realtime)
-            rdoGio.Checked = true;
+            // Thiết lập kiểu thuê theo dữ liệu, mặc định là GIỜ
+            if (_room.KieuThue == 1)
+                rdoDem.Checked = true;
+            else
+                rdoGio.Checked = true;
+
             ApplyHireModeUI();
-            LoadSoLuongFromNote(); // nếu trước đó lưu SL vào ghi chú
+            LoadStateFromGhiChu(); // nạp SL, số chai, tiền đã thu + ghi chú hiển thị
 
             UpdateStatusButtons();
 
@@ -83,13 +98,12 @@ namespace HotelManagement.Forms
                 lblDuration.Text = string.Format("{0:00}:{1:00}:{2:00}",
                     (int)diff.TotalHours, diff.Minutes, diff.Seconds);
 
-                int soGio = Math.Max(1, (int)Math.Ceiling(diff.TotalHours));
-                decimal tienPhong = (soGio <= 1)
-                    ? GIA_GIO_DAU
-                    : GIA_GIO_DAU + (soGio - 1) * GIA_GIO_SAU;
+                int soGio;
+                decimal tienPhong;
+                TinhTienPhongGio(out soGio, out tienPhong);
 
                 decimal tienDichVu = TinhTienNuoc();
-                UpdateTienHienThi(tienPhong, tienDichVu, tienPhong + tienDichVu);
+                UpdateTienHienThi(tienPhong, tienDichVu);
             }
         }
 
@@ -179,17 +193,18 @@ namespace HotelManagement.Forms
 
         #endregion
 
-        #region Kiểu thuê (Đêm / Ngày / Giờ)
+        #region Kiểu thuê (Đêm / Giờ)
 
         private void ApplyHireModeUI()
         {
-            bool needCustomer = rdoDem.Checked || rdoNgay.Checked;
+            // Chỉ thuê ĐÊM mới bắt buộc thông tin khách
+            bool needCustomer = rdoDem.Checked;
 
             txtTenKhach.Enabled = needCustomer;
             txtCCCD.Enabled = needCustomer;
             btnChonAnh.Enabled = needCustomer;
 
-            // Khi thuê GIỜ: KHÔNG chọn số giờ cố định -> ẩn control số lượng
+            // Khi thuê GIỜ: ẩn control số lượng
             if (rdoGio.Checked)
             {
                 lblSoLuong.Visible = false;
@@ -201,7 +216,6 @@ namespace HotelManagement.Forms
                 nudSoLuong.Visible = true;
 
                 if (rdoDem.Checked) lblSoLuong.Text = "Số đêm";
-                else if (rdoNgay.Checked) lblSoLuong.Text = "Số ngày";
             }
 
             // Nếu đang thuê giờ & có khách mà chưa có thời điểm bắt đầu => set = Now
@@ -219,6 +233,7 @@ namespace HotelManagement.Forms
 
         private void rdoNgay_CheckedChanged(object sender, EventArgs e)
         {
+            // Không sử dụng thuê ngày nữa
             ApplyHireModeUI();
             TinhTien();
         }
@@ -233,6 +248,11 @@ namespace HotelManagement.Forms
 
         #region Tính tiền
 
+        private bool IsPhongDon()
+        {
+            return _room.LoaiPhongID == 1;
+        }
+
         private decimal TinhTienNuoc()
         {
             int slNuocNgot = (int)nudNuocNgot.Value;
@@ -240,45 +260,111 @@ namespace HotelManagement.Forms
             return slNuocNgot * GIA_NUOC_NGOT + slNuocSuoi * GIA_NUOC_SUOI;
         }
 
-        private void UpdateTienHienThi(decimal tienPhong, decimal tienDichVu, decimal tong)
+        private void TinhTienPhongGio(out int soGio, out decimal tienPhong)
         {
+            soGio = 0;
+            tienPhong = 0m;
+
+            if (!_startTime.HasValue) return;
+
+            DateTime start = _startTime.Value;
+            DateTime now = DateTime.Now;
+            if (now < start) now = start;
+
+            TimeSpan diff = now - start;
+            soGio = Math.Max(1, (int)Math.Ceiling(diff.TotalHours));
+
+            bool laPhongDon = IsPhongDon();
+            decimal giaGioDau = laPhongDon ? GIA_GIO_DON_DAU : GIA_GIO_DOI_DAU;
+            decimal giaGioSau = laPhongDon ? GIA_GIO_DON_SAU : GIA_GIO_DOI_SAU;
+
+            if (soGio <= 1)
+                tienPhong = giaGioDau;
+            else
+                tienPhong = giaGioDau + (soGio - 1) * giaGioSau;
+        }
+
+        private decimal TinhTienPhongDem(int soDem, out decimal phuThu)
+        {
+            phuThu = 0m;
+            if (soDem <= 0) return 0m;
+
+            DateTime start = _startTime ?? DateTime.Now;
+            bool laPhongDon = IsPhongDon();
+            decimal tong = 0m;
+
+            if (soDem == 1)
+            {
+                bool sau18h = start.TimeOfDay >= new TimeSpan(18, 0, 0);
+                if (laPhongDon)
+                    tong = sau18h ? GIA_DEM_DON_SAU_18 : GIA_DEM_DON_TRUOC_18;
+                else
+                    tong = sau18h ? GIA_DEM_DOI_SAU_18 : GIA_DEM_DOI_TRUOC_18;
+            }
+            else
+            {
+                decimal giaMoiDem = laPhongDon ? GIA_DEM_DON_NHIEU : GIA_DEM_DOI_NHIEU;
+                tong = giaMoiDem * soDem;
+            }
+
+            // Phụ thu trả trễ (sau 12h trưa ngày trả chuẩn)
+            DateTime now = DateTime.Now;
+            DateTime ngayTraChuan = start.Date.AddDays(soDem).AddHours(12);
+            if (now > ngayTraChuan)
+            {
+                phuThu = PHU_THU_TRA_TRE;
+                tong += phuThu;
+            }
+
+            return tong;
+        }
+
+        private decimal GetTienDaThu()
+        {
+            string raw = txtTienDaThu.Text ?? "";
+            raw = raw.Replace(".", "").Replace(",", "").Trim();
+            if (string.IsNullOrEmpty(raw)) return 0m;
+            if (decimal.TryParse(raw, out decimal v)) return v;
+            return 0m;
+        }
+
+        private void UpdateTienHienThi(decimal tienPhong, decimal tienDichVu)
+        {
+            decimal daThu = GetTienDaThu();
+            decimal tongTruocTru = tienPhong + tienDichVu;
+            decimal conLai = Math.Max(0, tongTruocTru - daThu);
+
             lblTienPhong.Text = tienPhong.ToString("N0") + " đ";
             lblTienDichVu.Text = tienDichVu.ToString("N0") + " đ";
-            lblTongTien.Text = tong.ToString("N0") + " đ";
+            lblTienDaThu.Text = daThu.ToString("N0") + " đ";
+            lblTongTien.Text = conLai.ToString("N0") + " đ";
         }
 
         private void TinhTien()
         {
             decimal tienPhong = 0m;
-            int sl = (int)nudSoLuong.Value;
+            decimal phuThu;
+            decimal tienDichVu = TinhTienNuoc();
 
             if (rdoDem.Checked)
             {
-                tienPhong = sl * GIA_DEM;
-            }
-            else if (rdoNgay.Checked)
-            {
-                tienPhong = sl * GIA_NGAY;
+                int sl = (int)nudSoLuong.Value;
+                tienPhong = TinhTienPhongDem(sl, out phuThu);
             }
             else if (rdoGio.Checked)
             {
-                // Thuê giờ:
-                // Nếu đã Có khách + có thời điểm bắt đầu => để Timer_Tick tính realtime, không lấy số giờ cố định
                 if (_selectedStatus == 1 && _startTime.HasValue)
                 {
-                    decimal tienDichVuRealtime = TinhTienNuoc();
-                    // Timer_Tick sẽ gọi UpdateTienHienThi mỗi giây, ở đây không cần set lại
-                    return;
+                    int soGio;
+                    TinhTienPhongGio(out soGio, out tienPhong);
                 }
                 else
                 {
-                    // Chưa bắt đầu (VD: đặt trước) -> không tính tiền giờ cố định
                     tienPhong = 0m;
                 }
             }
 
-            decimal tienDichVu = TinhTienNuoc();
-            UpdateTienHienThi(tienPhong, tienDichVu, tienPhong + tienDichVu);
+            UpdateTienHienThi(tienPhong, tienDichVu);
         }
 
         private void nudNuocNgot_ValueChanged(object sender, EventArgs e)
@@ -298,6 +384,38 @@ namespace HotelManagement.Forms
 
         private void btnTinhTien_Click(object sender, EventArgs e)
         {
+            // Tính lại cho chắc chắn
+            TinhTien();
+
+            // Sau khi tính tiền thì set trạng thái phòng = Chưa dọn
+            _selectedStatus = 2; // Chưa dọn
+            _startTime = null;
+            UpdateStatusButtons();
+
+            // Sau khi thanh toán xong: không còn kiểu thuê, không còn tên khách hiển thị
+            _room.TrangThai = _selectedStatus;
+            _room.ThoiGianBatDau = null;
+            _room.KieuThue = null;
+            _room.TenKhachHienThi = null;
+
+            string ghiChu = BuildGhiChuForSave();
+
+            _roomDal.UpdateTrangThaiFull(
+                _room.PhongID,
+                _selectedStatus,
+                ghiChu,
+                null,
+                null,
+                null);
+
+            _room.GhiChu = ghiChu;
+
+            if (Saved != null) Saved(this, EventArgs.Empty);
+            if (BackRequested != null) BackRequested(this, EventArgs.Empty);
+        }
+
+        private void txtTienDaThu_TextChanged(object sender, EventArgs e)
+        {
             TinhTien();
         }
 
@@ -305,13 +423,44 @@ namespace HotelManagement.Forms
 
         #region Lưu / quay lại
 
+        private string BuildGhiChuForSave()
+        {
+            string noteUser = txtGhiChu.Text.Trim();
+
+            int soDem = rdoDem.Checked ? (int)nudSoLuong.Value : 0;
+            int nn = (int)nudNuocNgot.Value;
+            int ns = (int)nudNuocSuoi.Value;
+            decimal daThu = GetTienDaThu();
+
+            System.Collections.Generic.List<string> tags = new System.Collections.Generic.List<string>();
+
+            if (rdoDem.Checked && soDem > 0)
+                tags.Add("SL=" + soDem);
+            if (nn > 0)
+                tags.Add("NN=" + nn);
+            if (ns > 0)
+                tags.Add("NS=" + ns);
+            if (daThu > 0)
+                tags.Add("DT=" + ((long)daThu));
+
+            string result = noteUser;
+            if (tags.Count > 0)
+            {
+                if (!string.IsNullOrEmpty(result))
+                    result += " | ";
+                result += string.Join(" | ", tags);
+            }
+
+            return result;
+        }
+
         private void btnLuu_Click(object sender, EventArgs e)
         {
-            // Thuê ngày/đêm bắt buộc nhập tên khách
-            if ((rdoDem.Checked || rdoNgay.Checked) &&
+            // Thuê đêm bắt buộc nhập tên khách
+            if (rdoDem.Checked &&
                 string.IsNullOrWhiteSpace(txtTenKhach.Text))
             {
-                MessageBox.Show("Vui lòng nhập tên khách khi thuê ngày/đêm.",
+                MessageBox.Show("Vui lòng nhập tên khách khi thuê theo đêm.",
                     "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -324,11 +473,6 @@ namespace HotelManagement.Forms
                 kieuThue = 1; // đêm
                 tenKhach = txtTenKhach.Text.Trim();
             }
-            else if (rdoNgay.Checked)
-            {
-                kieuThue = 2; // ngày
-                tenKhach = txtTenKhach.Text.Trim();
-            }
             else if (rdoGio.Checked)
             {
                 kieuThue = 3; // giờ
@@ -339,12 +483,7 @@ namespace HotelManagement.Forms
                     _startTime = DateTime.Now;
             }
 
-            // Ghi SL vào ghi chú CHỈ khi thuê đêm/ngày
-            string ghiChu = txtGhiChu.Text;
-            if (rdoDem.Checked || rdoNgay.Checked)
-            {
-                ghiChu = UpsertSoLuongToNote(ghiChu, (int)nudSoLuong.Value);
-            }
+            string ghiChu = BuildGhiChuForSave();
 
             _roomDal.UpdateTrangThaiFull(
                 _room.PhongID,
@@ -362,25 +501,8 @@ namespace HotelManagement.Forms
             _room.TenKhachHienThi = tenKhach;
 
             if (Saved != null) Saved(this, EventArgs.Empty);
-
-            MessageBox.Show("Đã lưu trạng thái phòng.", "Thông báo",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private static string UpsertSoLuongToNote(string note, int soLuong)
-        {
-            if (note == null) note = "";
-
-            if (Regex.IsMatch(note, @"SL=\d+", RegexOptions.IgnoreCase))
-            {
-                return Regex.Replace(note, @"SL=\d+", "SL=" + soLuong,
-                    RegexOptions.IgnoreCase);
-            }
-
-            if (string.IsNullOrWhiteSpace(note))
-                return "SL=" + soLuong;
-
-            return note.Trim() + " | SL=" + soLuong;
+            if (BackRequested != null) BackRequested(this, EventArgs.Empty);
+            // KHÔNG hiển thị MessageBox theo yêu cầu
         }
 
         private void btnHuy_Click(object sender, EventArgs e)
@@ -416,21 +538,61 @@ namespace HotelManagement.Forms
             }
         }
 
-        private void LoadSoLuongFromNote()
+        // ====== Ghi chú / tag hệ thống (SL/NN/NS/DT) ======
+        private static int GetIntTag(string text, string key, int defaultVal = 0)
         {
-            if (string.IsNullOrWhiteSpace(_room.GhiChu)) return;
+            if (string.IsNullOrEmpty(text)) return defaultVal;
+            var m = Regex.Match(text, @"\b" + key + @"\s*=\s*(\d+)", RegexOptions.IgnoreCase);
+            if (m.Success && int.TryParse(m.Groups[1].Value, out int v))
+                return v;
+            return defaultVal;
+        }
 
-            var m = Regex.Match(_room.GhiChu, @"SL=(\d+)", RegexOptions.IgnoreCase);
-            if (m.Success)
-            {
-                int v;
-                if (int.TryParse(m.Groups[1].Value, out v))
-                {
-                    if (v < (int)nudSoLuong.Minimum) v = (int)nudSoLuong.Minimum;
-                    if (v > (int)nudSoLuong.Maximum) v = (int)nudSoLuong.Maximum;
-                    nudSoLuong.Value = v;
-                }
-            }
+        private static decimal GetDecimalTag(string text, string key, decimal defaultVal = 0m)
+        {
+            if (string.IsNullOrEmpty(text)) return defaultVal;
+            var m = Regex.Match(text, @"\b" + key + @"\s*=\s*(\d+)", RegexOptions.IgnoreCase);
+            if (m.Success && decimal.TryParse(m.Groups[1].Value, out decimal v))
+                return v;
+            return defaultVal;
+        }
+
+        private static string RemoveSystemTags(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return "";
+            string pattern = @"(\s*\|\s*)?(SL|NN|NS|DT)\s*=\s*[^|]*";
+            string result = Regex.Replace(text, pattern, "", RegexOptions.IgnoreCase).Trim();
+            if (result.EndsWith("|")) result = result.TrimEnd('|').Trim();
+            return result;
+        }
+
+        private void LoadStateFromGhiChu()
+        {
+            string ghiChu = _room.GhiChu ?? "";
+
+            // SL (chỉ dùng cho thuê đêm)
+            int soLuong = GetIntTag(ghiChu, "SL", 1);
+            if (soLuong < (int)nudSoLuong.Minimum) soLuong = (int)nudSoLuong.Minimum;
+            if (soLuong > (int)nudSoLuong.Maximum) soLuong = (int)nudSoLuong.Maximum;
+            nudSoLuong.Value = soLuong;
+
+            // số chai nước
+            int nn = GetIntTag(ghiChu, "NN", 0);
+            if (nn < (int)nudNuocNgot.Minimum) nn = (int)nudNuocNgot.Minimum;
+            if (nn > (int)nudNuocNgot.Maximum) nn = (int)nudNuocNgot.Maximum;
+            nudNuocNgot.Value = nn;
+
+            int ns = GetIntTag(ghiChu, "NS", 0);
+            if (ns < (int)nudNuocSuoi.Minimum) ns = (int)nudNuocSuoi.Minimum;
+            if (ns > (int)nudNuocSuoi.Maximum) ns = (int)nudNuocSuoi.Maximum;
+            nudNuocSuoi.Value = ns;
+
+            decimal daThu = GetDecimalTag(ghiChu, "DT", 0m);
+            if (daThu < 0) daThu = 0;
+            txtTienDaThu.Text = daThu.ToString("0");
+
+            // Ghi chú hiển thị bỏ phần tag hệ thống
+            txtGhiChu.Text = RemoveSystemTags(ghiChu);
         }
     }
 }

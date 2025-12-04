@@ -50,10 +50,13 @@ namespace HotelManagement.Forms
         private GroupBox grpThanhTien;
         private Label labelTienPhong;
         private Label labelTienDichVu;
+        private Label labelDaThu;
         private Label labelTongTien;
         private Label lblTienPhong;
         private Label lblTienDichVu;
+        private Label lblTienDaThu;
         private Label lblTongTien;
+        private TextBox txtTienDaThu;
 
         private Label lblStartCaption;
         private Label lblEndCaption;
@@ -119,10 +122,13 @@ namespace HotelManagement.Forms
             this.grpThanhTien = new GroupBox();
             this.labelTienPhong = new Label();
             this.labelTienDichVu = new Label();
+            this.labelDaThu = new Label();
             this.labelTongTien = new Label();
             this.lblTienPhong = new Label();
             this.lblTienDichVu = new Label();
+            this.lblTienDaThu = new Label();
             this.lblTongTien = new Label();
+            this.txtTienDaThu = new TextBox();
 
             this.lblStartCaption = new Label();
             this.lblEndCaption = new Label();
@@ -258,6 +264,7 @@ namespace HotelManagement.Forms
             this.rdoNgay.Text = "Ngày";
             this.rdoNgay.Location = new Point(90, 25);
             this.rdoNgay.AutoSize = true;
+            this.rdoNgay.Enabled = false; // Không dùng thuê ngày
             this.rdoNgay.CheckedChanged += new System.EventHandler(this.rdoNgay_CheckedChanged);
 
             this.rdoGio.Text = "Giờ";
@@ -265,7 +272,7 @@ namespace HotelManagement.Forms
             this.rdoGio.AutoSize = true;
             this.rdoGio.CheckedChanged += new System.EventHandler(this.rdoGio_CheckedChanged);
 
-            this.lblSoLuong.Text = "Số giờ";
+            this.lblSoLuong.Text = "Số đêm";
             this.lblSoLuong.Location = new Point(20, 70);
             this.lblSoLuong.AutoSize = true;
 
@@ -283,7 +290,7 @@ namespace HotelManagement.Forms
             this.grpThue.Controls.Add(this.nudSoLuong);
 
             // === Group Khách ===
-            this.grpKhach.Text = "Thông tin khách (bắt buộc khi thuê ngày / đêm)";
+            this.grpKhach.Text = "Thông tin khách (bắt buộc khi thuê đêm)";
             this.grpKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             this.grpKhach.Location = new Point(500, 190);
             this.grpKhach.Size = new Size(470, 170);
@@ -372,38 +379,56 @@ namespace HotelManagement.Forms
             this.grpThanhTien.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
 
             this.labelTienPhong.Text = "Tiền phòng:";
-            this.labelTienPhong.Location = new Point(20, 30);
+            this.labelTienPhong.Location = new Point(20, 25);
             this.labelTienPhong.AutoSize = true;
 
             this.lblTienPhong.Text = "0 đ";
             this.lblTienPhong.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            this.lblTienPhong.Location = new Point(130, 30);
+            this.lblTienPhong.Location = new Point(130, 25);
             this.lblTienPhong.AutoSize = true;
 
             this.labelTienDichVu.Text = "Tiền nước:";
-            this.labelTienDichVu.Location = new Point(20, 55);
+            this.labelTienDichVu.Location = new Point(20, 50);
             this.labelTienDichVu.AutoSize = true;
 
             this.lblTienDichVu.Text = "0 đ";
             this.lblTienDichVu.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            this.lblTienDichVu.Location = new Point(130, 55);
+            this.lblTienDichVu.Location = new Point(130, 50);
             this.lblTienDichVu.AutoSize = true;
 
-            this.labelTongTien.Text = "Tổng cộng:";
+            this.labelDaThu.Text = "Đã thu:";
+            this.labelDaThu.Location = new Point(20, 75);
+            this.labelDaThu.AutoSize = true;
+
+            this.txtTienDaThu.Location = new Point(130, 72);
+            this.txtTienDaThu.Size = new Size(120, 23);
+            this.txtTienDaThu.Text = "0";
+            this.txtTienDaThu.TextChanged += new System.EventHandler(this.txtTienDaThu_TextChanged);
+
+            this.lblTienDaThu.Text = "0 đ";
+            this.lblTienDaThu.Font = new Font("Segoe UI", 8.5F);
+            this.lblTienDaThu.ForeColor = Color.Gray;
+            this.lblTienDaThu.Location = new Point(260, 75);
+            this.lblTienDaThu.AutoSize = true;
+
+            this.labelTongTien.Text = "Tổng tiền (còn lại):";
             this.labelTongTien.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.labelTongTien.Location = new Point(20, 82);
+            this.labelTongTien.Location = new Point(20, 105);
             this.labelTongTien.AutoSize = true;
 
             this.lblTongTien.Text = "0 đ";
             this.lblTongTien.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
             this.lblTongTien.ForeColor = Color.FromArgb(244, 67, 54);
-            this.lblTongTien.Location = new Point(130, 80);
+            this.lblTongTien.Location = new Point(170, 103);
             this.lblTongTien.AutoSize = true;
 
             this.grpThanhTien.Controls.Add(this.labelTienPhong);
             this.grpThanhTien.Controls.Add(this.lblTienPhong);
             this.grpThanhTien.Controls.Add(this.labelTienDichVu);
             this.grpThanhTien.Controls.Add(this.lblTienDichVu);
+            this.grpThanhTien.Controls.Add(this.labelDaThu);
+            this.grpThanhTien.Controls.Add(this.txtTienDaThu);
+            this.grpThanhTien.Controls.Add(this.lblTienDaThu);
             this.grpThanhTien.Controls.Add(this.labelTongTien);
             this.grpThanhTien.Controls.Add(this.lblTongTien);
 
