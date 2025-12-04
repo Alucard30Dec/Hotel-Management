@@ -62,9 +62,6 @@ namespace HotelManagement.Forms
 
             // user mặc định (khách)
             _currentUser = new User { Username = "Khách", Role = "Letan" };
-
-            // co giãn tile khi đổi kích thước cửa sổ
-            this.Resize += (s, e) => LoadRoomTiles();
         }
 
         public MainForm(User user) : this()
@@ -78,6 +75,24 @@ namespace HotelManagement.Forms
             InitSearchPlaceholder();
             LoadRoomTiles();
             SetupRoomTimer();
+        }
+
+        // được gán trong Designer: this.Resize += MainForm_Resize;
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            // khi thay đổi kích thước cửa sổ thì vẽ lại tiles với size mới
+            LoadRoomTiles();
+        }
+
+        // được gán trong Designer: flowRooms.ControlAdded += flowRooms_ControlAdded;
+        private void flowRooms_ControlAdded(object sender, ControlEventArgs e)
+        {
+            // đảm bảo mỗi panel tầng full-width theo flowRooms
+            if (e.Control is Panel panelTang)
+            {
+                int panelWidth = Math.Max(300, flowRooms.ClientSize.Width - 20);
+                panelTang.Width = panelWidth;
+            }
         }
 
         private void UpdateUserUI()
@@ -198,17 +213,30 @@ namespace HotelManagement.Forms
         {
             var (tileW, tileH, _) = CalcTileSize();
 
+            // chiều rộng khung tầng = toàn bộ vùng hiển thị trừ margin
+            int panelWidth = Math.Max(300, flowRooms.ClientSize.Width - 20);
+
             Panel panelTang = new Panel
             {
-                Width = flowRooms.ClientSize.Width - 40,
-                Height = 360,
+                Width = panelWidth,
                 Margin = new Padding(10, 5, 10, 10),
                 BackColor = Color.White
             };
 
             // header
-            var header = new Panel { Height = 30, Dock = DockStyle.Top, BackColor = Color.White };
-            var accent = new Panel { Width = 4, Height = 20, BackColor = Color.FromArgb(63, 81, 181), Location = new Point(0, 5) };
+            var header = new Panel
+            {
+                Height = 30,
+                Dock = DockStyle.Top,
+                BackColor = Color.White
+            };
+            var accent = new Panel
+            {
+                Width = 4,
+                Height = 20,
+                BackColor = Color.FromArgb(63, 81, 181),
+                Location = new Point(0, 5)
+            };
             var lbl = new Label
             {
                 AutoSize = true,
@@ -217,27 +245,46 @@ namespace HotelManagement.Forms
                 Text = $"Tầng {tang}",
                 Location = new Point(10, 5)
             };
-            header.Controls.Add(accent); header.Controls.Add(lbl);
+            header.Controls.Add(accent);
+            header.Controls.Add(lbl);
             panelTang.Controls.Add(header);
 
-            // một dòng phòng đơn
-            var lblDon = new Label { AutoSize = true, Font = new Font("Segoe UI", 9F, FontStyle.Bold), ForeColor = Color.Gray, Text = "Phòng đơn", Location = new Point(10, 35) };
+            // Nhãn + dòng Phòng đơn
+            var lblDon = new Label
+            {
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                ForeColor = Color.Gray,
+                Text = "Phòng đơn",
+                Location = new Point(10, 35)
+            };
+
             var flowDon = new FlowLayoutPanel
             {
+                Name = "flowDon",
                 Location = new Point(10, 55),
-                Width = panelTang.Width - 30,
+                Width = panelTang.Width - 20,
                 Height = tileH + 16,
                 AutoScroll = false,
                 WrapContents = false,
                 FlowDirection = FlowDirection.LeftToRight
             };
 
-            // một dòng phòng đôi
-            var lblDoi = new Label { AutoSize = true, Font = new Font("Segoe UI", 9F, FontStyle.Bold), ForeColor = Color.Gray, Text = "Phòng đôi", Location = new Point(10, 55 + tileH + 50) };
+            // Nhãn + dòng Phòng đôi
+            var lblDoi = new Label
+            {
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                ForeColor = Color.Gray,
+                Text = "Phòng đôi",
+                Location = new Point(10, 55 + tileH + 50)
+            };
+
             var flowDoi = new FlowLayoutPanel
             {
+                Name = "flowDoi",
                 Location = new Point(10, 75 + tileH + 50),
-                Width = panelTang.Width - 30,
+                Width = panelTang.Width - 20,
                 Height = tileH + 16,
                 AutoScroll = false,
                 WrapContents = false,
@@ -249,14 +296,21 @@ namespace HotelManagement.Forms
                 var tile = CreateRoomTile(room);
                 tile.Width = tileW;
                 tile.Height = tileH;
-                if (room.LoaiPhongID == 1) flowDon.Controls.Add(tile);
-                else flowDoi.Controls.Add(tile);
+
+                if (room.LoaiPhongID == 1)
+                    flowDon.Controls.Add(tile);
+                else
+                    flowDoi.Controls.Add(tile);
             }
 
             panelTang.Controls.Add(lblDon);
             panelTang.Controls.Add(flowDon);
             panelTang.Controls.Add(lblDoi);
             panelTang.Controls.Add(flowDoi);
+
+            // Chiều cao khung tầng = đáy của dòng phòng đôi + margin nhỏ
+            panelTang.Height = flowDoi.Bottom + 20;
+
             return panelTang;
         }
 
@@ -660,7 +714,7 @@ namespace HotelManagement.Forms
                 }
             }
 
-            // hàm phụ trợ tìm control theo Name (C# 7.3-compatible)
+            // hàm phụ trợ tìm control theo Name
             T FindByName<T>(Control root, string name) where T : Control
             {
                 foreach (Control c in Flatten(root))
@@ -690,7 +744,6 @@ namespace HotelManagement.Forms
 
                 info.LblStartTime.Text = start.ToString("dd/MM/yyyy, HH:mm");
 
-                // tên (đêm hiện tên; giờ không hiện tên riêng – sẽ hiển thị "Có khách" nếu trống)
                 string main = (r.KieuThue == 3) ? "" : (r.TenKhachHienThi ?? "");
                 string extra = CalcExtraText(r);
                 string note = (!string.IsNullOrWhiteSpace(r.GhiChu) &&
@@ -740,24 +793,19 @@ namespace HotelManagement.Forms
         private void ShowRoomDetail(Room room)
         {
             // Khi phòng đang TRỐNG được click:
-            // -> MẶC ĐỊNH chuyển sang thuê GIỜ + Có khách + bắt đầu tính giờ
-            // LƯU Ý: Chỉ thay đổi TRONG BỘ NHỚ, CHƯA LƯU XUỐNG DB.
+            // -> MẶC ĐỊNH chuyển sang thuê GIỜ + Có khách + bắt đầu tính giờ (chỉ trong RAM)
             if (room.TrangThai == 0)
             {
-                room.TrangThai = 1;             // Có khách
-                room.KieuThue = 3;              // Thuê giờ
+                room.TrangThai = 1;
+                room.KieuThue = 3;
                 room.ThoiGianBatDau = DateTime.Now;
-                room.TenKhachHienThi = null;    // thuê giờ không bắt buộc tên
-                                                // KHÔNG gọi _roomDal.UpdateTrangThaiFull ở đây nữa
-                                                // Chỉ khi người dùng nhấn LƯU / TÍNH TIỀN trong RoomDetailForm mới cập nhật DB.
+                room.TenKhachHienThi = null;
             }
 
-            // Ẩn danh sách, hiện khung detail
             flowRooms.Visible = false;
             panelFilter.Visible = false;
             panelDetailHost.Controls.Clear();
 
-            // Truyền đối tượng room hiện tại vào form chi tiết
             var detail = new RoomDetailForm(room)
             {
                 TopLevel = false,
@@ -765,21 +813,17 @@ namespace HotelManagement.Forms
                 Dock = DockStyle.Fill
             };
 
-            // Khi user bấm quay lại / hủy
             detail.BackRequested += (s, e) =>
             {
                 panelDetailHost.Visible = false;
                 panelDetailHost.Controls.Clear();
                 panelFilter.Visible = true;
                 flowRooms.Visible = true;
-                // Load lại từ DB => nếu chưa LƯU thì trạng thái phòng vẫn là cũ
                 LoadRoomTiles();
             };
 
-            // Khi user bấm LƯU hoặc TÍNH TIỀN (event Saved được raise từ RoomDetailForm)
             detail.Saved += (s, e) =>
             {
-                // Sau khi lưu, đọc lại DB để đảm bảo state chuẩn
                 var updated = _roomDal.GetById(room.PhongID);
                 if (updated != null)
                     room = updated;
