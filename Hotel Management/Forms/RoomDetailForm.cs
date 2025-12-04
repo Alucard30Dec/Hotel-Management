@@ -13,8 +13,6 @@ namespace HotelManagement.Forms
         private readonly RoomDAL _roomDal = new RoomDAL();
 
         // Giá theo yêu cầu
-        // Phòng đơn: LoaiPhongID = 1
-        // Phòng đôi : LoaiPhongID = 2
         private const decimal GIA_DEM_DON_SAU_18 = 200000m;
         private const decimal GIA_DEM_DON_TRUOC_18 = 250000m;
         private const decimal GIA_DEM_DON_NHIEU = 250000m;
@@ -35,7 +33,7 @@ namespace HotelManagement.Forms
         private const decimal PHU_THU_TRA_TRE = 40000m;
 
         private int _selectedStatus;
-        private DateTime? _startTime;   // thời gian bắt đầu
+        private DateTime? _startTime;
         private Timer _timer;
 
         public event EventHandler BackRequested;
@@ -56,36 +54,38 @@ namespace HotelManagement.Forms
                               : "Khác";
             lblFloor.Text = "Tầng " + _room.Tang;
 
-            // Trạng thái/giờ bắt đầu
             _selectedStatus = _room.TrangThai;
             _startTime = _room.ThoiGianBatDau;
 
             if (_selectedStatus == 1 && !_startTime.HasValue)
                 _startTime = DateTime.Now;
 
-            // Thiết lập kiểu thuê theo dữ liệu, mặc định là GIỜ
+            // Thiết lập kiểu thuê theo dữ liệu, mặc định giờ nếu null
             if (_room.KieuThue == 1)
                 rdoDem.Checked = true;
             else
                 rdoGio.Checked = true;
 
             ApplyHireModeUI();
-            LoadStateFromGhiChu(); // nạp SL, số chai, tiền đã thu + ghi chú hiển thị
+            LoadStateFromGhiChu();
+
+            // Nếu phòng đêm đã lưu tên khách thì hiển thị lại
+            if (!string.IsNullOrWhiteSpace(_room.TenKhachHienThi))
+                txtTenKhach.Text = _room.TenKhachHienThi;
 
             UpdateStatusButtons();
 
-            // Timer realtime
             _timer = new Timer();
             _timer.Interval = 1000;
             _timer.Tick += Timer_Tick;
             _timer.Start();
 
-            TinhTien(); // init
+            TinhTien();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            // CHỈ realtime khi: Có khách + Thuê giờ + đã có thời điểm bắt đầu
+            // Chỉ đếm giờ thuê GIỜ khi có khách
             if (_selectedStatus == 1 && _startTime.HasValue && rdoGio.Checked)
             {
                 DateTime now = DateTime.Now;
@@ -107,15 +107,14 @@ namespace HotelManagement.Forms
             }
         }
 
-        #region Trạng thái (nút)
+        #region Trạng thái
 
         private void UpdateStatusButtons()
         {
-            // màu theo yêu cầu
-            Color cTrong = Color.FromArgb(76, 175, 80);      // xanh lá
-            Color cCoKhach = Color.FromArgb(33, 150, 243);   // xanh dương
-            Color cChuaDon = Color.FromArgb(255, 138, 128);  // đỏ nhạt
-            Color cDaDat = Color.FromArgb(255, 152, 0);      // cam
+            Color cTrong = Color.FromArgb(76, 175, 80);
+            Color cCoKhach = Color.FromArgb(33, 150, 243);
+            Color cChuaDon = Color.FromArgb(255, 138, 128);
+            Color cDaDat = Color.FromArgb(255, 152, 0);
 
             ResetStatusButtonStyle(btnStatusTrong, cTrong);
             ResetStatusButtonStyle(btnStatusCoKhach, cCoKhach);
@@ -163,11 +162,11 @@ namespace HotelManagement.Forms
             _selectedStatus = 0;
             _startTime = null;
             UpdateStatusButtons();
+            TinhTien();
         }
 
         private void btnStatusCoKhach_Click(object sender, EventArgs e)
         {
-            // Nếu từ Trống chuyển sang Có khách => giờ bắt đầu = hiện tại
             if (_room.TrangThai == 0 && _selectedStatus != 1)
                 _startTime = DateTime.Now;
             else if (!_startTime.HasValue)
@@ -175,6 +174,7 @@ namespace HotelManagement.Forms
 
             _selectedStatus = 1;
             UpdateStatusButtons();
+            TinhTien();
         }
 
         private void btnStatusChuaDon_Click(object sender, EventArgs e)
@@ -182,6 +182,7 @@ namespace HotelManagement.Forms
             _selectedStatus = 2;
             _startTime = null;
             UpdateStatusButtons();
+            TinhTien();
         }
 
         private void btnStatusDaDat_Click(object sender, EventArgs e)
@@ -189,22 +190,21 @@ namespace HotelManagement.Forms
             _selectedStatus = 3;
             _startTime = null;
             UpdateStatusButtons();
+            TinhTien();
         }
 
         #endregion
 
-        #region Kiểu thuê (Đêm / Giờ)
+        #region Kiểu thuê
 
         private void ApplyHireModeUI()
         {
-            // Chỉ thuê ĐÊM mới bắt buộc thông tin khách
             bool needCustomer = rdoDem.Checked;
 
             txtTenKhach.Enabled = needCustomer;
             txtCCCD.Enabled = needCustomer;
             btnChonAnh.Enabled = needCustomer;
 
-            // Khi thuê GIỜ: ẩn control số lượng
             if (rdoGio.Checked)
             {
                 lblSoLuong.Visible = false;
@@ -214,11 +214,9 @@ namespace HotelManagement.Forms
             {
                 lblSoLuong.Visible = true;
                 nudSoLuong.Visible = true;
-
-                if (rdoDem.Checked) lblSoLuong.Text = "Số đêm";
+                lblSoLuong.Text = "Số đêm";
             }
 
-            // Nếu đang thuê giờ & có khách mà chưa có thời điểm bắt đầu => set = Now
             if (rdoGio.Checked && _selectedStatus == 1 && !_startTime.HasValue)
             {
                 _startTime = DateTime.Now;
@@ -233,7 +231,7 @@ namespace HotelManagement.Forms
 
         private void rdoNgay_CheckedChanged(object sender, EventArgs e)
         {
-            // Không sử dụng thuê ngày nữa
+            // radio này đã ẩn + disable, nhưng giữ handler cho an toàn
             ApplyHireModeUI();
             TinhTien();
         }
@@ -307,7 +305,6 @@ namespace HotelManagement.Forms
                 tong = giaMoiDem * soDem;
             }
 
-            // Phụ thu trả trễ (sau 12h trưa ngày trả chuẩn)
             DateTime now = DateTime.Now;
             DateTime ngayTraChuan = start.Date.AddDays(soDem).AddHours(12);
             if (now > ngayTraChuan)
@@ -319,25 +316,97 @@ namespace HotelManagement.Forms
             return tong;
         }
 
-        private decimal GetTienDaThu()
+        private decimal GetTienDaThuRaw()
         {
             string raw = txtTienDaThu.Text ?? "";
             raw = raw.Replace(".", "").Replace(",", "").Trim();
             if (string.IsNullOrEmpty(raw)) return 0m;
-            if (decimal.TryParse(raw, out decimal v)) return v;
+
+            decimal v;
+            if (decimal.TryParse(raw, out v)) return v;
             return 0m;
+        }
+
+        // giá trị thực tế (đồng) = raw * 1000 (100 => 100.000)
+        private decimal GetTienDaThu()
+        {
+            decimal raw = GetTienDaThuRaw();
+            return raw * 1000m;
+        }
+
+        private static decimal RoundUp(decimal value, decimal step)
+        {
+            if (step <= 0) return value;
+            return Math.Ceiling(value / step) * step;
+        }
+
+        private void SetSuggestionButton(Button btn, decimal amount)
+        {
+            if (btn == null) return;
+
+            if (amount <= 0)
+            {
+                btn.Visible = false;
+                btn.Tag = null;
+                btn.Text = "";
+            }
+            else
+            {
+                btn.Visible = true;
+                btn.Tag = amount;
+                btn.Text = amount.ToString("N0") + " đ";
+            }
         }
 
         private void UpdateTienHienThi(decimal tienPhong, decimal tienDichVu)
         {
             decimal daThu = GetTienDaThu();
-            decimal tongTruocTru = tienPhong + tienDichVu;
-            decimal conLai = Math.Max(0, tongTruocTru - daThu);
+            decimal tongTruocTru = tienPhong + tienDichVu;          // tổng tiền phòng + nước
+            decimal conLai = Math.Max(0, tongTruocTru - daThu);     // tổng tiền CẦN THANH TOÁN (còn lại)
 
             lblTienPhong.Text = tienPhong.ToString("N0") + " đ";
             lblTienDichVu.Text = tienDichVu.ToString("N0") + " đ";
             lblTienDaThu.Text = daThu.ToString("N0") + " đ";
             lblTongTien.Text = conLai.ToString("N0") + " đ";
+
+            // === GỢI Ý 3 KHOẢNG TIỀN ===
+            // 1) Tổng tiền cần thanh toán (còn lại)          -> gợi ý 1
+            // 2) Tổng tiền phòng chưa tính nước (tienPhong)  -> gợi ý 2
+            // 3) Một số tiền nhỏ hơn nữa                     -> gợi ý 3 (khoảng 50% số phù hợp, đã đảm bảo nhỏ hơn)
+
+            decimal sugTotalPay = conLai;      // tổng cần thanh toán
+            decimal sugRoomOnly = tienPhong;   // chỉ tiền phòng (không nước, không trừ đã thu)
+            decimal sugSmaller = 0m;
+
+            // chọn base nhỏ hơn để làm "một số tiền nhỏ hơn nữa"
+            decimal baseSmall = 0m;
+            if (sugTotalPay > 0 && sugRoomOnly > 0)
+                baseSmall = Math.Min(sugTotalPay, sugRoomOnly);
+            else if (sugTotalPay > 0)
+                baseSmall = sugTotalPay;
+            else if (sugRoomOnly > 0)
+                baseSmall = sugRoomOnly;
+
+            if (baseSmall > 0)
+            {
+                // lấy 50% rồi làm tròn lên 10.000
+                sugSmaller = RoundUp(baseSmall * 0.5m, 10000m);
+
+                // đảm bảo nhỏ hơn base
+                if (sugSmaller >= baseSmall)
+                    sugSmaller = baseSmall - 10000m;
+
+                if (sugSmaller < 0)
+                    sugSmaller = 0;
+            }
+
+            // tránh trùng nhau
+            if (sugRoomOnly == sugTotalPay) sugRoomOnly = 0;
+            if (sugSmaller == sugTotalPay || sugSmaller == sugRoomOnly) sugSmaller = 0;
+
+            SetSuggestionButton(btnGoiY1, sugTotalPay);
+            SetSuggestionButton(btnGoiY2, sugRoomOnly);
+            SetSuggestionButton(btnGoiY3, sugSmaller);
         }
 
         private void TinhTien()
@@ -382,17 +451,39 @@ namespace HotelManagement.Forms
             TinhTien();
         }
 
+        private void txtTienDaThu_TextChanged(object sender, EventArgs e)
+        {
+            TinhTien();
+        }
+
+        private void btnGoiY_Click(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn == null || btn.Tag == null) return;
+
+            decimal amount = (decimal)btn.Tag; // số tiền thật (đồng)
+            decimal raw = amount / 1000m;      // đưa về đơn vị x1000 để gõ vào textbox
+
+            txtTienDaThu.Text = raw.ToString("0");
+        }
+
         private void btnTinhTien_Click(object sender, EventArgs e)
         {
-            // Tính lại cho chắc chắn
+            DialogResult confirm = MessageBox.Show(
+                "Bạn có chắc chắn muốn tính tiền cho phòng này?\nSau khi tính tiền phòng sẽ chuyển sang trạng thái 'Chưa dọn'.",
+                "Xác nhận tính tiền",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirm != DialogResult.Yes)
+                return;
+
             TinhTien();
 
-            // Sau khi tính tiền thì set trạng thái phòng = Chưa dọn
             _selectedStatus = 2; // Chưa dọn
             _startTime = null;
             UpdateStatusButtons();
 
-            // Sau khi thanh toán xong: không còn kiểu thuê, không còn tên khách hiển thị
             _room.TrangThai = _selectedStatus;
             _room.ThoiGianBatDau = null;
             _room.KieuThue = null;
@@ -414,11 +505,6 @@ namespace HotelManagement.Forms
             if (BackRequested != null) BackRequested(this, EventArgs.Empty);
         }
 
-        private void txtTienDaThu_TextChanged(object sender, EventArgs e)
-        {
-            TinhTien();
-        }
-
         #endregion
 
         #region Lưu / quay lại
@@ -431,6 +517,7 @@ namespace HotelManagement.Forms
             int nn = (int)nudNuocNgot.Value;
             int ns = (int)nudNuocSuoi.Value;
             decimal daThu = GetTienDaThu();
+            string cccd = txtCCCD.Text.Trim();
 
             System.Collections.Generic.List<string> tags = new System.Collections.Generic.List<string>();
 
@@ -442,6 +529,8 @@ namespace HotelManagement.Forms
                 tags.Add("NS=" + ns);
             if (daThu > 0)
                 tags.Add("DT=" + ((long)daThu));
+            if (!string.IsNullOrEmpty(cccd))
+                tags.Add("CCCD=" + cccd);
 
             string result = noteUser;
             if (tags.Count > 0)
@@ -456,7 +545,6 @@ namespace HotelManagement.Forms
 
         private void btnLuu_Click(object sender, EventArgs e)
         {
-            // Thuê đêm bắt buộc nhập tên khách
             if (rdoDem.Checked &&
                 string.IsNullOrWhiteSpace(txtTenKhach.Text))
             {
@@ -470,15 +558,14 @@ namespace HotelManagement.Forms
 
             if (rdoDem.Checked)
             {
-                kieuThue = 1; // đêm
+                kieuThue = 1;
                 tenKhach = txtTenKhach.Text.Trim();
             }
             else if (rdoGio.Checked)
             {
-                kieuThue = 3; // giờ
+                kieuThue = 3;
                 tenKhach = null;
 
-                // Khi lưu mà đang thuê giờ + Có khách nhưng chưa set startTime => set = Now
                 if (_selectedStatus == 1 && !_startTime.HasValue)
                     _startTime = DateTime.Now;
             }
@@ -493,7 +580,6 @@ namespace HotelManagement.Forms
                 kieuThue,
                 tenKhach);
 
-            // cập nhật object local
             _room.TrangThai = _selectedStatus;
             _room.GhiChu = ghiChu;
             _room.ThoiGianBatDau = (_selectedStatus == 1 ? _startTime : null);
@@ -502,7 +588,6 @@ namespace HotelManagement.Forms
 
             if (Saved != null) Saved(this, EventArgs.Empty);
             if (BackRequested != null) BackRequested(this, EventArgs.Empty);
-            // KHÔNG hiển thị MessageBox theo yêu cầu
         }
 
         private void btnHuy_Click(object sender, EventArgs e)
@@ -519,7 +604,7 @@ namespace HotelManagement.Forms
 
         private void btnChonAnh_Click(object sender, EventArgs e)
         {
-            using (var ofd = new OpenFileDialog())
+            using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Filter = "Image files|*.jpg;*.jpeg;*.png;*.bmp";
                 if (ofd.ShowDialog() == DialogResult.OK)
@@ -538,29 +623,44 @@ namespace HotelManagement.Forms
             }
         }
 
-        // ====== Ghi chú / tag hệ thống (SL/NN/NS/DT) ======
-        private static int GetIntTag(string text, string key, int defaultVal = 0)
+        #region Tag ghi chú (SL/NN/NS/DT/CCCD)
+
+        private static int GetIntTag(string text, string key, int defaultVal)
         {
             if (string.IsNullOrEmpty(text)) return defaultVal;
-            var m = Regex.Match(text, @"\b" + key + @"\s*=\s*(\d+)", RegexOptions.IgnoreCase);
-            if (m.Success && int.TryParse(m.Groups[1].Value, out int v))
-                return v;
+            Match m = Regex.Match(text, @"\b" + key + @"\s*=\s*(\d+)", RegexOptions.IgnoreCase);
+            if (m.Success)
+            {
+                int v;
+                if (int.TryParse(m.Groups[1].Value, out v)) return v;
+            }
             return defaultVal;
         }
 
-        private static decimal GetDecimalTag(string text, string key, decimal defaultVal = 0m)
+        private static decimal GetDecimalTag(string text, string key, decimal defaultVal)
         {
             if (string.IsNullOrEmpty(text)) return defaultVal;
-            var m = Regex.Match(text, @"\b" + key + @"\s*=\s*(\d+)", RegexOptions.IgnoreCase);
-            if (m.Success && decimal.TryParse(m.Groups[1].Value, out decimal v))
-                return v;
+            Match m = Regex.Match(text, @"\b" + key + @"\s*=\s*(\d+)", RegexOptions.IgnoreCase);
+            if (m.Success)
+            {
+                decimal v;
+                if (decimal.TryParse(m.Groups[1].Value, out v)) return v;
+            }
+            return defaultVal;
+        }
+
+        private static string GetStringTag(string text, string key, string defaultVal)
+        {
+            if (string.IsNullOrEmpty(text)) return defaultVal;
+            Match m = Regex.Match(text, @"\b" + key + @"\s*=\s*([^|]+)", RegexOptions.IgnoreCase);
+            if (m.Success) return m.Groups[1].Value.Trim();
             return defaultVal;
         }
 
         private static string RemoveSystemTags(string text)
         {
             if (string.IsNullOrEmpty(text)) return "";
-            string pattern = @"(\s*\|\s*)?(SL|NN|NS|DT)\s*=\s*[^|]*";
+            string pattern = @"(\s*\|\s*)?(SL|NN|NS|DT|CCCD)\s*=\s*[^|]*";
             string result = Regex.Replace(text, pattern, "", RegexOptions.IgnoreCase).Trim();
             if (result.EndsWith("|")) result = result.TrimEnd('|').Trim();
             return result;
@@ -570,13 +670,11 @@ namespace HotelManagement.Forms
         {
             string ghiChu = _room.GhiChu ?? "";
 
-            // SL (chỉ dùng cho thuê đêm)
             int soLuong = GetIntTag(ghiChu, "SL", 1);
             if (soLuong < (int)nudSoLuong.Minimum) soLuong = (int)nudSoLuong.Minimum;
             if (soLuong > (int)nudSoLuong.Maximum) soLuong = (int)nudSoLuong.Maximum;
             nudSoLuong.Value = soLuong;
 
-            // số chai nước
             int nn = GetIntTag(ghiChu, "NN", 0);
             if (nn < (int)nudNuocNgot.Minimum) nn = (int)nudNuocNgot.Minimum;
             if (nn > (int)nudNuocNgot.Maximum) nn = (int)nudNuocNgot.Maximum;
@@ -588,11 +686,24 @@ namespace HotelManagement.Forms
             nudNuocSuoi.Value = ns;
 
             decimal daThu = GetDecimalTag(ghiChu, "DT", 0m);
-            if (daThu < 0) daThu = 0;
-            txtTienDaThu.Text = daThu.ToString("0");
+            if (daThu <= 0)
+            {
+                // Không có dữ liệu đã thu -> để trống
+                txtTienDaThu.Text = "";
+            }
+            else
+            {
+                // Có dữ liệu -> hiển thị dạng x1000 (vd 100000 -> 100)
+                txtTienDaThu.Text = (daThu / 1000m).ToString("0");
+            }
 
-            // Ghi chú hiển thị bỏ phần tag hệ thống
+
+            string cccd = GetStringTag(ghiChu, "CCCD", "");
+            txtCCCD.Text = cccd;
+
             txtGhiChu.Text = RemoveSystemTags(ghiChu);
         }
+
+        #endregion
     }
 }

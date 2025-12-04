@@ -739,22 +739,17 @@ namespace HotelManagement.Forms
 
         private void ShowRoomDetail(Room room)
         {
-            // Khi phòng đang TRỐNG được click lần đầu:
-            // -> mặc định chuyển sang thuê GIỜ + Có khách + bắt đầu tính giờ.
+            // Khi phòng đang TRỐNG được click:
+            // -> MẶC ĐỊNH chuyển sang thuê GIỜ + Có khách + bắt đầu tính giờ
+            // LƯU Ý: Chỉ thay đổi TRONG BỘ NHỚ, CHƯA LƯU XUỐNG DB.
             if (room.TrangThai == 0)
             {
-                room.TrangThai = 1;          // Có khách
-                room.KieuThue = 3;           // Thuê giờ
+                room.TrangThai = 1;             // Có khách
+                room.KieuThue = 3;              // Thuê giờ
                 room.ThoiGianBatDau = DateTime.Now;
-                room.TenKhachHienThi = null; // thuê giờ không bắt buộc tên
-
-                _roomDal.UpdateTrangThaiFull(
-                    room.PhongID,
-                    room.TrangThai,
-                    room.GhiChu,
-                    room.ThoiGianBatDau,
-                    room.KieuThue,
-                    room.TenKhachHienThi);
+                room.TenKhachHienThi = null;    // thuê giờ không bắt buộc tên
+                                                // KHÔNG gọi _roomDal.UpdateTrangThaiFull ở đây nữa
+                                                // Chỉ khi người dùng nhấn LƯU / TÍNH TIỀN trong RoomDetailForm mới cập nhật DB.
             }
 
             // Ẩn danh sách, hiện khung detail
@@ -762,6 +757,7 @@ namespace HotelManagement.Forms
             panelFilter.Visible = false;
             panelDetailHost.Controls.Clear();
 
+            // Truyền đối tượng room hiện tại vào form chi tiết
             var detail = new RoomDetailForm(room)
             {
                 TopLevel = false,
@@ -769,20 +765,25 @@ namespace HotelManagement.Forms
                 Dock = DockStyle.Fill
             };
 
+            // Khi user bấm quay lại / hủy
             detail.BackRequested += (s, e) =>
             {
                 panelDetailHost.Visible = false;
                 panelDetailHost.Controls.Clear();
                 panelFilter.Visible = true;
                 flowRooms.Visible = true;
+                // Load lại từ DB => nếu chưa LƯU thì trạng thái phòng vẫn là cũ
                 LoadRoomTiles();
             };
 
+            // Khi user bấm LƯU hoặc TÍNH TIỀN (event Saved được raise từ RoomDetailForm)
             detail.Saved += (s, e) =>
             {
+                // Sau khi lưu, đọc lại DB để đảm bảo state chuẩn
                 var updated = _roomDal.GetById(room.PhongID);
                 if (updated != null)
                     room = updated;
+
                 LoadRoomTiles();
             };
 

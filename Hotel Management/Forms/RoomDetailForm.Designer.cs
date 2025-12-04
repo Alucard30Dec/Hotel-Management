@@ -13,7 +13,6 @@ namespace HotelManagement.Forms
         private Label lblFloor;
         private Button btnBack;
 
-        // trạng thái
         private Label lblCurrentStatus;
         private Label lblCurrentStatusDesc;
         private Button btnStatusTrong;
@@ -52,11 +51,15 @@ namespace HotelManagement.Forms
         private Label labelTienDichVu;
         private Label labelDaThu;
         private Label labelTongTien;
+        private Label labelGoiYThu;
         private Label lblTienPhong;
         private Label lblTienDichVu;
         private Label lblTienDaThu;
         private Label lblTongTien;
         private TextBox txtTienDaThu;
+        private Button btnGoiY1;
+        private Button btnGoiY2;
+        private Button btnGoiY3;
 
         private Label lblStartCaption;
         private Label lblEndCaption;
@@ -124,11 +127,15 @@ namespace HotelManagement.Forms
             this.labelTienDichVu = new Label();
             this.labelDaThu = new Label();
             this.labelTongTien = new Label();
+            this.labelGoiYThu = new Label();
             this.lblTienPhong = new Label();
             this.lblTienDichVu = new Label();
             this.lblTienDaThu = new Label();
             this.lblTongTien = new Label();
             this.txtTienDaThu = new TextBox();
+            this.btnGoiY1 = new Button();
+            this.btnGoiY2 = new Button();
+            this.btnGoiY3 = new Button();
 
             this.lblStartCaption = new Label();
             this.lblEndCaption = new Label();
@@ -264,7 +271,8 @@ namespace HotelManagement.Forms
             this.rdoNgay.Text = "Ngày";
             this.rdoNgay.Location = new Point(90, 25);
             this.rdoNgay.AutoSize = true;
-            this.rdoNgay.Enabled = false; // Không dùng thuê ngày
+            this.rdoNgay.Enabled = false;
+            this.rdoNgay.Visible = false;
             this.rdoNgay.CheckedChanged += new System.EventHandler(this.rdoNgay_CheckedChanged);
 
             this.rdoGio.Text = "Giờ";
@@ -396,31 +404,69 @@ namespace HotelManagement.Forms
             this.lblTienDichVu.Location = new Point(130, 50);
             this.lblTienDichVu.AutoSize = true;
 
-            this.labelDaThu.Text = "Đã thu:";
+            this.labelDaThu.Text = "Đã thu (x1000 đ):";
             this.labelDaThu.Location = new Point(20, 75);
             this.labelDaThu.AutoSize = true;
 
             this.txtTienDaThu.Location = new Point(130, 72);
-            this.txtTienDaThu.Size = new Size(120, 23);
-            this.txtTienDaThu.Text = "0";
+            this.txtTienDaThu.Size = new Size(80, 23);
+            this.txtTienDaThu.Text = "";
             this.txtTienDaThu.TextChanged += new System.EventHandler(this.txtTienDaThu_TextChanged);
 
             this.lblTienDaThu.Text = "0 đ";
             this.lblTienDaThu.Font = new Font("Segoe UI", 8.5F);
             this.lblTienDaThu.ForeColor = Color.Gray;
-            this.lblTienDaThu.Location = new Point(260, 75);
+            this.lblTienDaThu.Location = new Point(220, 75);
             this.lblTienDaThu.AutoSize = true;
 
             this.labelTongTien.Text = "Tổng tiền (còn lại):";
             this.labelTongTien.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.labelTongTien.Location = new Point(20, 105);
+            this.labelTongTien.Location = new Point(20, 100);
             this.labelTongTien.AutoSize = true;
 
             this.lblTongTien.Text = "0 đ";
             this.lblTongTien.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
             this.lblTongTien.ForeColor = Color.FromArgb(244, 67, 54);
-            this.lblTongTien.Location = new Point(170, 103);
+            this.lblTongTien.Location = new Point(170, 98);
             this.lblTongTien.AutoSize = true;
+
+            this.labelGoiYThu.Text = "Gợi ý thu:";
+            this.labelGoiYThu.Location = new Point(20, 125);
+            this.labelGoiYThu.AutoSize = true;
+
+            // 3 nút gợi ý
+            this.btnGoiY1.Location = new Point(130, 121);
+            this.btnGoiY1.Size = new Size(70, 23);
+            this.btnGoiY1.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            this.btnGoiY1.FlatStyle = FlatStyle.Flat;
+            this.btnGoiY1.FlatAppearance.BorderSize = 0;
+            this.btnGoiY1.BackColor = Color.FromArgb(227, 242, 253);
+            this.btnGoiY1.ForeColor = Color.FromArgb(25, 118, 210);
+            this.btnGoiY1.Text = "";
+            this.btnGoiY1.Visible = false;
+            this.btnGoiY1.Click += new System.EventHandler(this.btnGoiY_Click);
+
+            this.btnGoiY2.Location = new Point(210, 121);
+            this.btnGoiY2.Size = new Size(70, 23);
+            this.btnGoiY2.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            this.btnGoiY2.FlatStyle = FlatStyle.Flat;
+            this.btnGoiY2.FlatAppearance.BorderSize = 0;
+            this.btnGoiY2.BackColor = Color.FromArgb(227, 242, 253);
+            this.btnGoiY2.ForeColor = Color.FromArgb(25, 118, 210);
+            this.btnGoiY2.Text = "";
+            this.btnGoiY2.Visible = false;
+            this.btnGoiY2.Click += new System.EventHandler(this.btnGoiY_Click);
+
+            this.btnGoiY3.Location = new Point(290, 121);
+            this.btnGoiY3.Size = new Size(70, 23);
+            this.btnGoiY3.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            this.btnGoiY3.FlatStyle = FlatStyle.Flat;
+            this.btnGoiY3.FlatAppearance.BorderSize = 0;
+            this.btnGoiY3.BackColor = Color.FromArgb(227, 242, 253);
+            this.btnGoiY3.ForeColor = Color.FromArgb(25, 118, 210);
+            this.btnGoiY3.Text = "";
+            this.btnGoiY3.Visible = false;
+            this.btnGoiY3.Click += new System.EventHandler(this.btnGoiY_Click);
 
             this.grpThanhTien.Controls.Add(this.labelTienPhong);
             this.grpThanhTien.Controls.Add(this.lblTienPhong);
@@ -431,6 +477,10 @@ namespace HotelManagement.Forms
             this.grpThanhTien.Controls.Add(this.lblTienDaThu);
             this.grpThanhTien.Controls.Add(this.labelTongTien);
             this.grpThanhTien.Controls.Add(this.lblTongTien);
+            this.grpThanhTien.Controls.Add(this.labelGoiYThu);
+            this.grpThanhTien.Controls.Add(this.btnGoiY1);
+            this.grpThanhTien.Controls.Add(this.btnGoiY2);
+            this.grpThanhTien.Controls.Add(this.btnGoiY3);
 
             // Thời gian bắt đầu / hiện tại / tổng
             int tTop = 380;
