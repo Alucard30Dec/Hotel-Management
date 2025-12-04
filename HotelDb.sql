@@ -42,8 +42,8 @@ GO
 CREATE TABLE LOAIPHONG (
     LoaiPhongID INT IDENTITY(1,1) PRIMARY KEY,
     TenLoai      NVARCHAR(50)  NOT NULL,
-    DonGiaNgay   DECIMAL(18,0) NOT NULL,  -- Giá theo ngày
-    DonGiaGio    DECIMAL(18,0) NOT NULL,  -- Giá giờ đầu (giờ sau code tự tính)
+    DonGiaNgay   DECIMAL(18,0) NOT NULL,  -- Giá base theo ngày/đêm (250k / 350k)
+    DonGiaGio    DECIMAL(18,0) NOT NULL,  -- Giá giờ đầu (70k / 120k)
     GhiChu       NVARCHAR(200) NULL
 );
 GO
@@ -56,10 +56,10 @@ CREATE TABLE PHONG (
     Tang            INT NOT NULL,
     TrangThai       INT NOT NULL DEFAULT 0,      -- 0=Trống,1=Có khách,2=Chưa dọn,3=Đã có khách đặt
     GhiChu          NVARCHAR(200) NULL,
-    ThoiGianBatDau  DATETIME NULL,              -- dùng cho tính giờ / ngày / đêm
+    ThoiGianBatDau  DATETIME NULL,              -- dùng cho tính giờ / đêm
 
-    -- CỘT MỚI: phục vụ ô phòng & form chi tiết
-    -- 1 = Đêm, 2 = Ngày, 3 = Giờ, NULL = chưa xác định
+    -- CỘT PHỤ ĐỂ KHỚP VỚI CODE C#
+    -- 1 = Đêm, 3 = Giờ, (2 = Ngày - hiện không dùng), NULL = chưa xác định
     KieuThue        INT NULL,
     TenKhachHienThi NVARCHAR(100) NULL,
 
@@ -68,7 +68,7 @@ CREATE TABLE PHONG (
 );
 GO
 
--- BẢNG KHACHHANG
+-- BẢNG KHACHHANG (để dành nếu sau dùng đặt phòng/hoá đơn)
 CREATE TABLE KHACHHANG (
     KhachHangID INT IDENTITY(1,1) PRIMARY KEY,
     HoTen       NVARCHAR(100) NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE KHACHHANG (
 );
 GO
 
--- BẢNG DATPHONG
+-- BẢNG DATPHONG (booking / hoá đơn, code hiện tại ít dùng nhưng để sẵn)
 CREATE TABLE DATPHONG (
     DatPhongID     INT IDENTITY(1,1) PRIMARY KEY,
     KhachHangID    INT NOT NULL,
@@ -119,11 +119,11 @@ GO
 
 -- BẢNG HOADON
 CREATE TABLE HOADON (
-    HoaDonID      INT IDENTITY(1,1) PRIMARY KEY,
-    DatPhongID    INT NOT NULL,
-    NgayLap       DATETIME NOT NULL DEFAULT GETDATE(),
-    TongTien      DECIMAL(18,0) NOT NULL,
-    DaThanhToan   BIT NOT NULL DEFAULT 0,
+    HoaDonID     INT IDENTITY(1,1) PRIMARY KEY,
+    DatPhongID   INT NOT NULL,
+    NgayLap      DATETIME NOT NULL DEFAULT GETDATE(),
+    TongTien     DECIMAL(18,0) NOT NULL,
+    DaThanhToan  BIT NOT NULL DEFAULT 0,
     CONSTRAINT FK_HOADON_DATPHONG 
         FOREIGN KEY (DatPhongID) REFERENCES DATPHONG(DatPhongID)
 );
@@ -142,26 +142,35 @@ GO
    4. DỮ LIỆU MẪU
    ===================================================== */
 
--- Loại phòng
+-- Loại phòng: ÁP ĐÚNG QUY TẮC GIÁ BẠN YÊU CẦU
+-- Phòng đơn:
+--   1 đêm sau 18h: 200.000
+--   1 đêm trước 18h: 250.000
+--   Nhiều đêm: 250.000/đêm
+--   Giờ đầu: 70.000, giờ sau: 20.000
+-- Phòng đôi:
+--   1 đêm sau 18h: 300.000
+--   1 đêm trước 18h: 350.000
+--   Nhiều đêm: 350.000/đêm
+--   Giờ đầu: 120.000, giờ sau: 30.000
 INSERT INTO LOAIPHONG (TenLoai, DonGiaNgay, DonGiaGio, GhiChu)
-VALUES (N'Phòng đơn', 250000, 70000,  N'Đêm 200k, ngày 250k, giờ đầu 70k'),
-       (N'Phòng đôi', 350000, 90000,  N'Giá ví dụ, có thể chỉnh sau');
+VALUES (N'Phòng đơn', 250000,  70000,  N'1 đêm sau 18h: 200k; 1 đêm trước 18h: 250k; nhiều đêm: 250k; giờ đầu: 70k; giờ sau: 20k'),
+       (N'Phòng đôi', 350000, 120000, N'1 đêm sau 18h: 300k; 1 đêm trước 18h: 350k; nhiều đêm: 350k; giờ đầu: 120k; giờ sau: 30k');
 GO
 
--- Phòng các tầng
--- KieuThue, TenKhachHienThi để NULL (chỉ có khi có khách)
-INSERT INTO PHONG (MaPhong, LoaiPhongID, Tang, TrangThai, GhiChu, ThoiGianBatDau)
-VALUES (N'101', 1, 1, 0, NULL, NULL),
-       (N'102', 1, 1, 0, NULL, NULL),
-       (N'103', 2, 1, 0, NULL, NULL),
+-- Phòng các tầng (KieuThue, TenKhachHienThi để NULL – chỉ set khi có khách)
+INSERT INTO PHONG (MaPhong, LoaiPhongID, Tang, TrangThai, GhiChu, ThoiGianBatDau, KieuThue, TenKhachHienThi)
+VALUES (N'101', 1, 1, 0, NULL, NULL, NULL, NULL),
+       (N'102', 1, 1, 0, NULL, NULL, NULL, NULL),
+       (N'103', 2, 1, 0, NULL, NULL, NULL, NULL),
 
-       (N'201', 1, 2, 0, NULL, NULL),
-       (N'202', 1, 2, 0, NULL, NULL),
-       (N'203', 2, 2, 0, NULL, NULL),
+       (N'201', 1, 2, 0, NULL, NULL, NULL, NULL),
+       (N'202', 1, 2, 0, NULL, NULL, NULL, NULL),
+       (N'203', 2, 2, 0, NULL, NULL, NULL, NULL),
 
-       (N'301', 1, 3, 0, NULL, NULL),
-       (N'302', 1, 3, 0, NULL, NULL),
-       (N'303', 2, 3, 0, NULL, NULL);
+       (N'301', 1, 3, 0, NULL, NULL, NULL, NULL),
+       (N'302', 1, 3, 0, NULL, NULL, NULL, NULL),
+       (N'303', 2, 3, 0, NULL, NULL, NULL, NULL);
 GO
 
 -- Users demo
@@ -170,7 +179,7 @@ VALUES ('admin', '123456', 'Admin'),
        ('letan',  '123456', 'Letan');
 GO
 
--- Dịch vụ (khớp với form chi tiết phòng)
+-- Dịch vụ (khớp với form chi tiết phòng: nước ngọt / nước suối)
 INSERT INTO DICHVU (TenDichVu, DonGia)
 VALUES (N'Nước ngọt', 20000),
        (N'Nước suối', 10000),
