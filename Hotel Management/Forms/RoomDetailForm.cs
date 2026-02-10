@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using HotelManagement.Data;
@@ -11,699 +13,701 @@ namespace HotelManagement.Forms
     {
         private readonly Room _room;
         private readonly RoomDAL _roomDal = new RoomDAL();
-
-        // Giá theo yêu cầu
-        private const decimal GIA_DEM_DON_SAU_18 = 200000m;
-        private const decimal GIA_DEM_DON_TRUOC_18 = 250000m;
-        private const decimal GIA_DEM_DON_NHIEU = 250000m;
-
-        private const decimal GIA_DEM_DOI_SAU_18 = 300000m;
-        private const decimal GIA_DEM_DOI_TRUOC_18 = 350000m;
-        private const decimal GIA_DEM_DOI_NHIEU = 350000m;
-
-        private const decimal GIA_GIO_DON_DAU = 70000m;
-        private const decimal GIA_GIO_DON_SAU = 20000m;
-
-        private const decimal GIA_GIO_DOI_DAU = 120000m;
-        private const decimal GIA_GIO_DOI_SAU = 30000m;
-
-        private const decimal GIA_NUOC_NGOT = 20000m;
-        private const decimal GIA_NUOC_SUOI = 10000m;
-
-        private const decimal PHU_THU_TRA_TRE = 40000m;
-
-        private int _selectedStatus;
-        private DateTime? _startTime;
-        private Timer _timer;
+        private readonly BookingDAL _bookingDal = new BookingDAL();
 
         public event EventHandler BackRequested;
         public event EventHandler Saved;
 
+        private bool _layoutApplied = false;
+
         public RoomDetailForm(Room room)
         {
+            if (room == null) throw new ArgumentNullException(nameof(room));
             _room = room;
+
             InitializeComponent();
+            ApplyResponsiveLayout();
         }
 
         private void RoomDetailForm_Load(object sender, EventArgs e)
         {
-            // Header
-            lblRoomCode.Text = _room.MaPhong;
-            lblRoomType.Text = _room.LoaiPhongID == 1 ? "Phòng đơn"
-                              : _room.LoaiPhongID == 2 ? "Phòng đôi"
-                              : "Khác";
-            lblFloor.Text = "Tầng " + _room.Tang;
+            lblTitle.Text = "Nhận phòng nhanh";
+            lblRoomText.Text = $"{_room.MaPhong} • {( _room.LoaiPhongID == 1 ? "Phòng Đơn" : _room.LoaiPhongID == 2 ? "Phòng Đôi" : "Phòng")}, Tầng {_room.Tang}";
 
-            _selectedStatus = _room.TrangThai;
-            _startTime = _room.ThoiGianBatDau;
+            InitCombos();
+            BindRoomInfo();
 
-            if (_selectedStatus == 1 && !_startTime.HasValue)
-                _startTime = DateTime.Now;
+            dtpNhanPhong.Value = _room.ThoiGianBatDau ?? DateTime.Now;
 
-            // Thiết lập kiểu thuê theo dữ liệu, mặc định giờ nếu null
-            if (_room.KieuThue == 1)
-                rdoDem.Checked = true;
-            else
-                rdoGio.Checked = true;
+            LoadStateFromGhiChu(_room.GhiChu);
 
-            ApplyHireModeUI();
-            LoadStateFromGhiChu();
-
-            // Nếu phòng đêm đã lưu tên khách thì hiển thị lại
-            if (!string.IsNullOrWhiteSpace(_room.TenKhachHienThi))
-                txtTenKhach.Text = _room.TenKhachHienThi;
-
-            UpdateStatusButtons();
-
-            _timer = new Timer();
-            _timer.Interval = 1000;
-            _timer.Tick += Timer_Tick;
-            _timer.Start();
-
-            TinhTien();
+            if (!string.IsNullOrWhiteSpace(_room.TenKhachHienThi) && string.IsNullOrWhiteSpace(txtHoTen.Text))
+                txtHoTen.Text = _room.TenKhachHienThi;
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void ApplyResponsiveLayout()
         {
-            // Chỉ đếm giờ thuê GIỜ khi có khách
-            if (_selectedStatus == 1 && _startTime.HasValue && rdoGio.Checked)
+            if (_layoutApplied) return;
+            _layoutApplied = true;
+
+            SuspendLayout();
+            AutoScroll = false;
+            BackColor = Color.White;
+
+            // ===== ROOT =====
+            var root = new TableLayoutPanel
             {
-                DateTime now = DateTime.Now;
-                lblStartTime.Text = _startTime.Value.ToString("dd/MM/yyyy HH:mm:ss");
-                lblEndTime.Text = now.ToString("dd/MM/yyyy HH:mm:ss");
+                Dock = DockStyle.Fill,
+                ColumnCount = 1,
+                RowCount = 3,
+                Padding = new Padding(12),
+                BackColor = Color.White
+            };
+            root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            root.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+            root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
-                TimeSpan diff = now - _startTime.Value;
-                if (diff.TotalSeconds < 0) diff = TimeSpan.Zero;
+            // ===== HEADER =====
+            var header = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                ColumnCount = 2,
+                AutoSize = true,
+                BackColor = Color.White
+            };
+            header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            header.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
 
-                lblDuration.Text = string.Format("{0:00}:{1:00}:{2:00}",
-                    (int)diff.TotalHours, diff.Minutes, diff.Seconds);
+            var headerText = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                FlowDirection = FlowDirection.TopDown,
+                WrapContents = false,
+                AutoSize = true,
+                Margin = new Padding(0),
+                BackColor = Color.White
+            };
 
-                int soGio;
-                decimal tienPhong;
-                TinhTienPhongGio(out soGio, out tienPhong);
+            lblTitle.AutoSize = true;
+            lblRoomText.AutoSize = true;
 
-                decimal tienDichVu = TinhTienNuoc();
-                UpdateTienHienThi(tienPhong, tienDichVu);
+            headerText.Controls.Add(lblTitle);
+            headerText.Controls.Add(lblRoomText);
+
+            btnCloseTop.Text = "x";
+            btnCloseTop.AutoSize = true;
+            btnCloseTop.FlatStyle = FlatStyle.Flat;
+            btnCloseTop.FlatAppearance.BorderSize = 0;
+            btnCloseTop.ForeColor = Color.Gray;
+            btnCloseTop.BackColor = Color.Transparent;
+            btnCloseTop.Margin = new Padding(8, 0, 0, 0);
+            btnCloseTop.Click -= btnDong_Click;
+            btnCloseTop.Click += new EventHandler(this.btnDong_Click);
+
+            header.Controls.Add(headerText, 0, 0);
+            header.Controls.Add(btnCloseTop, 1, 0);
+
+            // ===== CONTENT (SCROLL) =====
+            var contentHost = new Panel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true,
+                BackColor = Color.White,
+                Margin = new Padding(0, 8, 0, 0)
+            };
+
+            var content = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                ColumnCount = 1,
+                AutoSize = true,
+                BackColor = Color.White
+            };
+            content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+
+            // Group: Lưu trú
+            grpLuuTru.Dock = DockStyle.Top;
+            grpLuuTru.AutoSize = true;
+            grpLuuTru.Padding = new Padding(10);
+            grpLuuTru.Margin = new Padding(0, 0, 0, 10);
+
+            BuildLuuTruLayout();
+
+            // Group: Khách
+            grpKhach.Dock = DockStyle.Top;
+            grpKhach.AutoSize = true;
+            grpKhach.Padding = new Padding(10);
+            grpKhach.Margin = new Padding(0);
+
+            BuildKhachLayout();
+
+            content.Controls.Add(grpLuuTru, 0, 0);
+            content.Controls.Add(grpKhach, 0, 1);
+            contentHost.Controls.Add(content);
+
+            // ===== FOOTER =====
+            var footer = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                FlowDirection = FlowDirection.RightToLeft,
+                WrapContents = false,
+                AutoSize = true,
+                Margin = new Padding(0, 10, 0, 0),
+                BackColor = Color.White
+            };
+
+            btnNhanPhong.AutoSize = true;
+            btnDong.AutoSize = true;
+            footer.Controls.Add(btnNhanPhong);
+            footer.Controls.Add(btnDong);
+
+            // ===== ASSEMBLE =====
+            root.Controls.Add(header, 0, 0);
+            root.Controls.Add(contentHost, 0, 1);
+            root.Controls.Add(footer, 0, 2);
+
+            Controls.Clear();
+            Controls.Add(root);
+            AcceptButton = btnNhanPhong;
+
+            ResumeLayout(true);
+        }
+
+        private void BuildLuuTruLayout()
+        {
+            NormalizeInput(dtpNhanPhong);
+            NormalizeInput(dtpTraPhong);
+            NormalizeInput(cboLyDoLuuTru);
+            NormalizeInput(cboLoaiPhong);
+            NormalizeInput(cboPhong);
+            NormalizeInput(txtGiaPhong);
+
+            dtpNhanPhong.ShowUpDown = true;
+
+            txtGiaPhong.ReadOnly = true;
+            txtGiaPhong.TextAlign = HorizontalAlignment.Right;
+
+            lblGiaPhongDonVi.AutoSize = true;
+            lblGiaPhongDonVi.ForeColor = Color.Gray;
+            lblGiaPhongDonVi.Text = "đ";
+
+            var tbl = NewFormTable();
+
+            AddRow(tbl, lblNhanPhong, dtpNhanPhong);
+            AddRow(tbl, lblTraPhong, dtpTraPhong);
+            AddRow(tbl, lblLyDo, cboLyDoLuuTru);
+            AddRow(tbl, lblLoaiPhong, cboLoaiPhong);
+            AddRow(tbl, lblPhong, cboPhong);
+
+            var pricePanel = new Panel { Dock = DockStyle.Top, Height = 28, Margin = new Padding(0, 2, 0, 8) };
+            txtGiaPhong.Dock = DockStyle.Fill;
+            lblGiaPhongDonVi.Dock = DockStyle.Right;
+            lblGiaPhongDonVi.Padding = new Padding(6, 5, 0, 0);
+            pricePanel.Controls.Add(txtGiaPhong);
+            pricePanel.Controls.Add(lblGiaPhongDonVi);
+
+            AddRow(tbl, lblGiaPhong, pricePanel);
+
+            grpLuuTru.Controls.Clear();
+            grpLuuTru.Controls.Add(tbl);
+        }
+
+        private void BuildKhachLayout()
+        {
+            NormalizeInput(txtHoTen);
+            NormalizeInput(cboGioiTinh);
+            NormalizeInput(dtpNgaySinh);
+            NormalizeInput(cboLoaiGiayTo);
+            NormalizeInput(txtSoGiayTo);
+            NormalizeInput(cboQuocTich);
+            NormalizeInput(cboTinhThanh);
+            NormalizeInput(cboPhuongXa);
+            NormalizeInput(txtDiaChiChiTiet);
+
+            // Buttons bar
+            var bar = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                FlowDirection = FlowDirection.RightToLeft,
+                WrapContents = false,
+                AutoSize = true,
+                Margin = new Padding(0, 0, 0, 8),
+                BackColor = Color.Transparent
+            };
+            btnThemKhach.AutoSize = true;
+            btnLamMoi.AutoSize = true;
+            btnQuetMa.AutoSize = true;
+            bar.Controls.Add(btnQuetMa);
+            bar.Controls.Add(btnLamMoi);
+            bar.Controls.Add(btnThemKhach);
+
+            // Fields table (1 cột label + 1 cột input)
+            var fields = NewFormTable();
+
+            AddRow(fields, lblHoTen, txtHoTen);
+            AddRow(fields, lblGioiTinh, cboGioiTinh);
+            AddRow(fields, lblNgaySinh, dtpNgaySinh);
+            AddRow(fields, lblLoaiGiayTo, cboLoaiGiayTo);
+            AddRow(fields, lblSoGiayTo, txtSoGiayTo);
+            AddRow(fields, lblQuocTich, cboQuocTich);
+
+            var pnlNoiCuTru = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                AutoSize = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = true,
+                Margin = new Padding(0, 2, 0, 8)
+            };
+            rdoThuongTru.AutoSize = true;
+            rdoTamTru.AutoSize = true;
+            rdoNoiKhac.AutoSize = true;
+            pnlNoiCuTru.Controls.Add(rdoThuongTru);
+            pnlNoiCuTru.Controls.Add(rdoTamTru);
+            pnlNoiCuTru.Controls.Add(rdoNoiKhac);
+            AddRow(fields, lblNoiCuTru, pnlNoiCuTru);
+
+            var pnlDiaBan = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                AutoSize = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = true,
+                Margin = new Padding(0, 2, 0, 8)
+            };
+            rdoDiaBanMoi.AutoSize = true;
+            rdoDiaBanCu.AutoSize = true;
+            pnlDiaBan.Controls.Add(rdoDiaBanMoi);
+            pnlDiaBan.Controls.Add(rdoDiaBanCu);
+            AddRow(fields, lblLoaiDiaBan, pnlDiaBan);
+
+            AddRow(fields, lblTinhThanh, cboTinhThanh);
+            AddRow(fields, lblPhuongXa, cboPhuongXa);
+            AddRow(fields, lblDiaChiChiTiet, txtDiaChiChiTiet);
+
+            grpDanhSachKhach.Text = "Danh sách khách";
+            grpDanhSachKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            grpDanhSachKhach.Dock = DockStyle.Top;
+            grpDanhSachKhach.Height = 170;
+            grpDanhSachKhach.Padding = new Padding(8);
+            lstKhach.Dock = DockStyle.Fill;
+
+            grpDanhSachKhach.Controls.Clear();
+            grpDanhSachKhach.Controls.Add(lstKhach);
+
+            var wrapper = new Panel { Dock = DockStyle.Top, AutoSize = true };
+            wrapper.Controls.Add(grpDanhSachKhach);
+            wrapper.Controls.Add(fields);
+            wrapper.Controls.Add(bar);
+
+            grpKhach.Controls.Clear();
+            grpKhach.Controls.Add(wrapper);
+        }
+
+        private static TableLayoutPanel NewFormTable()
+        {
+            var tbl = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                AutoSize = true,
+                ColumnCount = 2,
+                BackColor = Color.Transparent
+            };
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            return tbl;
+        }
+
+        private static void AddRow(TableLayoutPanel tbl, Control label, Control input)
+        {
+            if (tbl == null || label == null || input == null) return;
+
+            int row = tbl.RowCount;
+            tbl.RowCount += 1;
+            tbl.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+
+            label.AutoSize = true;
+            label.Margin = new Padding(0, 6, 10, 0);
+            label.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+
+            input.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+
+            tbl.Controls.Add(label, 0, row);
+            tbl.Controls.Add(input, 1, row);
+        }
+
+        private static void NormalizeInput(Control c)
+        {
+            if (c == null) return;
+
+            c.Margin = new Padding(0, 2, 0, 8);
+            c.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+
+            if (c is TextBox tb)
+            {
+                tb.BorderStyle = BorderStyle.FixedSingle;
+                tb.Height = 28;
+            }
+            else if (c is ComboBox cb)
+            {
+                cb.IntegralHeight = false;
+                cb.DropDownHeight = 200;
+                cb.Height = 28;
+            }
+            else if (c is DateTimePicker dp)
+            {
+                dp.Height = 28;
             }
         }
 
-        #region Trạng thái
-
-        private void UpdateStatusButtons()
+        private void InitCombos()
         {
-            Color cTrong = Color.FromArgb(76, 175, 80);
-            Color cCoKhach = Color.FromArgb(33, 150, 243);
-            Color cChuaDon = Color.FromArgb(255, 138, 128);
-            Color cDaDat = Color.FromArgb(255, 152, 0);
+            cboLyDoLuuTru.Items.Clear();
+            cboLyDoLuuTru.Items.AddRange(new object[] { "-- Chọn --", "Du lịch", "Công tác", "Thăm thân", "Khác" });
+            cboLyDoLuuTru.SelectedIndex = 0;
 
-            ResetStatusButtonStyle(btnStatusTrong, cTrong);
-            ResetStatusButtonStyle(btnStatusCoKhach, cCoKhach);
-            ResetStatusButtonStyle(btnStatusChuaDon, cChuaDon);
-            ResetStatusButtonStyle(btnStatusDaDat, cDaDat);
+            cboGioiTinh.Items.Clear();
+            cboGioiTinh.Items.AddRange(new object[] { "-- Chọn --", "Nam", "Nữ", "Khác" });
+            cboGioiTinh.SelectedIndex = 0;
 
-            Button selected = btnStatusTrong;
-            switch (_selectedStatus)
+            cboLoaiGiayTo.Items.Clear();
+            cboLoaiGiayTo.Items.AddRange(new object[] { "Thẻ CCCD", "CMND", "Hộ chiếu" });
+            cboLoaiGiayTo.SelectedIndex = 0;
+
+            cboQuocTich.Items.Clear();
+            cboQuocTich.Items.AddRange(new object[]
             {
-                case 0: selected = btnStatusTrong; break;
-                case 1: selected = btnStatusCoKhach; break;
-                case 2: selected = btnStatusChuaDon; break;
-                case 3: selected = btnStatusDaDat; break;
+                "VNM - Việt Nam","USA - United States","KOR - Korea","JPN - Japan","CHN - China",
+                "FRA - France","DEU - Germany","GBR - United Kingdom","AUS - Australia","CAN - Canada","OTHER"
+            });
+            cboQuocTich.SelectedIndex = 0;
+
+            cboTinhThanh.Items.Clear();
+            cboTinhThanh.Items.AddRange(new object[]
+            {
+                "-- Chọn Tỉnh/Thành --","Hà Nội","TP. Hồ Chí Minh","Đà Nẵng","Hải Phòng","Cần Thơ","Khác"
+            });
+            cboTinhThanh.SelectedIndex = 0;
+
+            cboPhuongXa.Items.Clear();
+            cboPhuongXa.Items.AddRange(new object[]
+            {
+                "-- Chọn Phường/Xã --","Phường 1","Phường 2","Phường 3","Xã 1","Xã 2","Khác"
+            });
+            cboPhuongXa.SelectedIndex = 0;
+
+            rdoThuongTru.Checked = true;
+            rdoDiaBanMoi.Checked = true;
+
+            if (dtpNgaySinh.Value.Year < 1900) dtpNgaySinh.Value = new DateTime(1990, 1, 1);
+        }
+
+        private void BindRoomInfo()
+        {
+            cboLoaiPhong.Items.Clear();
+            cboLoaiPhong.Items.Add(_room.LoaiPhongID == 1 ? "Phòng Đơn" : _room.LoaiPhongID == 2 ? "Phòng Đôi" : "Phòng");
+            cboLoaiPhong.SelectedIndex = 0;
+            cboLoaiPhong.Enabled = false;
+
+            cboPhong.Items.Clear();
+            cboPhong.Items.Add("Phòng " + _room.MaPhong);
+            cboPhong.SelectedIndex = 0;
+            cboPhong.Enabled = false;
+
+            try
+            {
+                decimal gia = _bookingDal.GetDonGiaNgayByPhong(_room.PhongID);
+                if (gia <= 0)
+                    gia = (_room.LoaiPhongID == 1) ? 250000m : 350000m;
+
+                txtGiaPhong.Text = gia.ToString("N0");
             }
-
-            selected.FlatAppearance.BorderSize = 3;
-            selected.FlatAppearance.BorderColor = Color.FromArgb(33, 33, 33);
-
-            lblCurrentStatus.Text = "Trạng thái phòng";
-            lblCurrentStatusDesc.Text = GetStatusText(_selectedStatus);
-        }
-
-        private static void ResetStatusButtonStyle(Button btn, Color baseColor)
-        {
-            btn.BackColor = baseColor;
-            btn.ForeColor = Color.White;
-            btn.FlatStyle = FlatStyle.Flat;
-            btn.FlatAppearance.BorderSize = 0;
-        }
-
-        private static string GetStatusText(int st)
-        {
-            switch (st)
+            catch
             {
-                case 0: return "Trống";
-                case 1: return "Có khách";
-                case 2: return "Chưa dọn";
-                case 3: return "Đã có khách đặt";
-                default: return "Không rõ";
-            }
-        }
-
-        private void btnStatusTrong_Click(object sender, EventArgs e)
-        {
-            _selectedStatus = 0;
-            _startTime = null;
-            UpdateStatusButtons();
-            TinhTien();
-        }
-
-        private void btnStatusCoKhach_Click(object sender, EventArgs e)
-        {
-            if (_room.TrangThai == 0 && _selectedStatus != 1)
-                _startTime = DateTime.Now;
-            else if (!_startTime.HasValue)
-                _startTime = DateTime.Now;
-
-            _selectedStatus = 1;
-            UpdateStatusButtons();
-            TinhTien();
-        }
-
-        private void btnStatusChuaDon_Click(object sender, EventArgs e)
-        {
-            _selectedStatus = 2;
-            _startTime = null;
-            UpdateStatusButtons();
-            TinhTien();
-        }
-
-        private void btnStatusDaDat_Click(object sender, EventArgs e)
-        {
-            _selectedStatus = 3;
-            _startTime = null;
-            UpdateStatusButtons();
-            TinhTien();
-        }
-
-        #endregion
-
-        #region Kiểu thuê
-
-        private void ApplyHireModeUI()
-        {
-            bool needCustomer = rdoDem.Checked;
-
-            txtTenKhach.Enabled = needCustomer;
-            txtCCCD.Enabled = needCustomer;
-            btnChonAnh.Enabled = needCustomer;
-
-            if (rdoGio.Checked)
-            {
-                lblSoLuong.Visible = false;
-                nudSoLuong.Visible = false;
-            }
-            else
-            {
-                lblSoLuong.Visible = true;
-                nudSoLuong.Visible = true;
-                lblSoLuong.Text = "Số đêm";
-            }
-
-            if (rdoGio.Checked && _selectedStatus == 1 && !_startTime.HasValue)
-            {
-                _startTime = DateTime.Now;
+                txtGiaPhong.Text = "0";
             }
         }
 
-        private void rdoDem_CheckedChanged(object sender, EventArgs e)
+        private void btnDong_Click(object sender, EventArgs e)
         {
-            ApplyHireModeUI();
-            TinhTien();
+            BackRequested?.Invoke(this, EventArgs.Empty);
         }
 
-        private void rdoNgay_CheckedChanged(object sender, EventArgs e)
+        private void btnNhanPhong_Click(object sender, EventArgs e)
         {
-            // radio này đã ẩn + disable, nhưng giữ handler cho an toàn
-            ApplyHireModeUI();
-            TinhTien();
-        }
+            if (!ValidateForm()) return;
 
-        private void rdoGio_CheckedChanged(object sender, EventArgs e)
-        {
-            ApplyHireModeUI();
-            TinhTien();
-        }
+            string tenChinh = GetPrimaryGuestName();
 
-        #endregion
-
-        #region Tính tiền
-
-        private bool IsPhongDon()
-        {
-            return _room.LoaiPhongID == 1;
-        }
-
-        private decimal TinhTienNuoc()
-        {
-            int slNuocNgot = (int)nudNuocNgot.Value;
-            int slNuocSuoi = (int)nudNuocSuoi.Value;
-            return slNuocNgot * GIA_NUOC_NGOT + slNuocSuoi * GIA_NUOC_SUOI;
-        }
-
-        private void TinhTienPhongGio(out int soGio, out decimal tienPhong)
-        {
-            soGio = 0;
-            tienPhong = 0m;
-
-            if (!_startTime.HasValue) return;
-
-            DateTime start = _startTime.Value;
-            DateTime now = DateTime.Now;
-            if (now < start) now = start;
-
-            TimeSpan diff = now - start;
-            soGio = Math.Max(1, (int)Math.Ceiling(diff.TotalHours));
-
-            bool laPhongDon = IsPhongDon();
-            decimal giaGioDau = laPhongDon ? GIA_GIO_DON_DAU : GIA_GIO_DOI_DAU;
-            decimal giaGioSau = laPhongDon ? GIA_GIO_DON_SAU : GIA_GIO_DOI_SAU;
-
-            if (soGio <= 1)
-                tienPhong = giaGioDau;
-            else
-                tienPhong = giaGioDau + (soGio - 1) * giaGioSau;
-        }
-
-        private decimal TinhTienPhongDem(int soDem, out decimal phuThu)
-        {
-            phuThu = 0m;
-            if (soDem <= 0) return 0m;
-
-            DateTime start = _startTime ?? DateTime.Now;
-            bool laPhongDon = IsPhongDon();
-            decimal tong = 0m;
-
-            if (soDem == 1)
-            {
-                bool sau18h = start.TimeOfDay >= new TimeSpan(18, 0, 0);
-                if (laPhongDon)
-                    tong = sau18h ? GIA_DEM_DON_SAU_18 : GIA_DEM_DON_TRUOC_18;
-                else
-                    tong = sau18h ? GIA_DEM_DOI_SAU_18 : GIA_DEM_DOI_TRUOC_18;
-            }
-            else
-            {
-                decimal giaMoiDem = laPhongDon ? GIA_DEM_DON_NHIEU : GIA_DEM_DOI_NHIEU;
-                tong = giaMoiDem * soDem;
-            }
-
-            DateTime now = DateTime.Now;
-            DateTime ngayTraChuan = start.Date.AddDays(soDem).AddHours(12);
-            if (now > ngayTraChuan)
-            {
-                phuThu = PHU_THU_TRA_TRE;
-                tong += phuThu;
-            }
-
-            return tong;
-        }
-
-        private decimal GetTienDaThuRaw()
-        {
-            string raw = txtTienDaThu.Text ?? "";
-            raw = raw.Replace(".", "").Replace(",", "").Trim();
-            if (string.IsNullOrEmpty(raw)) return 0m;
-
-            decimal v;
-            if (decimal.TryParse(raw, out v)) return v;
-            return 0m;
-        }
-
-        // giá trị thực tế (đồng) = raw * 1000 (100 => 100.000)
-        private decimal GetTienDaThu()
-        {
-            decimal raw = GetTienDaThuRaw();
-            return raw * 1000m;
-        }
-
-        private static decimal RoundUp(decimal value, decimal step)
-        {
-            if (step <= 0) return value;
-            return Math.Ceiling(value / step) * step;
-        }
-
-        private void SetSuggestionButton(Button btn, decimal amount)
-        {
-            if (btn == null) return;
-
-            if (amount <= 0)
-            {
-                btn.Visible = false;
-                btn.Tag = null;
-                btn.Text = "";
-            }
-            else
-            {
-                btn.Visible = true;
-                btn.Tag = amount;
-                btn.Text = amount.ToString("N0") + " đ";
-            }
-        }
-
-        private void UpdateTienHienThi(decimal tienPhong, decimal tienDichVu)
-        {
-            decimal daThu = GetTienDaThu();
-            decimal tongTruocTru = tienPhong + tienDichVu;          // tổng tiền phòng + nước
-            decimal conLai = Math.Max(0, tongTruocTru - daThu);     // tổng tiền CẦN THANH TOÁN (còn lại)
-
-            lblTienPhong.Text = tienPhong.ToString("N0") + " đ";
-            lblTienDichVu.Text = tienDichVu.ToString("N0") + " đ";
-            lblTienDaThu.Text = daThu.ToString("N0") + " đ";
-            lblTongTien.Text = conLai.ToString("N0") + " đ";
-
-            // === GỢI Ý 3 KHOẢNG TIỀN ===
-            // 1) Tổng tiền cần thanh toán (còn lại)          -> gợi ý 1
-            // 2) Tổng tiền phòng chưa tính nước (tienPhong)  -> gợi ý 2
-            // 3) Một số tiền nhỏ hơn nữa                     -> gợi ý 3 (khoảng 50% số phù hợp, đã đảm bảo nhỏ hơn)
-
-            decimal sugTotalPay = conLai;      // tổng cần thanh toán
-            decimal sugRoomOnly = tienPhong;   // chỉ tiền phòng (không nước, không trừ đã thu)
-            decimal sugSmaller = 0m;
-
-            // chọn base nhỏ hơn để làm "một số tiền nhỏ hơn nữa"
-            decimal baseSmall = 0m;
-            if (sugTotalPay > 0 && sugRoomOnly > 0)
-                baseSmall = Math.Min(sugTotalPay, sugRoomOnly);
-            else if (sugTotalPay > 0)
-                baseSmall = sugTotalPay;
-            else if (sugRoomOnly > 0)
-                baseSmall = sugRoomOnly;
-
-            if (baseSmall > 0)
-            {
-                // lấy 50% rồi làm tròn lên 10.000
-                sugSmaller = RoundUp(baseSmall * 0.5m, 10000m);
-
-                // đảm bảo nhỏ hơn base
-                if (sugSmaller >= baseSmall)
-                    sugSmaller = baseSmall - 10000m;
-
-                if (sugSmaller < 0)
-                    sugSmaller = 0;
-            }
-
-            // tránh trùng nhau
-            if (sugRoomOnly == sugTotalPay) sugRoomOnly = 0;
-            if (sugSmaller == sugTotalPay || sugSmaller == sugRoomOnly) sugSmaller = 0;
-
-            SetSuggestionButton(btnGoiY1, sugTotalPay);
-            SetSuggestionButton(btnGoiY2, sugRoomOnly);
-            SetSuggestionButton(btnGoiY3, sugSmaller);
-        }
-
-        private void TinhTien()
-        {
-            decimal tienPhong = 0m;
-            decimal phuThu;
-            decimal tienDichVu = TinhTienNuoc();
-
-            if (rdoDem.Checked)
-            {
-                int sl = (int)nudSoLuong.Value;
-                tienPhong = TinhTienPhongDem(sl, out phuThu);
-            }
-            else if (rdoGio.Checked)
-            {
-                if (_selectedStatus == 1 && _startTime.HasValue)
-                {
-                    int soGio;
-                    TinhTienPhongGio(out soGio, out tienPhong);
-                }
-                else
-                {
-                    tienPhong = 0m;
-                }
-            }
-
-            UpdateTienHienThi(tienPhong, tienDichVu);
-        }
-
-        private void nudNuocNgot_ValueChanged(object sender, EventArgs e)
-        {
-            TinhTien();
-        }
-
-        private void nudNuocSuoi_ValueChanged(object sender, EventArgs e)
-        {
-            TinhTien();
-        }
-
-        private void nudSoLuong_ValueChanged(object sender, EventArgs e)
-        {
-            TinhTien();
-        }
-
-        private void txtTienDaThu_TextChanged(object sender, EventArgs e)
-        {
-            TinhTien();
-        }
-
-        private void btnGoiY_Click(object sender, EventArgs e)
-        {
-            Button btn = sender as Button;
-            if (btn == null || btn.Tag == null) return;
-
-            decimal amount = (decimal)btn.Tag; // số tiền thật (đồng)
-            decimal raw = amount / 1000m;      // đưa về đơn vị x1000 để gõ vào textbox
-
-            txtTienDaThu.Text = raw.ToString("0");
-        }
-
-        private void btnTinhTien_Click(object sender, EventArgs e)
-        {
-            DialogResult confirm = MessageBox.Show(
-                "Bạn có chắc chắn muốn tính tiền cho phòng này?\nSau khi tính tiền phòng sẽ chuyển sang trạng thái 'Chưa dọn'.",
-                "Xác nhận tính tiền",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (confirm != DialogResult.Yes)
-                return;
-
-            TinhTien();
-
-            _selectedStatus = 2; // Chưa dọn
-            _startTime = null;
-            UpdateStatusButtons();
-
-            _room.TrangThai = _selectedStatus;
-            _room.ThoiGianBatDau = null;
-            _room.KieuThue = null;
-            _room.TenKhachHienThi = null;
+            _room.TrangThai = 1;
+            _room.KieuThue = (_room.KieuThue.HasValue && _room.KieuThue.Value > 0) ? _room.KieuThue : 1;
+            _room.ThoiGianBatDau = dtpNhanPhong.Value;
+            _room.TenKhachHienThi = tenChinh;
 
             string ghiChu = BuildGhiChuForSave();
 
             _roomDal.UpdateTrangThaiFull(
                 _room.PhongID,
-                _selectedStatus,
+                _room.TrangThai,
                 ghiChu,
-                null,
-                null,
-                null);
+                _room.ThoiGianBatDau,
+                _room.KieuThue,
+                _room.TenKhachHienThi
+            );
 
             _room.GhiChu = ghiChu;
 
-            if (Saved != null) Saved(this, EventArgs.Empty);
-            if (BackRequested != null) BackRequested(this, EventArgs.Empty);
+            Saved?.Invoke(this, EventArgs.Empty);
+            BackRequested?.Invoke(this, EventArgs.Empty);
         }
 
-        #endregion
+        private bool ValidateForm()
+        {
+            if (cboLyDoLuuTru.SelectedIndex <= 0)
+            {
+                MessageBox.Show("Vui lòng chọn Lý do lưu trú.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboLyDoLuuTru.Focus();
+                return false;
+            }
 
-        #region Lưu / quay lại
+            if (string.IsNullOrWhiteSpace(GetPrimaryGuestName()))
+            {
+                MessageBox.Show("Vui lòng nhập Họ tên.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtHoTen.Focus();
+                return false;
+            }
+
+            if (cboGioiTinh.SelectedIndex <= 0)
+            {
+                MessageBox.Show("Vui lòng chọn Giới tính.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cboGioiTinh.Focus();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtSoGiayTo.Text))
+            {
+                MessageBox.Show("Vui lòng nhập Số giấy tờ.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtSoGiayTo.Focus();
+                return false;
+            }
+
+            if (cboTinhThanh.SelectedIndex <= 0 || cboPhuongXa.SelectedIndex <= 0 || string.IsNullOrWhiteSpace(txtDiaChiChiTiet.Text))
+            {
+                MessageBox.Show("Vui lòng nhập đầy đủ địa chỉ (Tỉnh/Thành, Phường/Xã, Địa chỉ chi tiết).", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
+        private string GetPrimaryGuestName()
+        {
+            if (lstKhach.Items.Count > 0)
+            {
+                string item = lstKhach.Items[0]?.ToString() ?? "";
+                if (!string.IsNullOrWhiteSpace(item))
+                {
+                    int idx = item.IndexOf(" - ", StringComparison.Ordinal);
+                    return idx > 0 ? item.Substring(0, idx).Trim() : item.Trim();
+                }
+            }
+            return (txtHoTen.Text ?? "").Trim();
+        }
+
+        private void btnThemKhach_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtHoTen.Text))
+            {
+                MessageBox.Show("Vui lòng nhập Họ tên.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtHoTen.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtSoGiayTo.Text))
+            {
+                MessageBox.Show("Vui lòng nhập Số giấy tờ.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtSoGiayTo.Focus();
+                return;
+            }
+
+            string display = $"{txtHoTen.Text.Trim()} - {txtSoGiayTo.Text.Trim()}";
+            lstKhach.Items.Add(display);
+            txtHoTen.SelectAll();
+            txtHoTen.Focus();
+        }
+
+        private void btnLamMoi_Click(object sender, EventArgs e)
+        {
+            txtHoTen.Text = "";
+            cboGioiTinh.SelectedIndex = 0;
+            dtpNgaySinh.Value = new DateTime(1990, 1, 1);
+            cboLoaiGiayTo.SelectedIndex = 0;
+            txtSoGiayTo.Text = "";
+            cboQuocTich.SelectedIndex = 0;
+
+            rdoThuongTru.Checked = true;
+            rdoDiaBanMoi.Checked = true;
+
+            cboTinhThanh.SelectedIndex = 0;
+            cboPhuongXa.SelectedIndex = 0;
+            txtDiaChiChiTiet.Text = "";
+
+            lstKhach.Items.Clear();
+        }
+
+        private void btnQuetMa_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Chức năng quét mã sẽ được bổ sung sau.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 
         private string BuildGhiChuForSave()
         {
-            string noteUser = txtGhiChu.Text.Trim();
+            var tags = new List<string>();
 
-            int soDem = rdoDem.Checked ? (int)nudSoLuong.Value : 0;
-            int nn = (int)nudNuocNgot.Value;
-            int ns = (int)nudNuocSuoi.Value;
-            decimal daThu = GetTienDaThu();
-            string cccd = txtCCCD.Text.Trim();
+            tags.Add("LYDO=" + SafeTagValue(cboLyDoLuuTru.SelectedItem?.ToString()));
+            tags.Add("GT=" + SafeTagValue(cboGioiTinh.SelectedItem?.ToString()));
+            tags.Add("NS=" + dtpNgaySinh.Value.ToString("yyyyMMdd"));
+            tags.Add("LGT=" + SafeTagValue(cboLoaiGiayTo.SelectedItem?.ToString()));
+            tags.Add("SGT=" + SafeTagValue(txtSoGiayTo.Text.Trim()));
+            tags.Add("QT=" + SafeTagValue(cboQuocTich.SelectedItem?.ToString()));
+            tags.Add("NCT=" + SafeTagValue(GetNoiCuTru()));
+            tags.Add("LDB=" + SafeTagValue(GetLoaiDiaBan()));
+            tags.Add("TINH=" + SafeTagValue(cboTinhThanh.SelectedItem?.ToString()));
+            tags.Add("PX=" + SafeTagValue(cboPhuongXa.SelectedItem?.ToString()));
+            tags.Add("DC=" + SafeTagValue(txtDiaChiChiTiet.Text.Trim()));
 
-            System.Collections.Generic.List<string> tags = new System.Collections.Generic.List<string>();
+            if (dtpTraPhong.Checked)
+                tags.Add("TRAP=" + dtpTraPhong.Value.ToString("yyyyMMdd"));
 
-            if (rdoDem.Checked && soDem > 0)
-                tags.Add("SL=" + soDem);
-            if (nn > 0)
-                tags.Add("NN=" + nn);
-            if (ns > 0)
-                tags.Add("NS=" + ns);
-            if (daThu > 0)
-                tags.Add("DT=" + ((long)daThu));
-            if (!string.IsNullOrEmpty(cccd))
-                tags.Add("CCCD=" + cccd);
-
-            string result = noteUser;
-            if (tags.Count > 0)
+            if (lstKhach.Items.Count > 0)
             {
-                if (!string.IsNullOrEmpty(result))
-                    result += " | ";
-                result += string.Join(" | ", tags);
-            }
-
-            return result;
-        }
-
-        private void btnLuu_Click(object sender, EventArgs e)
-        {
-            if (rdoDem.Checked &&
-                string.IsNullOrWhiteSpace(txtTenKhach.Text))
-            {
-                MessageBox.Show("Vui lòng nhập tên khách khi thuê theo đêm.",
-                    "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            int? kieuThue = null;
-            string tenKhach = null;
-
-            if (rdoDem.Checked)
-            {
-                kieuThue = 1;
-                tenKhach = txtTenKhach.Text.Trim();
-            }
-            else if (rdoGio.Checked)
-            {
-                kieuThue = 3;
-                tenKhach = null;
-
-                if (_selectedStatus == 1 && !_startTime.HasValue)
-                    _startTime = DateTime.Now;
-            }
-
-            string ghiChu = BuildGhiChuForSave();
-
-            _roomDal.UpdateTrangThaiFull(
-                _room.PhongID,
-                _selectedStatus,
-                ghiChu,
-                (_selectedStatus == 1 ? _startTime : (DateTime?)null),
-                kieuThue,
-                tenKhach);
-
-            _room.TrangThai = _selectedStatus;
-            _room.GhiChu = ghiChu;
-            _room.ThoiGianBatDau = (_selectedStatus == 1 ? _startTime : null);
-            _room.KieuThue = kieuThue;
-            _room.TenKhachHienThi = tenKhach;
-
-            if (Saved != null) Saved(this, EventArgs.Empty);
-            if (BackRequested != null) BackRequested(this, EventArgs.Empty);
-        }
-
-        private void btnHuy_Click(object sender, EventArgs e)
-        {
-            if (BackRequested != null) BackRequested(this, EventArgs.Empty);
-        }
-
-        private void btnBack_Click(object sender, EventArgs e)
-        {
-            if (BackRequested != null) BackRequested(this, EventArgs.Empty);
-        }
-
-        #endregion
-
-        private void btnChonAnh_Click(object sender, EventArgs e)
-        {
-            using (OpenFileDialog ofd = new OpenFileDialog())
-            {
-                ofd.Filter = "Image files|*.jpg;*.jpeg;*.png;*.bmp";
-                if (ofd.ShowDialog() == DialogResult.OK)
+                var guests = new List<string>();
+                foreach (var it in lstKhach.Items)
                 {
-                    try
-                    {
-                        picCCCD.Image = Image.FromFile(ofd.FileName);
-                        picCCCD.Tag = ofd.FileName;
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Không thể mở hình ảnh.", "Lỗi",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    if (it == null) continue;
+                    string s = it.ToString().Trim();
+                    if (s.Length > 0) guests.Add(SafeTagValue(s));
                 }
+                if (guests.Count > 0)
+                    tags.Add("DSK=" + string.Join(";", guests));
             }
+
+            return string.Join(" | ", tags);
         }
 
-        #region Tag ghi chú (SL/NN/NS/DT/CCCD)
-
-        private static int GetIntTag(string text, string key, int defaultVal)
+        private string GetNoiCuTru()
         {
-            if (string.IsNullOrEmpty(text)) return defaultVal;
-            Match m = Regex.Match(text, @"\b" + key + @"\s*=\s*(\d+)", RegexOptions.IgnoreCase);
-            if (m.Success)
-            {
-                int v;
-                if (int.TryParse(m.Groups[1].Value, out v)) return v;
-            }
-            return defaultVal;
+            if (rdoTamTru.Checked) return "Tạm trú";
+            if (rdoNoiKhac.Checked) return "Khác";
+            return "Thường trú";
         }
 
-        private static decimal GetDecimalTag(string text, string key, decimal defaultVal)
+        private string GetLoaiDiaBan()
         {
-            if (string.IsNullOrEmpty(text)) return defaultVal;
-            Match m = Regex.Match(text, @"\b" + key + @"\s*=\s*(\d+)", RegexOptions.IgnoreCase);
-            if (m.Success)
-            {
-                decimal v;
-                if (decimal.TryParse(m.Groups[1].Value, out v)) return v;
-            }
-            return defaultVal;
+            return rdoDiaBanCu.Checked ? "Địa bàn cũ" : "Địa bàn mới";
+        }
+
+        private static string SafeTagValue(string s)
+        {
+            s = (s ?? "").Trim();
+            if (s.Length == 0) return "";
+            s = s.Replace("|", "/");
+            s = Regex.Replace(s, @"\s+", " ");
+            return s;
         }
 
         private static string GetStringTag(string text, string key, string defaultVal)
         {
             if (string.IsNullOrEmpty(text)) return defaultVal;
-            Match m = Regex.Match(text, @"\b" + key + @"\s*=\s*([^|]+)", RegexOptions.IgnoreCase);
+            Match m = Regex.Match(text, @"\b" + Regex.Escape(key) + @"\s*=\s*([^|]+)", RegexOptions.IgnoreCase);
             if (m.Success) return m.Groups[1].Value.Trim();
             return defaultVal;
         }
 
-        private static string RemoveSystemTags(string text)
+        private void LoadStateFromGhiChu(string ghiChu)
         {
-            if (string.IsNullOrEmpty(text)) return "";
-            string pattern = @"(\s*\|\s*)?(SL|NN|NS|DT|CCCD)\s*=\s*[^|]*";
-            string result = Regex.Replace(text, pattern, "", RegexOptions.IgnoreCase).Trim();
-            if (result.EndsWith("|")) result = result.TrimEnd('|').Trim();
-            return result;
-        }
+            if (string.IsNullOrWhiteSpace(ghiChu)) return;
 
-        private void LoadStateFromGhiChu()
-        {
-            string ghiChu = _room.GhiChu ?? "";
+            string lydo = GetStringTag(ghiChu, "LYDO", "");
+            SelectComboByText(cboLyDoLuuTru, lydo);
 
-            int soLuong = GetIntTag(ghiChu, "SL", 1);
-            if (soLuong < (int)nudSoLuong.Minimum) soLuong = (int)nudSoLuong.Minimum;
-            if (soLuong > (int)nudSoLuong.Maximum) soLuong = (int)nudSoLuong.Maximum;
-            nudSoLuong.Value = soLuong;
+            string gt = GetStringTag(ghiChu, "GT", "");
+            SelectComboByText(cboGioiTinh, gt);
 
-            int nn = GetIntTag(ghiChu, "NN", 0);
-            if (nn < (int)nudNuocNgot.Minimum) nn = (int)nudNuocNgot.Minimum;
-            if (nn > (int)nudNuocNgot.Maximum) nn = (int)nudNuocNgot.Maximum;
-            nudNuocNgot.Value = nn;
+            string ns = GetStringTag(ghiChu, "NS", "");
+            if (ns.Length == 8 && DateTime.TryParseExact(ns, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dob))
+                dtpNgaySinh.Value = dob;
 
-            int ns = GetIntTag(ghiChu, "NS", 0);
-            if (ns < (int)nudNuocSuoi.Minimum) ns = (int)nudNuocSuoi.Minimum;
-            if (ns > (int)nudNuocSuoi.Maximum) ns = (int)nudNuocSuoi.Maximum;
-            nudNuocSuoi.Value = ns;
+            string lgt = GetStringTag(ghiChu, "LGT", "");
+            SelectComboByText(cboLoaiGiayTo, lgt);
 
-            decimal daThu = GetDecimalTag(ghiChu, "DT", 0m);
-            if (daThu <= 0)
-            {
-                // Không có dữ liệu đã thu -> để trống
-                txtTienDaThu.Text = "";
-            }
+            txtSoGiayTo.Text = GetStringTag(ghiChu, "SGT", "");
+
+            string qt = GetStringTag(ghiChu, "QT", "");
+            SelectComboByText(cboQuocTich, qt);
+
+            string nct = GetStringTag(ghiChu, "NCT", "");
+            string nctLower = (nct ?? "").ToLowerInvariant();
+            if (nctLower.Contains("tạm") || nctLower.Contains("táº¡m") || nctLower.Contains("tam"))
+                rdoTamTru.Checked = true;
+            else if (nctLower.Contains("khác") || nctLower.Contains("khÃ¡c") || nctLower.Contains("khac"))
+                rdoNoiKhac.Checked = true;
             else
+                rdoThuongTru.Checked = true;
+
+            string ldb = GetStringTag(ghiChu, "LDB", "");
+            string ldbLower = (ldb ?? "").ToLowerInvariant();
+            if (ldbLower.Contains("cũ") || ldbLower.Contains("cÅ©") || ldbLower.Contains("cu"))
+                rdoDiaBanCu.Checked = true;
+            else
+                rdoDiaBanMoi.Checked = true;
+
+            string tinh = GetStringTag(ghiChu, "TINH", "");
+            SelectComboByText(cboTinhThanh, tinh);
+
+            string px = GetStringTag(ghiChu, "PX", "");
+            SelectComboByText(cboPhuongXa, px);
+
+            txtDiaChiChiTiet.Text = GetStringTag(ghiChu, "DC", "");
+
+            string trap = GetStringTag(ghiChu, "TRAP", "");
+            if (trap.Length == 8 && DateTime.TryParseExact(trap, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var outDate))
             {
-                // Có dữ liệu -> hiển thị dạng x1000 (vd 100000 -> 100)
-                txtTienDaThu.Text = (daThu / 1000m).ToString("0");
+                dtpTraPhong.Value = outDate;
+                dtpTraPhong.Checked = true;
             }
 
-
-            string cccd = GetStringTag(ghiChu, "CCCD", "");
-            txtCCCD.Text = cccd;
-
-            txtGhiChu.Text = RemoveSystemTags(ghiChu);
+            string dsk = GetStringTag(ghiChu, "DSK", "");
+            if (!string.IsNullOrWhiteSpace(dsk))
+            {
+                var parts = dsk.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var p in parts)
+                    lstKhach.Items.Add(p.Trim());
+            }
         }
 
-        #endregion
+        private static void SelectComboByText(ComboBox cbo, string text)
+        {
+            if (cbo == null || cbo.Items.Count == 0) return;
+            if (string.IsNullOrWhiteSpace(text)) return;
+
+            for (int i = 0; i < cbo.Items.Count; i++)
+            {
+                string it = cbo.Items[i]?.ToString() ?? "";
+
+                if (string.Equals(it, text, StringComparison.OrdinalIgnoreCase))
+                {
+                    cbo.SelectedIndex = i;
+                    return;
+                }
+
+                if (it.StartsWith(text, StringComparison.OrdinalIgnoreCase))
+                {
+                    cbo.SelectedIndex = i;
+                    return;
+                }
+            }
+        }
     }
 }
