@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -14,20 +14,15 @@ namespace HotelManagement.Forms
         private User _currentUser;
         private readonly RoomDAL _roomDal = new RoomDAL();
 
-        // null = tất cả; 0..3 = theo trạng thái
         private int? _currentFilterStatus = null;
-
-        // placeholder search
+        
         private readonly Color _placeholderColor = Color.Gray;
         private readonly Color _normalColor = Color.Black;
         private const string _placeholderText = "Nhập từ khóa tìm kiếm";
-
-        // Timer update đồng hồ thời gian
+        
         private Timer _roomTimer;
-
+        
         // ====== HẰNG SỐ GIÁ ======
-        // Phòng đơn: LoaiPhongID = 1
-        // Phòng đôi : LoaiPhongID = 2
         private const decimal GIA_DEM_DON_SAU_18 = 200000m;
         private const decimal GIA_DEM_DON_TRUOC_18 = 250000m;
         private const decimal GIA_DEM_DON_NHIEU = 250000m;
@@ -47,20 +42,17 @@ namespace HotelManagement.Forms
 
         private const decimal PHU_THU_TRA_TRE = 40000m;
 
-        // Lưu các nhãn trong card phòng để tick timer cập nhật
         private class RoomTileInfo
         {
             public Room Room { get; set; }
-            public Label LblStartTime { get; set; } // dòng trên
-            public Label LblCenter { get; set; }    // dòng giữa
-            public Label LblElapsed { get; set; }   // dòng dưới
+            public Label LblStartTime { get; set; } 
+            public Label LblCenter { get; set; }    
+            public Label LblElapsed { get; set; }   
         }
 
         public MainForm()
         {
             InitializeComponent();
-
-            // user mặc định (khách)
             _currentUser = new User { Username = "Khách", Role = "Letan" };
         }
 
@@ -77,17 +69,13 @@ namespace HotelManagement.Forms
             SetupRoomTimer();
         }
 
-        // được gán trong Designer: this.Resize += MainForm_Resize;
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            // khi thay đổi kích thước cửa sổ thì vẽ lại tiles với size mới
             LoadRoomTiles();
         }
 
-        // được gán trong Designer: flowRooms.ControlAdded += flowRooms_ControlAdded;
         private void flowRooms_ControlAdded(object sender, ControlEventArgs e)
         {
-            // đảm bảo mỗi panel tầng full-width theo flowRooms
             if (e.Control is Panel panelTang)
             {
                 int panelWidth = Math.Max(300, flowRooms.ClientSize.Width - 20);
@@ -175,7 +163,6 @@ namespace HotelManagement.Forms
 
         private (int width, int height, int leftCol) CalcTileSize()
         {
-            // 3 cột trên desktop, 2 khi hẹp
             int w = flowRooms.ClientSize.Width;
             if (w <= 0) w = this.ClientSize.Width - panelLeft.Width - 40;
 
@@ -194,7 +181,6 @@ namespace HotelManagement.Forms
             var rooms = _roomDal.GetAll();
             if (_currentFilterStatus.HasValue)
                 rooms = rooms.FindAll(r => r.TrangThai == _currentFilterStatus.Value);
-
             var tangGroups = rooms.GroupBy(r => r.Tang).OrderBy(g => g.Key);
 
             foreach (var group in tangGroups)
@@ -204,7 +190,6 @@ namespace HotelManagement.Forms
             }
 
             flowRooms.ResumeLayout();
-
             if (_roomTimer != null)
                 RoomTimer_Tick(this, EventArgs.Empty);
         }
@@ -212,18 +197,13 @@ namespace HotelManagement.Forms
         private Panel BuildFloorPanel(int tang, List<Room> roomsInFloor)
         {
             var (tileW, tileH, _) = CalcTileSize();
-
-            // chiều rộng khung tầng = toàn bộ vùng hiển thị trừ margin
             int panelWidth = Math.Max(300, flowRooms.ClientSize.Width - 20);
-
             Panel panelTang = new Panel
             {
                 Width = panelWidth,
                 Margin = new Padding(10, 5, 10, 10),
                 BackColor = Color.White
             };
-
-            // header
             var header = new Panel
             {
                 Height = 30,
@@ -249,7 +229,6 @@ namespace HotelManagement.Forms
             header.Controls.Add(lbl);
             panelTang.Controls.Add(header);
 
-            // Nhãn + dòng Phòng đơn
             var lblDon = new Label
             {
                 AutoSize = true,
@@ -258,7 +237,6 @@ namespace HotelManagement.Forms
                 Text = "Phòng đơn",
                 Location = new Point(10, 35)
             };
-
             var flowDon = new FlowLayoutPanel
             {
                 Name = "flowDon",
@@ -269,8 +247,6 @@ namespace HotelManagement.Forms
                 WrapContents = false,
                 FlowDirection = FlowDirection.LeftToRight
             };
-
-            // Nhãn + dòng Phòng đôi
             var lblDoi = new Label
             {
                 AutoSize = true,
@@ -279,7 +255,6 @@ namespace HotelManagement.Forms
                 Text = "Phòng đôi",
                 Location = new Point(10, 55 + tileH + 50)
             };
-
             var flowDoi = new FlowLayoutPanel
             {
                 Name = "flowDoi",
@@ -290,7 +265,6 @@ namespace HotelManagement.Forms
                 WrapContents = false,
                 FlowDirection = FlowDirection.LeftToRight
             };
-
             foreach (var room in roomsInFloor.OrderBy(r => r.MaPhong))
             {
                 var tile = CreateRoomTile(room);
@@ -307,10 +281,7 @@ namespace HotelManagement.Forms
             panelTang.Controls.Add(flowDon);
             panelTang.Controls.Add(lblDoi);
             panelTang.Controls.Add(flowDoi);
-
-            // Chiều cao khung tầng = đáy của dòng phòng đôi + margin nhỏ
             panelTang.Height = flowDoi.Bottom + 20;
-
             return panelTang;
         }
 
@@ -318,10 +289,10 @@ namespace HotelManagement.Forms
         {
             switch (st)
             {
-                case 0: return Color.FromArgb(76, 175, 80);   // Trống
-                case 1: return Color.FromArgb(33, 150, 243);  // Có khách
-                case 2: return Color.FromArgb(244, 67, 54);   // Chưa dọn
-                case 3: return Color.FromArgb(255, 152, 0);   // Đã đặt
+                case 0: return Color.FromArgb(76, 175, 80);
+                case 1: return Color.FromArgb(33, 150, 243);
+                case 2: return Color.FromArgb(244, 67, 54);
+                case 3: return Color.FromArgb(255, 152, 0);
                 default: return Color.FromArgb(158, 158, 158);
             }
         }
@@ -337,7 +308,6 @@ namespace HotelManagement.Forms
             }
         }
 
-        // Đọc/ghi tag KEY=VALUE trong ghi chú
         private static int GetIntTag(string text, string key, int defaultVal = 0)
         {
             if (string.IsNullOrEmpty(text)) return defaultVal;
@@ -365,7 +335,6 @@ namespace HotelManagement.Forms
 
         private static string CombineCenter(string main, string remain, string note)
         {
-            // 2–3 dòng: nội dung chính + dòng phụ + note
             if (!string.IsNullOrWhiteSpace(remain))
                 main = main + "\n" + remain;
             if (!string.IsNullOrWhiteSpace(note))
@@ -376,10 +345,8 @@ namespace HotelManagement.Forms
         private decimal TinhTienDemForRoom(Room room, DateTime start, int soDem)
         {
             if (soDem <= 0) return 0m;
-
             bool laPhongDon = room.LoaiPhongID == 1;
             decimal tong = 0m;
-
             if (soDem == 1)
             {
                 bool sau18h = start.TimeOfDay >= new TimeSpan(18, 0, 0);
@@ -394,23 +361,17 @@ namespace HotelManagement.Forms
                 tong = giaMoiDem * soDem;
             }
 
-            // Phụ thu trả trễ (sau 12h trưa ngày trả chuẩn)
             DateTime now = DateTime.Now;
             DateTime ngayTraChuan = start.Date.AddDays(soDem).AddHours(12);
             if (now > ngayTraChuan)
                 tong += PHU_THU_TRA_TRE;
-
             return tong;
         }
 
-        /// <summary>
-        /// Dòng phụ hiển thị dưới tên khách: còn đêm & tiền chưa thu (đêm) hoặc tổng phải thu (giờ).
-        /// </summary>
         private string CalcExtraText(Room room)
         {
             if (room.TrangThai != 1 || !room.ThoiGianBatDau.HasValue || !room.KieuThue.HasValue)
                 return null;
-
             int kieu = room.KieuThue.Value;
             DateTime start = room.ThoiGianBatDau.Value;
 
@@ -425,7 +386,6 @@ namespace HotelManagement.Forms
                 int nn = GetIntTag(room.GhiChu, "NN", 0);
                 int ns = GetIntTag(room.GhiChu, "NS", 0);
                 decimal tienNuoc = nn * GIA_NUOC_NGOT + ns * GIA_NUOC_SUOI;
-
                 decimal daThu = GetDecimalTag(room.GhiChu, "DT", 0m);
                 decimal conLai = Math.Max(0, tienPhong + tienNuoc - daThu);
 
@@ -438,7 +398,7 @@ namespace HotelManagement.Forms
                 return line1 + "\n" + line2;
             }
 
-            // GIỜ – hiển thị tổng phải thu (tiền phòng + nước - đã thu)
+            // GIỜ
             if (kieu == 3)
             {
                 DateTime now = DateTime.Now;
@@ -446,7 +406,6 @@ namespace HotelManagement.Forms
 
                 TimeSpan diff = now - start;
                 int soGio = Math.Max(1, (int)Math.Ceiling(diff.TotalHours));
-
                 bool laPhongDon = room.LoaiPhongID == 1;
                 decimal giaGioDau = laPhongDon ? GIA_GIO_DON_DAU : GIA_GIO_DOI_DAU;
                 decimal giaGioSau = laPhongDon ? GIA_GIO_DON_SAU : GIA_GIO_DOI_SAU;
@@ -454,7 +413,6 @@ namespace HotelManagement.Forms
                 decimal tienPhong = (soGio <= 1)
                     ? giaGioDau
                     : giaGioDau + (soGio - 1) * giaGioSau;
-
                 int nn = GetIntTag(room.GhiChu, "NN", 0);
                 int ns = GetIntTag(room.GhiChu, "NS", 0);
                 decimal tienNuoc = nn * GIA_NUOC_NGOT + ns * GIA_NUOC_SUOI;
@@ -471,12 +429,9 @@ namespace HotelManagement.Forms
         private Panel CreateRoomTile(Room room)
         {
             var (tileW, tileH, leftCol) = CalcTileSize();
-
             Color baseColor = GetRoomBackColor(room.TrangThai);
             Color lightColor = ControlPaint.Light(baseColor, 0.80f);
-            // chữ “cùng tông nhưng đậm hơn nền”
             Color textColor = ControlPaint.Dark(baseColor, 0.20f);
-
             var panel = new Panel
             {
                 Width = tileW,
@@ -490,9 +445,7 @@ namespace HotelManagement.Forms
                     e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
             };
 
-            // Cột trái
             var leftPanel = new Panel { Width = leftCol, Dock = DockStyle.Left, BackColor = baseColor, Padding = new Padding(0, 6, 0, 6) };
-
             var lblStd = new Label
             {
                 Dock = DockStyle.Top,
@@ -502,7 +455,6 @@ namespace HotelManagement.Forms
                 ForeColor = Color.White,
                 Text = "STD"
             };
-
             var lblIcon = new Label
             {
                 Dock = DockStyle.Bottom,
@@ -512,7 +464,6 @@ namespace HotelManagement.Forms
                 ForeColor = Color.White,
                 Text = GetStatusIcon(room.TrangThai)
             };
-
             var lblCode = new Label
             {
                 Dock = DockStyle.Fill,
@@ -521,14 +472,11 @@ namespace HotelManagement.Forms
                 ForeColor = Color.White,
                 Text = room.MaPhong
             };
-
             leftPanel.Controls.Add(lblCode);
             leftPanel.Controls.Add(lblIcon);
             leftPanel.Controls.Add(lblStd);
 
-            // Cột phải
             var rightPanel = new Panel { Dock = DockStyle.Fill, BackColor = lightColor, Padding = new Padding(6) };
-
             var lblStartTime = new Label
             {
                 Height = 18,
@@ -538,7 +486,6 @@ namespace HotelManagement.Forms
                 ForeColor = Color.FromArgb(120, 0, 0, 0),
                 Name = "lblStartTime"
             };
-
             var lblCenter = new Label
             {
                 Dock = DockStyle.Fill,
@@ -548,7 +495,6 @@ namespace HotelManagement.Forms
                 ForeColor = textColor,
                 Name = "lblCenter"
             };
-
             var lblElapsed = new Label
             {
                 Height = 20,
@@ -558,7 +504,6 @@ namespace HotelManagement.Forms
                 ForeColor = Color.FromArgb(120, 0, 0, 0),
                 Name = "lblElapsed"
             };
-
             rightPanel.Controls.Add(lblCenter);
             rightPanel.Controls.Add(lblElapsed);
             rightPanel.Controls.Add(lblStartTime);
@@ -566,67 +511,47 @@ namespace HotelManagement.Forms
             panel.Controls.Add(rightPanel);
             panel.Controls.Add(leftPanel);
 
-            // Tooltip ghi chú (nếu có – chỉ phần note, bỏ tag hệ thống)
             if (!string.IsNullOrWhiteSpace(room.GhiChu))
             {
                 var tip = new ToolTip();
                 tip.SetToolTip(panel, RemoveSystemTags(room.GhiChu));
             }
 
-            // hover
             panel.MouseEnter += (s, e) => panel.BackColor = Color.FromArgb(250, 250, 250);
             panel.MouseLeave += (s, e) => panel.BackColor = Color.White;
 
-            // click / double click hành vi theo trạng thái
             void AttachClick(Control c)
             {
                 c.Cursor = Cursors.Hand;
-
-                if (room.TrangThai == 2) // Chưa dọn: single click không làm gì, double click -> Trống
+                if (room.TrangThai == 2) 
                 {
-                    c.Click += (s, e) => { /* ignore */ };
+                    c.Click += (s, e) => { };
                     c.DoubleClick += (s, e) => SetRoomFromDirtyToEmpty(room);
                 }
                 else
                 {
-                    // Trống / Có khách / Đã đặt: single click mở chi tiết
                     c.Click += (s, e) => ShowRoomDetail(room);
                 }
 
                 foreach (Control k in c.Controls) AttachClick(k);
             }
             AttachClick(panel);
-
-            // text ban đầu
             string center;
             switch (room.TrangThai)
             {
-                case 0:
-                    center = "Trống";
-                    break;
-                case 2:
-                    center = "Chưa dọn";
-                    break;
-                case 3:
-                    center = "Đã có khách đặt";
-                    break;
-                case 1:
-                    center = room.TenKhachHienThi ?? "";
-                    break;
-                default:
-                    center = "";
-                    break;
+                case 0: center = "Trống"; break;
+                case 2: center = "Chưa dọn"; break;
+                case 3: center = "Đã có khách đặt"; break;
+                case 1: center = room.TenKhachHienThi ?? ""; break;
+                default: center = ""; break;
             }
 
             string extra = CalcExtraText(room);
             string note = (room.TrangThai == 1 && !string.IsNullOrWhiteSpace(room.GhiChu) &&
                            !string.IsNullOrWhiteSpace(RemoveSystemTags(room.GhiChu)))
-                          ? "(Có ghi chú)"
-                          : null;
-
+                          ? "(Có ghi chú)" : null;
             lblCenter.Text = CombineCenter(center, extra, note);
 
-            // Lưu info cho Timer
             var info = new RoomTileInfo
             {
                 Room = room,
@@ -641,22 +566,13 @@ namespace HotelManagement.Forms
 
         private void SetRoomFromDirtyToEmpty(Room room)
         {
-            // từ "Chưa dọn" -> "Trống" khi double click
             room.TrangThai = 0;
             room.ThoiGianBatDau = null;
             room.KieuThue = null;
             room.TenKhachHienThi = null;
 
             string ghiChu = RemoveSystemTags(room.GhiChu);
-
-            _roomDal.UpdateTrangThaiFull(
-                room.PhongID,
-                room.TrangThai,
-                ghiChu,
-                null,
-                null,
-                null);
-
+            _roomDal.UpdateTrangThaiFull(room.PhongID, room.TrangThai, ghiChu, null, null, null);
             room.GhiChu = ghiChu;
 
             LoadRoomTiles();
@@ -714,7 +630,6 @@ namespace HotelManagement.Forms
                 }
             }
 
-            // hàm phụ trợ tìm control theo Name
             T FindByName<T>(Control root, string name) where T : Control
             {
                 foreach (Control c in Flatten(root))
@@ -748,12 +663,9 @@ namespace HotelManagement.Forms
                 string extra = CalcExtraText(r);
                 string note = (!string.IsNullOrWhiteSpace(r.GhiChu) &&
                                !string.IsNullOrWhiteSpace(RemoveSystemTags(r.GhiChu)))
-                              ? "(Có ghi chú)"
-                              : null;
-
+                              ? "(Có ghi chú)" : null;
                 if (string.IsNullOrWhiteSpace(main))
                     main = "Có khách";
-
                 info.LblCenter.Text = CombineCenter(main, extra, note);
 
                 TimeSpan diff = now - start;
@@ -769,18 +681,10 @@ namespace HotelManagement.Forms
                 string text;
                 switch (r.TrangThai)
                 {
-                    case 0:
-                        text = "Trống";
-                        break;
-                    case 2:
-                        text = "Chưa dọn";
-                        break;
-                    case 3:
-                        text = "Đã có khách đặt";
-                        break;
-                    default:
-                        text = "";
-                        break;
+                    case 0: text = "Trống"; break;
+                    case 2: text = "Chưa dọn"; break;
+                    case 3: text = "Đã có khách đặt"; break;
+                    default: text = ""; break;
                 }
                 info.LblCenter.Text = text;
             }
@@ -792,8 +696,6 @@ namespace HotelManagement.Forms
 
         private void ShowRoomDetail(Room room)
         {
-            // Khi phòng đang TRỐNG được click:
-            // -> MẶC ĐỊNH chuyển sang thuê GIỜ + Có khách + bắt đầu tính giờ (chỉ trong RAM)
             if (room.TrangThai == 0)
             {
                 room.TrangThai = 1;
@@ -802,8 +704,12 @@ namespace HotelManagement.Forms
                 room.TenKhachHienThi = null;
             }
 
+            // Ẩn các panel danh sách phòng
             flowRooms.Visible = false;
             panelFilter.Visible = false;
+            
+            // --- CẬP NHẬT QUAN TRỌNG: Fill toàn bộ form ---
+            panelDetailHost.Dock = DockStyle.Fill;
             panelDetailHost.Controls.Clear();
 
             var detail = new RoomDetailForm(room)
@@ -812,11 +718,16 @@ namespace HotelManagement.Forms
                 FormBorderStyle = FormBorderStyle.None,
                 Dock = DockStyle.Fill
             };
-
             detail.BackRequested += (s, e) =>
             {
                 panelDetailHost.Visible = false;
                 panelDetailHost.Controls.Clear();
+                
+                // Trả về mặc định (dù không hiện)
+                panelDetailHost.Dock = DockStyle.Right;
+                panelDetailHost.Width = 420;
+
+                // Hiện lại danh sách phòng
                 panelFilter.Visible = true;
                 flowRooms.Visible = true;
                 LoadRoomTiles();
@@ -827,7 +738,6 @@ namespace HotelManagement.Forms
                 var updated = _roomDal.GetById(room.PhongID);
                 if (updated != null)
                     room = updated;
-
                 LoadRoomTiles();
             };
 
@@ -839,8 +749,11 @@ namespace HotelManagement.Forms
 
         private void btnRooms_Click(object sender, EventArgs e)
         {
+            // Nút "Sơ đồ phòng" cũng đóng detail form
             panelDetailHost.Visible = false;
             panelDetailHost.Controls.Clear();
+            panelDetailHost.Dock = DockStyle.Right;
+
             panelFilter.Visible = true;
             flowRooms.Visible = true;
             LoadRoomTiles();

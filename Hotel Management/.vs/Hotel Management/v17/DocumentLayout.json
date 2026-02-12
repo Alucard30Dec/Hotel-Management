@@ -1,7 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "E:\\Project\\Hotel-Management\\Hotel Management\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|e:\\project\\hotel-management\\hotel management\\forms\\roomdetailform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D57C892D-E5F8-426C-AB1D-E884C583FFAF}|Hotel Management.csproj|solutionrelative:forms\\roomdetailform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +14,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RoomDetailForm.cs",
+              "DocumentMoniker": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\RoomDetailForm.cs",
+              "RelativeDocumentMoniker": "Forms\\RoomDetailForm.cs",
+              "ToolTip": "E:\\Project\\Hotel-Management\\Hotel Management\\Forms\\RoomDetailForm.cs",
+              "RelativeToolTip": "Forms\\RoomDetailForm.cs",
+              "ViewState": "AgIAAFsBAAAAAAAAAADgv5YBAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-10T11:57:36.984Z",
+              "EditorCaption": ""
             }
           ]
         }

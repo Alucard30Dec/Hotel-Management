@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+using System.Windows.Forms;
 using System.Drawing;
 
 namespace HotelManagement.Forms
@@ -240,7 +240,8 @@ namespace HotelManagement.Forms
             panelDetailHost = new Panel
             {
                 Dock = DockStyle.Right,
-                Width = 350,
+                Width = 420,
+                MinimumSize = new global::System.Drawing.Size(360, 0),
                 Visible = false,
                 BackColor = Color.White
             };

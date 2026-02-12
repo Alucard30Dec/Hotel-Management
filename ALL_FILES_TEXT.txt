@@ -756,20 +756,15 @@ namespace HotelManagement.Forms
         private User _currentUser;
         private readonly RoomDAL _roomDal = new RoomDAL();
 
-        // null = tất cả; 0..3 = theo trạng thái
         private int? _currentFilterStatus = null;
-
-        // placeholder search
+        
         private readonly Color _placeholderColor = Color.Gray;
         private readonly Color _normalColor = Color.Black;
-        private const string _placeholderText = "Nhập từ khóa tìm kiếm";
-
-        // Timer update đồng hồ thời gian
+        private const string _placeholderText = "Nháº­p tá»« khÃ³a tÃ¬m kiáº¿m";
+        
         private Timer _roomTimer;
-
-        // ====== HẰNG SỐ GIÁ ======
-        // Phòng đơn: LoaiPhongID = 1
-        // Phòng đôi : LoaiPhongID = 2
+        
+        // ====== Háº°NG Sá» GIÃ ======
         private const decimal GIA_DEM_DON_SAU_18 = 200000m;
         private const decimal GIA_DEM_DON_TRUOC_18 = 250000m;
         private const decimal GIA_DEM_DON_NHIEU = 250000m;
@@ -789,21 +784,18 @@ namespace HotelManagement.Forms
 
         private const decimal PHU_THU_TRA_TRE = 40000m;
 
-        // Lưu các nhãn trong card phòng để tick timer cập nhật
         private class RoomTileInfo
         {
             public Room Room { get; set; }
-            public Label LblStartTime { get; set; } // dòng trên
-            public Label LblCenter { get; set; }    // dòng giữa
-            public Label LblElapsed { get; set; }   // dòng dưới
+            public Label LblStartTime { get; set; } 
+            public Label LblCenter { get; set; }    
+            public Label LblElapsed { get; set; }   
         }
 
         public MainForm()
         {
             InitializeComponent();
-
-            // user mặc định (khách)
-            _currentUser = new User { Username = "Khách", Role = "Letan" };
+            _currentUser = new User { Username = "KhÃ¡ch", Role = "Letan" };
         }
 
         public MainForm(User user) : this()
@@ -819,17 +811,13 @@ namespace HotelManagement.Forms
             SetupRoomTimer();
         }
 
-        // được gán trong Designer: this.Resize += MainForm_Resize;
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            // khi thay đổi kích thước cửa sổ thì vẽ lại tiles với size mới
             LoadRoomTiles();
         }
 
-        // được gán trong Designer: flowRooms.ControlAdded += flowRooms_ControlAdded;
         private void flowRooms_ControlAdded(object sender, ControlEventArgs e)
         {
-            // đảm bảo mỗi panel tầng full-width theo flowRooms
             if (e.Control is Panel panelTang)
             {
                 int panelWidth = Math.Max(300, flowRooms.ClientSize.Width - 20);
@@ -839,7 +827,7 @@ namespace HotelManagement.Forms
 
         private void UpdateUserUI()
         {
-            lblCurrentUser.Text = $"Người dùng: {_currentUser.Username} ({_currentUser.Role})";
+            lblCurrentUser.Text = $"NgÆ°á»i dÃ¹ng: {_currentUser.Username} ({_currentUser.Role})";
             btnReports.Enabled = _currentUser.Role == "Admin";
         }
 
@@ -913,11 +901,10 @@ namespace HotelManagement.Forms
 
         #endregion
 
-        #region Sơ đồ phòng
+        #region SÆ¡ Ä‘á»“ phÃ²ng
 
         private (int width, int height, int leftCol) CalcTileSize()
         {
-            // 3 cột trên desktop, 2 khi hẹp
             int w = flowRooms.ClientSize.Width;
             if (w <= 0) w = this.ClientSize.Width - panelLeft.Width - 40;
 
@@ -936,7 +923,6 @@ namespace HotelManagement.Forms
             var rooms = _roomDal.GetAll();
             if (_currentFilterStatus.HasValue)
                 rooms = rooms.FindAll(r => r.TrangThai == _currentFilterStatus.Value);
-
             var tangGroups = rooms.GroupBy(r => r.Tang).OrderBy(g => g.Key);
 
             foreach (var group in tangGroups)
@@ -946,7 +932,6 @@ namespace HotelManagement.Forms
             }
 
             flowRooms.ResumeLayout();
-
             if (_roomTimer != null)
                 RoomTimer_Tick(this, EventArgs.Empty);
         }
@@ -954,18 +939,13 @@ namespace HotelManagement.Forms
         private Panel BuildFloorPanel(int tang, List<Room> roomsInFloor)
         {
             var (tileW, tileH, _) = CalcTileSize();
-
-            // chiều rộng khung tầng = toàn bộ vùng hiển thị trừ margin
             int panelWidth = Math.Max(300, flowRooms.ClientSize.Width - 20);
-
             Panel panelTang = new Panel
             {
                 Width = panelWidth,
                 Margin = new Padding(10, 5, 10, 10),
                 BackColor = Color.White
             };
-
-            // header
             var header = new Panel
             {
                 Height = 30,
@@ -984,23 +964,21 @@ namespace HotelManagement.Forms
                 AutoSize = true,
                 Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold),
                 ForeColor = Color.FromArgb(55, 71, 79),
-                Text = $"Tầng {tang}",
+                Text = $"Táº§ng {tang}",
                 Location = new Point(10, 5)
             };
             header.Controls.Add(accent);
             header.Controls.Add(lbl);
             panelTang.Controls.Add(header);
 
-            // Nhãn + dòng Phòng đơn
             var lblDon = new Label
             {
                 AutoSize = true,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
                 ForeColor = Color.Gray,
-                Text = "Phòng đơn",
+                Text = "PhÃ²ng Ä‘Æ¡n",
                 Location = new Point(10, 35)
             };
-
             var flowDon = new FlowLayoutPanel
             {
                 Name = "flowDon",
@@ -1011,17 +989,14 @@ namespace HotelManagement.Forms
                 WrapContents = false,
                 FlowDirection = FlowDirection.LeftToRight
             };
-
-            // Nhãn + dòng Phòng đôi
             var lblDoi = new Label
             {
                 AutoSize = true,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
                 ForeColor = Color.Gray,
-                Text = "Phòng đôi",
+                Text = "PhÃ²ng Ä‘Ã´i",
                 Location = new Point(10, 55 + tileH + 50)
             };
-
             var flowDoi = new FlowLayoutPanel
             {
                 Name = "flowDoi",
@@ -1032,7 +1007,6 @@ namespace HotelManagement.Forms
                 WrapContents = false,
                 FlowDirection = FlowDirection.LeftToRight
             };
-
             foreach (var room in roomsInFloor.OrderBy(r => r.MaPhong))
             {
                 var tile = CreateRoomTile(room);
@@ -1049,10 +1023,7 @@ namespace HotelManagement.Forms
             panelTang.Controls.Add(flowDon);
             panelTang.Controls.Add(lblDoi);
             panelTang.Controls.Add(flowDoi);
-
-            // Chiều cao khung tầng = đáy của dòng phòng đôi + margin nhỏ
             panelTang.Height = flowDoi.Bottom + 20;
-
             return panelTang;
         }
 
@@ -1060,10 +1031,10 @@ namespace HotelManagement.Forms
         {
             switch (st)
             {
-                case 0: return Color.FromArgb(76, 175, 80);   // Trống
-                case 1: return Color.FromArgb(33, 150, 243);  // Có khách
-                case 2: return Color.FromArgb(244, 67, 54);   // Chưa dọn
-                case 3: return Color.FromArgb(255, 152, 0);   // Đã đặt
+                case 0: return Color.FromArgb(76, 175, 80);
+                case 1: return Color.FromArgb(33, 150, 243);
+                case 2: return Color.FromArgb(244, 67, 54);
+                case 3: return Color.FromArgb(255, 152, 0);
                 default: return Color.FromArgb(158, 158, 158);
             }
         }
@@ -1071,15 +1042,14 @@ namespace HotelManagement.Forms
         {
             switch (st)
             {
-                case 0: return "✔";
-                case 1: return "🛏";
-                case 2: return "🧹";
-                case 3: return "📅";
+                case 0: return "âœ”";
+                case 1: return "ðŸ›";
+                case 2: return "ðŸ§¹";
+                case 3: return "ðŸ“…";
                 default: return "";
             }
         }
 
-        // Đọc/ghi tag KEY=VALUE trong ghi chú
         private static int GetIntTag(string text, string key, int defaultVal = 0)
         {
             if (string.IsNullOrEmpty(text)) return defaultVal;
@@ -1107,7 +1077,6 @@ namespace HotelManagement.Forms
 
         private static string CombineCenter(string main, string remain, string note)
         {
-            // 2–3 dòng: nội dung chính + dòng phụ + note
             if (!string.IsNullOrWhiteSpace(remain))
                 main = main + "\n" + remain;
             if (!string.IsNullOrWhiteSpace(note))
@@ -1118,10 +1087,8 @@ namespace HotelManagement.Forms
         private decimal TinhTienDemForRoom(Room room, DateTime start, int soDem)
         {
             if (soDem <= 0) return 0m;
-
             bool laPhongDon = room.LoaiPhongID == 1;
             decimal tong = 0m;
-
             if (soDem == 1)
             {
                 bool sau18h = start.TimeOfDay >= new TimeSpan(18, 0, 0);
@@ -1136,27 +1103,21 @@ namespace HotelManagement.Forms
                 tong = giaMoiDem * soDem;
             }
 
-            // Phụ thu trả trễ (sau 12h trưa ngày trả chuẩn)
             DateTime now = DateTime.Now;
             DateTime ngayTraChuan = start.Date.AddDays(soDem).AddHours(12);
             if (now > ngayTraChuan)
                 tong += PHU_THU_TRA_TRE;
-
             return tong;
         }
 
-        /// <summary>
-        /// Dòng phụ hiển thị dưới tên khách: còn đêm & tiền chưa thu (đêm) hoặc tổng phải thu (giờ).
-        /// </summary>
         private string CalcExtraText(Room room)
         {
             if (room.TrangThai != 1 || !room.ThoiGianBatDau.HasValue || !room.KieuThue.HasValue)
                 return null;
-
             int kieu = room.KieuThue.Value;
             DateTime start = room.ThoiGianBatDau.Value;
 
-            // ĐÊM
+            // ÄÃŠM
             if (kieu == 1)
             {
                 int soDem = GetIntTag(room.GhiChu, "SL", 1);
@@ -1167,20 +1128,19 @@ namespace HotelManagement.Forms
                 int nn = GetIntTag(room.GhiChu, "NN", 0);
                 int ns = GetIntTag(room.GhiChu, "NS", 0);
                 decimal tienNuoc = nn * GIA_NUOC_NGOT + ns * GIA_NUOC_SUOI;
-
                 decimal daThu = GetDecimalTag(room.GhiChu, "DT", 0m);
                 decimal conLai = Math.Max(0, tienPhong + tienNuoc - daThu);
 
                 DateTime end = start.Date.AddDays(soDem);
                 TimeSpan left = end - DateTime.Now;
                 int nightsLeft = (int)Math.Ceiling(left.TotalDays);
-                string line1 = nightsLeft <= 0 ? "Quá hạn" : "Còn " + nightsLeft + " đêm";
-                string line2 = "Chưa thu: " + conLai.ToString("N0") + " đ";
+                string line1 = nightsLeft <= 0 ? "QuÃ¡ háº¡n" : "CÃ²n " + nightsLeft + " Ä‘Ãªm";
+                string line2 = "ChÆ°a thu: " + conLai.ToString("N0") + " Ä‘";
 
                 return line1 + "\n" + line2;
             }
 
-            // GIỜ – hiển thị tổng phải thu (tiền phòng + nước - đã thu)
+            // GIá»œ
             if (kieu == 3)
             {
                 DateTime now = DateTime.Now;
@@ -1188,7 +1148,6 @@ namespace HotelManagement.Forms
 
                 TimeSpan diff = now - start;
                 int soGio = Math.Max(1, (int)Math.Ceiling(diff.TotalHours));
-
                 bool laPhongDon = room.LoaiPhongID == 1;
                 decimal giaGioDau = laPhongDon ? GIA_GIO_DON_DAU : GIA_GIO_DOI_DAU;
                 decimal giaGioSau = laPhongDon ? GIA_GIO_DON_SAU : GIA_GIO_DOI_SAU;
@@ -1196,7 +1155,6 @@ namespace HotelManagement.Forms
                 decimal tienPhong = (soGio <= 1)
                     ? giaGioDau
                     : giaGioDau + (soGio - 1) * giaGioSau;
-
                 int nn = GetIntTag(room.GhiChu, "NN", 0);
                 int ns = GetIntTag(room.GhiChu, "NS", 0);
                 decimal tienNuoc = nn * GIA_NUOC_NGOT + ns * GIA_NUOC_SUOI;
@@ -1204,7 +1162,7 @@ namespace HotelManagement.Forms
                 decimal daThu = GetDecimalTag(room.GhiChu, "DT", 0m);
                 decimal conLai = Math.Max(0, tienPhong + tienNuoc - daThu);
 
-                return "Phải thu: " + conLai.ToString("N0") + " đ";
+                return "Pháº£i thu: " + conLai.ToString("N0") + " Ä‘";
             }
 
             return null;
@@ -1213,12 +1171,9 @@ namespace HotelManagement.Forms
         private Panel CreateRoomTile(Room room)
         {
             var (tileW, tileH, leftCol) = CalcTileSize();
-
             Color baseColor = GetRoomBackColor(room.TrangThai);
             Color lightColor = ControlPaint.Light(baseColor, 0.80f);
-            // chữ “cùng tông nhưng đậm hơn nền”
             Color textColor = ControlPaint.Dark(baseColor, 0.20f);
-
             var panel = new Panel
             {
                 Width = tileW,
@@ -1232,9 +1187,7 @@ namespace HotelManagement.Forms
                     e.Graphics.DrawRectangle(pen, 0, 0, panel.Width - 1, panel.Height - 1);
             };
 
-            // Cột trái
             var leftPanel = new Panel { Width = leftCol, Dock = DockStyle.Left, BackColor = baseColor, Padding = new Padding(0, 6, 0, 6) };
-
             var lblStd = new Label
             {
                 Dock = DockStyle.Top,
@@ -1244,7 +1197,6 @@ namespace HotelManagement.Forms
                 ForeColor = Color.White,
                 Text = "STD"
             };
-
             var lblIcon = new Label
             {
                 Dock = DockStyle.Bottom,
@@ -1254,7 +1206,6 @@ namespace HotelManagement.Forms
                 ForeColor = Color.White,
                 Text = GetStatusIcon(room.TrangThai)
             };
-
             var lblCode = new Label
             {
                 Dock = DockStyle.Fill,
@@ -1263,14 +1214,11 @@ namespace HotelManagement.Forms
                 ForeColor = Color.White,
                 Text = room.MaPhong
             };
-
             leftPanel.Controls.Add(lblCode);
             leftPanel.Controls.Add(lblIcon);
             leftPanel.Controls.Add(lblStd);
 
-            // Cột phải
             var rightPanel = new Panel { Dock = DockStyle.Fill, BackColor = lightColor, Padding = new Padding(6) };
-
             var lblStartTime = new Label
             {
                 Height = 18,
@@ -1280,7 +1228,6 @@ namespace HotelManagement.Forms
                 ForeColor = Color.FromArgb(120, 0, 0, 0),
                 Name = "lblStartTime"
             };
-
             var lblCenter = new Label
             {
                 Dock = DockStyle.Fill,
@@ -1290,7 +1237,6 @@ namespace HotelManagement.Forms
                 ForeColor = textColor,
                 Name = "lblCenter"
             };
-
             var lblElapsed = new Label
             {
                 Height = 20,
@@ -1300,7 +1246,6 @@ namespace HotelManagement.Forms
                 ForeColor = Color.FromArgb(120, 0, 0, 0),
                 Name = "lblElapsed"
             };
-
             rightPanel.Controls.Add(lblCenter);
             rightPanel.Controls.Add(lblElapsed);
             rightPanel.Controls.Add(lblStartTime);
@@ -1308,67 +1253,47 @@ namespace HotelManagement.Forms
             panel.Controls.Add(rightPanel);
             panel.Controls.Add(leftPanel);
 
-            // Tooltip ghi chú (nếu có – chỉ phần note, bỏ tag hệ thống)
             if (!string.IsNullOrWhiteSpace(room.GhiChu))
             {
                 var tip = new ToolTip();
                 tip.SetToolTip(panel, RemoveSystemTags(room.GhiChu));
             }
 
-            // hover
             panel.MouseEnter += (s, e) => panel.BackColor = Color.FromArgb(250, 250, 250);
             panel.MouseLeave += (s, e) => panel.BackColor = Color.White;
 
-            // click / double click hành vi theo trạng thái
             void AttachClick(Control c)
             {
                 c.Cursor = Cursors.Hand;
-
-                if (room.TrangThai == 2) // Chưa dọn: single click không làm gì, double click -> Trống
+                if (room.TrangThai == 2) 
                 {
-                    c.Click += (s, e) => { /* ignore */ };
+                    c.Click += (s, e) => { };
                     c.DoubleClick += (s, e) => SetRoomFromDirtyToEmpty(room);
                 }
                 else
                 {
-                    // Trống / Có khách / Đã đặt: single click mở chi tiết
                     c.Click += (s, e) => ShowRoomDetail(room);
                 }
 
                 foreach (Control k in c.Controls) AttachClick(k);
             }
             AttachClick(panel);
-
-            // text ban đầu
             string center;
             switch (room.TrangThai)
             {
-                case 0:
-                    center = "Trống";
-                    break;
-                case 2:
-                    center = "Chưa dọn";
-                    break;
-                case 3:
-                    center = "Đã có khách đặt";
-                    break;
-                case 1:
-                    center = room.TenKhachHienThi ?? "";
-                    break;
-                default:
-                    center = "";
-                    break;
+                case 0: center = "Trá»‘ng"; break;
+                case 2: center = "ChÆ°a dá»n"; break;
+                case 3: center = "ÄÃ£ cÃ³ khÃ¡ch Ä‘áº·t"; break;
+                case 1: center = room.TenKhachHienThi ?? ""; break;
+                default: center = ""; break;
             }
 
             string extra = CalcExtraText(room);
             string note = (room.TrangThai == 1 && !string.IsNullOrWhiteSpace(room.GhiChu) &&
                            !string.IsNullOrWhiteSpace(RemoveSystemTags(room.GhiChu)))
-                          ? "(Có ghi chú)"
-                          : null;
-
+                          ? "(CÃ³ ghi chÃº)" : null;
             lblCenter.Text = CombineCenter(center, extra, note);
 
-            // Lưu info cho Timer
             var info = new RoomTileInfo
             {
                 Room = room,
@@ -1383,22 +1308,13 @@ namespace HotelManagement.Forms
 
         private void SetRoomFromDirtyToEmpty(Room room)
         {
-            // từ "Chưa dọn" -> "Trống" khi double click
             room.TrangThai = 0;
             room.ThoiGianBatDau = null;
             room.KieuThue = null;
             room.TenKhachHienThi = null;
 
             string ghiChu = RemoveSystemTags(room.GhiChu);
-
-            _roomDal.UpdateTrangThaiFull(
-                room.PhongID,
-                room.TrangThai,
-                ghiChu,
-                null,
-                null,
-                null);
-
+            _roomDal.UpdateTrangThaiFull(room.PhongID, room.TrangThai, ghiChu, null, null, null);
             room.GhiChu = ghiChu;
 
             LoadRoomTiles();
@@ -1406,7 +1322,7 @@ namespace HotelManagement.Forms
 
         #endregion
 
-        #region Timer cập nhật thời gian
+        #region Timer cáº­p nháº­t thá»i gian
 
         private void SetupRoomTimer()
         {
@@ -1456,7 +1372,6 @@ namespace HotelManagement.Forms
                 }
             }
 
-            // hàm phụ trợ tìm control theo Name
             T FindByName<T>(Control root, string name) where T : Control
             {
                 foreach (Control c in Flatten(root))
@@ -1490,12 +1405,9 @@ namespace HotelManagement.Forms
                 string extra = CalcExtraText(r);
                 string note = (!string.IsNullOrWhiteSpace(r.GhiChu) &&
                                !string.IsNullOrWhiteSpace(RemoveSystemTags(r.GhiChu)))
-                              ? "(Có ghi chú)"
-                              : null;
-
+                              ? "(CÃ³ ghi chÃº)" : null;
                 if (string.IsNullOrWhiteSpace(main))
-                    main = "Có khách";
-
+                    main = "CÃ³ khÃ¡ch";
                 info.LblCenter.Text = CombineCenter(main, extra, note);
 
                 TimeSpan diff = now - start;
@@ -1511,18 +1423,10 @@ namespace HotelManagement.Forms
                 string text;
                 switch (r.TrangThai)
                 {
-                    case 0:
-                        text = "Trống";
-                        break;
-                    case 2:
-                        text = "Chưa dọn";
-                        break;
-                    case 3:
-                        text = "Đã có khách đặt";
-                        break;
-                    default:
-                        text = "";
-                        break;
+                    case 0: text = "Trá»‘ng"; break;
+                    case 2: text = "ChÆ°a dá»n"; break;
+                    case 3: text = "ÄÃ£ cÃ³ khÃ¡ch Ä‘áº·t"; break;
+                    default: text = ""; break;
                 }
                 info.LblCenter.Text = text;
             }
@@ -1530,12 +1434,10 @@ namespace HotelManagement.Forms
 
         #endregion
 
-        #region Điều hướng/forms
+        #region Äiá»u hÆ°á»›ng/forms
 
         private void ShowRoomDetail(Room room)
         {
-            // Khi phòng đang TRỐNG được click:
-            // -> MẶC ĐỊNH chuyển sang thuê GIỜ + Có khách + bắt đầu tính giờ (chỉ trong RAM)
             if (room.TrangThai == 0)
             {
                 room.TrangThai = 1;
@@ -1544,8 +1446,12 @@ namespace HotelManagement.Forms
                 room.TenKhachHienThi = null;
             }
 
+            // áº¨n cÃ¡c panel danh sÃ¡ch phÃ²ng
             flowRooms.Visible = false;
             panelFilter.Visible = false;
+            
+            // --- Cáº¬P NHáº¬T QUAN TRá»ŒNG: Fill toÃ n bá»™ form ---
+            panelDetailHost.Dock = DockStyle.Fill;
             panelDetailHost.Controls.Clear();
 
             var detail = new RoomDetailForm(room)
@@ -1554,11 +1460,16 @@ namespace HotelManagement.Forms
                 FormBorderStyle = FormBorderStyle.None,
                 Dock = DockStyle.Fill
             };
-
             detail.BackRequested += (s, e) =>
             {
                 panelDetailHost.Visible = false;
                 panelDetailHost.Controls.Clear();
+                
+                // Tráº£ vá» máº·c Ä‘á»‹nh (dÃ¹ khÃ´ng hiá»‡n)
+                panelDetailHost.Dock = DockStyle.Right;
+                panelDetailHost.Width = 420;
+
+                // Hiá»‡n láº¡i danh sÃ¡ch phÃ²ng
                 panelFilter.Visible = true;
                 flowRooms.Visible = true;
                 LoadRoomTiles();
@@ -1569,7 +1480,6 @@ namespace HotelManagement.Forms
                 var updated = _roomDal.GetById(room.PhongID);
                 if (updated != null)
                     room = updated;
-
                 LoadRoomTiles();
             };
 
@@ -1581,15 +1491,18 @@ namespace HotelManagement.Forms
 
         private void btnRooms_Click(object sender, EventArgs e)
         {
+            // NÃºt "SÆ¡ Ä‘á»“ phÃ²ng" cÅ©ng Ä‘Ã³ng detail form
             panelDetailHost.Visible = false;
             panelDetailHost.Controls.Clear();
+            panelDetailHost.Dock = DockStyle.Right;
+
             panelFilter.Visible = true;
             flowRooms.Visible = true;
             LoadRoomTiles();
         }
         private void btnReports_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Chức năng báo cáo sẽ được bổ sung sau.", "Thông báo");
+            MessageBox.Show("Chá»©c nÄƒng bÃ¡o cÃ¡o sáº½ Ä‘Æ°á»£c bá»• sung sau.", "ThÃ´ng bÃ¡o");
         }
         private void btnAdmin_Click(object sender, EventArgs e)
         {
@@ -1599,7 +1512,7 @@ namespace HotelManagement.Forms
                 {
                     _currentUser = login.LoggedInUser;
                     UpdateUserUI();
-                    MessageBox.Show("Xin chào: " + _currentUser.Username, "Đăng nhập thành công");
+                    MessageBox.Show("Xin chÃ o: " + _currentUser.Username, "ÄÄƒng nháº­p thÃ nh cÃ´ng");
                 }
             }
         }
@@ -1663,18 +1576,18 @@ namespace HotelManagement.Forms
         {
             components = new System.ComponentModel.Container();
 
-            // ===== FORM CHÍNH =====
+            // ===== FORM CHÃNH =====
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(1200, 750);
-            this.Text = "Quản lý khách sạn";
+            this.Text = "Quáº£n lÃ½ khÃ¡ch sáº¡n";
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.FromArgb(245, 245, 245);
             this.MinimumSize = new Size(1000, 600);
             this.Load += new System.EventHandler(this.MainForm_Load);
-            // gọi lại mỗi khi resize để co giãn khung tầng
+            // gá»i láº¡i má»—i khi resize Ä‘á»ƒ co giÃ£n khung táº§ng
             this.Resize += new System.EventHandler(this.MainForm_Resize);
 
-            // ===== THANH TRÊN (TOP BAR) =====
+            // ===== THANH TRÃŠN (TOP BAR) =====
             panelTop = new Panel
             {
                 BackColor = Color.FromArgb(63, 81, 181),
@@ -1709,7 +1622,7 @@ namespace HotelManagement.Forms
                 FlatStyle = FlatStyle.Flat,
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                Text = "≡",
+                Text = "â‰¡",
                 Width = 40,
                 Height = 40,
                 Margin = new Padding(0, 0, 10, 0),
@@ -1746,7 +1659,7 @@ namespace HotelManagement.Forms
                 FlatStyle = FlatStyle.Flat,
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                Text = "Thoát",
+                Text = "ThoÃ¡t",
                 Width = 75,
                 Height = 35,
                 Margin = new Padding(0, 8, 0, 8)
@@ -1760,7 +1673,7 @@ namespace HotelManagement.Forms
 
             panelTop.Controls.Add(topLayout);
 
-            // ===== MENU TRÁI =====
+            // ===== MENU TRÃI =====
             panelLeft = new Panel
             {
                 BackColor = Color.FromArgb(248, 249, 252),
@@ -1769,11 +1682,11 @@ namespace HotelManagement.Forms
                 Padding = new Padding(0, 10, 0, 10)
             };
 
-            btnSoDoPhong = MakeLeftButton("Sơ đồ phòng", 10);
+            btnSoDoPhong = MakeLeftButton("SÆ¡ Ä‘á»“ phÃ²ng", 10);
             btnSoDoPhong.Click += new System.EventHandler(this.btnRooms_Click);
 
-            btnThongKe = MakeLeftButton("Thống kê", 50);
-            btnReports = MakeLeftButton("Báo cáo", 90);
+            btnThongKe = MakeLeftButton("Thá»‘ng kÃª", 50);
+            btnReports = MakeLeftButton("BÃ¡o cÃ¡o", 90);
 
             lblCurrentUser = new Label
             {
@@ -1783,7 +1696,7 @@ namespace HotelManagement.Forms
                 ForeColor = Color.Gray,
                 TextAlign = ContentAlignment.MiddleLeft,
                 Padding = new Padding(12, 0, 0, 0),
-                Text = "Người dùng: (khách)"
+                Text = "NgÆ°á»i dÃ¹ng: (khÃ¡ch)"
             };
 
             panelLeft.Controls.Add(btnSoDoPhong);
@@ -1815,19 +1728,19 @@ namespace HotelManagement.Forms
                 AutoScroll = true
             };
 
-            btnFilterAll = MakeFilter("Tất cả", Color.FromArgb(158, 158, 158));
+            btnFilterAll = MakeFilter("Táº¥t cáº£", Color.FromArgb(158, 158, 158));
             btnFilterAll.Click += new System.EventHandler(this.btnFilterAll_Click);
 
-            btnFilterTrong = MakeFilter("Trống", Color.FromArgb(76, 175, 80));
+            btnFilterTrong = MakeFilter("Trá»‘ng", Color.FromArgb(76, 175, 80));
             btnFilterTrong.Click += new System.EventHandler(this.btnFilterTrong_Click);
 
-            btnFilterCoKhach = MakeFilter("Có khách", Color.FromArgb(33, 150, 243));
+            btnFilterCoKhach = MakeFilter("CÃ³ khÃ¡ch", Color.FromArgb(33, 150, 243));
             btnFilterCoKhach.Click += new System.EventHandler(this.btnFilterCoKhach_Click);
 
-            btnFilterChuaDon = MakeFilter("Chưa dọn", Color.FromArgb(96, 125, 139));
+            btnFilterChuaDon = MakeFilter("ChÆ°a dá»n", Color.FromArgb(96, 125, 139));
             btnFilterChuaDon.Click += new System.EventHandler(this.btnFilterChuaDon_Click);
 
-            btnFilterDaDat = MakeFilter("Đã có khách đặt", Color.FromArgb(255, 152, 0));
+            btnFilterDaDat = MakeFilter("ÄÃ£ cÃ³ khÃ¡ch Ä‘áº·t", Color.FromArgb(255, 152, 0));
             btnFilterDaDat.Click += new System.EventHandler(this.btnFilterDaDat_Click);
 
             panelFilterInner.Controls.Add(btnFilterAll);
@@ -1838,14 +1751,14 @@ namespace HotelManagement.Forms
 
             panelFilter.Controls.Add(panelFilterInner);
 
-            // ----- CENTER: DANH SÁCH PHÒNG + CHI TIẾT -----
+            // ----- CENTER: DANH SÃCH PHÃ’NG + CHI TIáº¾T -----
             var panelCenter = new Panel
             {
                 Dock = DockStyle.Fill,
                 BackColor = Color.FromArgb(245, 245, 245)
             };
 
-            // FlowLayoutPanel chứa các "khung tầng"
+            // FlowLayoutPanel chá»©a cÃ¡c "khung táº§ng"
             flowRooms = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -1853,18 +1766,19 @@ namespace HotelManagement.Forms
                 Padding = new Padding(10),
                 BackColor = Color.FromArgb(245, 245, 245),
 
-                // mỗi tầng 1 dòng, full width, xếp từ trên xuống dưới
+                // má»—i táº§ng 1 dÃ²ng, full width, xáº¿p tá»« trÃªn xuá»‘ng dÆ°á»›i
                 WrapContents = false,
                 FlowDirection = FlowDirection.TopDown
             };
-            // khi thêm khối tầng mới thì tự chỉnh lại width
+            // khi thÃªm khá»‘i táº§ng má»›i thÃ¬ tá»± chá»‰nh láº¡i width
             flowRooms.ControlAdded += new ControlEventHandler(this.flowRooms_ControlAdded);
 
-            // Panel chi tiết phòng (bên phải, nếu bạn dùng side panel)
+            // Panel chi tiáº¿t phÃ²ng (bÃªn pháº£i, náº¿u báº¡n dÃ¹ng side panel)
             panelDetailHost = new Panel
             {
                 Dock = DockStyle.Right,
-                Width = 350,
+                Width = 420,
+                MinimumSize = new global::System.Drawing.Size(360, 0),
                 Visible = false,
                 BackColor = Color.White
             };
@@ -1875,7 +1789,7 @@ namespace HotelManagement.Forms
             panelMain.Controls.Add(panelCenter);
             panelMain.Controls.Add(panelFilter);
 
-            // ===== ADD VÀO FORM =====
+            // ===== ADD VÃ€O FORM =====
             this.Controls.Add(panelMain);
             this.Controls.Add(panelLeft);
             this.Controls.Add(panelTop);
@@ -1958,9 +1872,10 @@ namespace HotelManagement.Forms
 
         private void RoomDetailForm_Load(object sender, EventArgs e)
         {
-            lblTitle.Text = "Nhận phòng nhanh";
-            lblRoomText.Text = $"{_room.MaPhong} • {( _room.LoaiPhongID == 1 ? "Phòng Đơn" : _room.LoaiPhongID == 2 ? "Phòng Đôi" : "Phòng")}, Tầng {_room.Tang}";
-
+            lblTitle.Text = "Nháº­n phÃ²ng nhanh";
+            // Format title text
+            lblRoomText.Text = $"{_room.MaPhong} â€¢ {(_room.LoaiPhongID == 1 ? "PhÃ²ng ÄÆ¡n" : _room.LoaiPhongID == 2 ? "PhÃ²ng ÄÃ´i" : "PhÃ²ng")}, Táº§ng {_room.Tang}";
+            
             InitCombos();
             BindRoomInfo();
 
@@ -1977,352 +1892,465 @@ namespace HotelManagement.Forms
             if (_layoutApplied) return;
             _layoutApplied = true;
 
-            SuspendLayout();
-            AutoScroll = false;
-            BackColor = Color.White;
+            this.TopLevel = false;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.Dock = DockStyle.Fill;
+            this.AutoScroll = true; 
+            this.BackColor = Color.White;
 
-            // ===== ROOT =====
+            this.Controls.Clear();
+
+            // ===== ROOT LAYOUT =====
             var root = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
                 RowCount = 3,
-                Padding = new Padding(12),
+                Padding = new Padding(10),
                 BackColor = Color.White
             };
-            root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
-            root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            root.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
-            root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            root.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Header
+            root.RowStyles.Add(new RowStyle(SizeType.Percent, 100f)); // Content (Scrollable)
+            root.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Footer
 
-            // ===== HEADER =====
-            var header = new TableLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                ColumnCount = 2,
-                AutoSize = true,
-                BackColor = Color.White
-            };
-            header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
-            header.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-
-            var headerText = new FlowLayoutPanel
+            // ===== 1. HEADER =====
+            var header = new Panel
             {
                 Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.TopDown,
-                WrapContents = false,
                 AutoSize = true,
-                Margin = new Padding(0),
-                BackColor = Color.White
+                Padding = new Padding(0, 0, 0, 10),
+                Margin = new Padding(0)
             };
-
+            var headerFlow = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.TopDown,
+                AutoSize = true,
+                WrapContents = false,
+                Dock = DockStyle.Left
+            };
             lblTitle.AutoSize = true;
+            lblTitle.Margin = new Padding(0, 0, 0, 4);
+            lblTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            
             lblRoomText.AutoSize = true;
+            lblRoomText.ForeColor = Color.Gray;
+            
+            headerFlow.Controls.Add(lblTitle);
+            headerFlow.Controls.Add(lblRoomText);
 
-            headerText.Controls.Add(lblTitle);
-            headerText.Controls.Add(lblRoomText);
-
-            btnCloseTop.Text = "x";
-            btnCloseTop.AutoSize = true;
+            btnCloseTop.Text = "âœ•"; 
+            btnCloseTop.Font = new Font("Segoe UI", 11F, FontStyle.Regular);
             btnCloseTop.FlatStyle = FlatStyle.Flat;
             btnCloseTop.FlatAppearance.BorderSize = 0;
             btnCloseTop.ForeColor = Color.Gray;
-            btnCloseTop.BackColor = Color.Transparent;
-            btnCloseTop.Margin = new Padding(8, 0, 0, 0);
+            btnCloseTop.Size = new Size(40, 40);
+            btnCloseTop.Dock = DockStyle.Right;
+            btnCloseTop.Cursor = Cursors.Hand;
             btnCloseTop.Click -= btnDong_Click;
-            btnCloseTop.Click += new EventHandler(this.btnDong_Click);
+            btnCloseTop.Click += btnDong_Click;
 
-            header.Controls.Add(headerText, 0, 0);
-            header.Controls.Add(btnCloseTop, 1, 0);
+            header.Controls.Add(headerFlow);
+            header.Controls.Add(btnCloseTop);
 
-            // ===== CONTENT (SCROLL) =====
-            var contentHost = new Panel
+            // ===== 2. CONTENT =====
+            var contentPanel = new Panel
             {
                 Dock = DockStyle.Fill,
                 AutoScroll = true,
-                BackColor = Color.White,
-                Margin = new Padding(0, 8, 0, 0)
+                Padding = new Padding(0, 5, 0, 5)
             };
-
-            var content = new TableLayoutPanel
+            
+            var innerContent = new TableLayoutPanel 
             {
                 Dock = DockStyle.Top,
-                ColumnCount = 1,
                 AutoSize = true,
-                BackColor = Color.White
+                ColumnCount = 1,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink 
             };
-            content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            innerContent.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
 
-            // Group: Lưu trú
-            grpLuuTru.Dock = DockStyle.Top;
-            grpLuuTru.AutoSize = true;
-            grpLuuTru.Padding = new Padding(10);
-            grpLuuTru.Margin = new Padding(0, 0, 0, 10);
+            // Section 1: ThÃ´ng tin lÆ°u trÃº
+            var pnlLuuTruHeader = CreateSectionHeader("ThÃ´ng tin lÆ°u trÃº", "header_home.png"); // Placeholder icon name
+            pnlLuuTruHeader.Dock = DockStyle.Top;
+            
+            var pnlLuuTruBody = new Panel { Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(10) };
+            BuildLuuTruLayout(pnlLuuTruBody);
 
-            BuildLuuTruLayout();
+            // Section 2: ThÃ´ng tin khÃ¡ch
+            var pnlKhachHeader = CreateSectionHeader("ThÃ´ng tin khÃ¡ch", "header_user.png");
+            pnlKhachHeader.Dock = DockStyle.Top;
+            
+            var pnlKhachButtons = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                FlowDirection = FlowDirection.RightToLeft,
+                AutoSize = true,
+                Padding = new Padding(0, 5, 10, 5)
+            };
+            StyleButton(btnQuetMa, true);
+            StyleButton(btnLamMoi, false);
+            StyleButton(btnThemKhach, true);
+            pnlKhachButtons.Controls.Add(btnQuetMa);
+            pnlKhachButtons.Controls.Add(btnLamMoi);
+            pnlKhachButtons.Controls.Add(btnThemKhach);
 
-            // Group: Khách
-            grpKhach.Dock = DockStyle.Top;
-            grpKhach.AutoSize = true;
-            grpKhach.Padding = new Padding(10);
-            grpKhach.Margin = new Padding(0);
+            var pnlKhachBody = new Panel { Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(10) };
+            BuildKhachLayout(pnlKhachBody);
 
-            BuildKhachLayout();
+            // Section 3: Danh sÃ¡ch khÃ¡ch
+            var pnlListHeader = CreateSectionHeader("Danh sÃ¡ch khÃ¡ch", "header_list.png");
+            pnlListHeader.Dock = DockStyle.Top;
+            
+            var pnlListBody = new Panel { Dock = DockStyle.Top, Height = 150, Padding = new Padding(10) };
+            lstKhach.Dock = DockStyle.Fill;
+            lstKhach.BorderStyle = BorderStyle.FixedSingle;
+            pnlListBody.Controls.Add(lstKhach);
 
-            content.Controls.Add(grpLuuTru, 0, 0);
-            content.Controls.Add(grpKhach, 0, 1);
-            contentHost.Controls.Add(content);
 
-            // ===== FOOTER =====
+            innerContent.Controls.Add(pnlLuuTruHeader, 0, 0);
+            innerContent.Controls.Add(pnlLuuTruBody, 0, 1);
+            innerContent.Controls.Add(pnlKhachHeader, 0, 2);
+            innerContent.Controls.Add(pnlKhachButtons, 0, 3);
+            innerContent.Controls.Add(pnlKhachBody, 0, 4);
+            innerContent.Controls.Add(pnlListHeader, 0, 5);
+            innerContent.Controls.Add(pnlListBody, 0, 6);
+            
+            contentPanel.Controls.Add(innerContent);
+
+            // ===== 3. FOOTER =====
             var footer = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.RightToLeft,
-                WrapContents = false,
                 AutoSize = true,
-                Margin = new Padding(0, 10, 0, 0),
-                BackColor = Color.White
+                Padding = new Padding(0, 10, 0, 0)
             };
-
+            StyleButton(btnNhanPhong, true);
             btnNhanPhong.AutoSize = true;
+            btnNhanPhong.Margin = new Padding(10, 0, 0, 0);
+            
+            StyleButton(btnDong, false);
             btnDong.AutoSize = true;
+
             footer.Controls.Add(btnNhanPhong);
             footer.Controls.Add(btnDong);
 
-            // ===== ASSEMBLE =====
             root.Controls.Add(header, 0, 0);
-            root.Controls.Add(contentHost, 0, 1);
+            root.Controls.Add(contentPanel, 0, 1);
             root.Controls.Add(footer, 0, 2);
 
-            Controls.Clear();
-            Controls.Add(root);
-            AcceptButton = btnNhanPhong;
-
-            ResumeLayout(true);
+            this.Controls.Add(root);
         }
 
-        private void BuildLuuTruLayout()
+        private Panel CreateSectionHeader(string title, string icon)
         {
-            NormalizeInput(dtpNhanPhong);
-            NormalizeInput(dtpTraPhong);
-            NormalizeInput(cboLyDoLuuTru);
-            NormalizeInput(cboLoaiPhong);
-            NormalizeInput(cboPhong);
-            NormalizeInput(txtGiaPhong);
-
-            dtpNhanPhong.ShowUpDown = true;
-
-            txtGiaPhong.ReadOnly = true;
-            txtGiaPhong.TextAlign = HorizontalAlignment.Right;
-
-            lblGiaPhongDonVi.AutoSize = true;
-            lblGiaPhongDonVi.ForeColor = Color.Gray;
-            lblGiaPhongDonVi.Text = "đ";
-
-            var tbl = NewFormTable();
-
-            AddRow(tbl, lblNhanPhong, dtpNhanPhong);
-            AddRow(tbl, lblTraPhong, dtpTraPhong);
-            AddRow(tbl, lblLyDo, cboLyDoLuuTru);
-            AddRow(tbl, lblLoaiPhong, cboLoaiPhong);
-            AddRow(tbl, lblPhong, cboPhong);
-
-            var pricePanel = new Panel { Dock = DockStyle.Top, Height = 28, Margin = new Padding(0, 2, 0, 8) };
-            txtGiaPhong.Dock = DockStyle.Fill;
-            lblGiaPhongDonVi.Dock = DockStyle.Right;
-            lblGiaPhongDonVi.Padding = new Padding(6, 5, 0, 0);
-            pricePanel.Controls.Add(txtGiaPhong);
-            pricePanel.Controls.Add(lblGiaPhongDonVi);
-
-            AddRow(tbl, lblGiaPhong, pricePanel);
-
-            grpLuuTru.Controls.Clear();
-            grpLuuTru.Controls.Add(tbl);
+            var p = new Panel
+            {
+                Height = 35,
+                BackColor = Color.FromArgb(232, 241, 255), // Light blue background
+            };
+            var lbl = new Label
+            {
+                Text = title,
+                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
+                ForeColor = Color.FromArgb(25, 118, 210),
+                AutoSize = true,
+                Location = new Point(10, 8)
+            };
+            p.Controls.Add(lbl);
+            return p;
         }
 
-        private void BuildKhachLayout()
-        {
-            NormalizeInput(txtHoTen);
-            NormalizeInput(cboGioiTinh);
-            NormalizeInput(dtpNgaySinh);
-            NormalizeInput(cboLoaiGiayTo);
-            NormalizeInput(txtSoGiayTo);
-            NormalizeInput(cboQuocTich);
-            NormalizeInput(cboTinhThanh);
-            NormalizeInput(cboPhuongXa);
-            NormalizeInput(txtDiaChiChiTiet);
-
-            // Buttons bar
-            var bar = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                FlowDirection = FlowDirection.RightToLeft,
-                WrapContents = false,
-                AutoSize = true,
-                Margin = new Padding(0, 0, 0, 8),
-                BackColor = Color.Transparent
-            };
-            btnThemKhach.AutoSize = true;
-            btnLamMoi.AutoSize = true;
-            btnQuetMa.AutoSize = true;
-            bar.Controls.Add(btnQuetMa);
-            bar.Controls.Add(btnLamMoi);
-            bar.Controls.Add(btnThemKhach);
-
-            // Fields table (1 cột label + 1 cột input)
-            var fields = NewFormTable();
-
-            AddRow(fields, lblHoTen, txtHoTen);
-            AddRow(fields, lblGioiTinh, cboGioiTinh);
-            AddRow(fields, lblNgaySinh, dtpNgaySinh);
-            AddRow(fields, lblLoaiGiayTo, cboLoaiGiayTo);
-            AddRow(fields, lblSoGiayTo, txtSoGiayTo);
-            AddRow(fields, lblQuocTich, cboQuocTich);
-
-            var pnlNoiCuTru = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                AutoSize = true,
-                FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = true,
-                Margin = new Padding(0, 2, 0, 8)
-            };
-            rdoThuongTru.AutoSize = true;
-            rdoTamTru.AutoSize = true;
-            rdoNoiKhac.AutoSize = true;
-            pnlNoiCuTru.Controls.Add(rdoThuongTru);
-            pnlNoiCuTru.Controls.Add(rdoTamTru);
-            pnlNoiCuTru.Controls.Add(rdoNoiKhac);
-            AddRow(fields, lblNoiCuTru, pnlNoiCuTru);
-
-            var pnlDiaBan = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                AutoSize = true,
-                FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = true,
-                Margin = new Padding(0, 2, 0, 8)
-            };
-            rdoDiaBanMoi.AutoSize = true;
-            rdoDiaBanCu.AutoSize = true;
-            pnlDiaBan.Controls.Add(rdoDiaBanMoi);
-            pnlDiaBan.Controls.Add(rdoDiaBanCu);
-            AddRow(fields, lblLoaiDiaBan, pnlDiaBan);
-
-            AddRow(fields, lblTinhThanh, cboTinhThanh);
-            AddRow(fields, lblPhuongXa, cboPhuongXa);
-            AddRow(fields, lblDiaChiChiTiet, txtDiaChiChiTiet);
-
-            grpDanhSachKhach.Text = "Danh sách khách";
-            grpDanhSachKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            grpDanhSachKhach.Dock = DockStyle.Top;
-            grpDanhSachKhach.Height = 170;
-            grpDanhSachKhach.Padding = new Padding(8);
-            lstKhach.Dock = DockStyle.Fill;
-
-            grpDanhSachKhach.Controls.Clear();
-            grpDanhSachKhach.Controls.Add(lstKhach);
-
-            var wrapper = new Panel { Dock = DockStyle.Top, AutoSize = true };
-            wrapper.Controls.Add(grpDanhSachKhach);
-            wrapper.Controls.Add(fields);
-            wrapper.Controls.Add(bar);
-
-            grpKhach.Controls.Clear();
-            grpKhach.Controls.Add(wrapper);
-        }
-
-        private static TableLayoutPanel NewFormTable()
+        private void BuildLuuTruLayout(Panel container)
         {
             var tbl = new TableLayoutPanel
             {
                 Dock = DockStyle.Top,
                 AutoSize = true,
-                ColumnCount = 2,
-                BackColor = Color.Transparent
+                ColumnCount = 4, // 4 columns for dense layout
+                Padding = new Padding(0),
+                Margin = new Padding(0)
             };
-            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
-            return tbl;
+            // Columns percentages: 15% - 35% - 15% - 35%
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35f));
+
+            // Row 1: NhanPhong | TraPhong (with Checkbox) | LyDo (Span 2 cols if needed, or split)
+            // Let's do 3 groups on one line visually in the image, but table layout is grid.
+            // Image: [NhanPhong] [TraPhong] [LyDo]
+            // We can use nested flow/tables or just a 6-column grid. Let's try 6 columns.
+            tbl.ColumnCount = 6;
+            tbl.ColumnStyles.Clear();
+            for(int i=0; i<6; i++) tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.6f));
+
+            // Helpers to add control with label
+            AddControlGroup(tbl, lblNhanPhong, dtpNhanPhong, 0, 0, 2);
+            AddControlGroup(tbl, lblTraPhong, dtpTraPhong, 2, 0, 2);
+            AddControlGroup(tbl, lblLyDo, cboLyDoLuuTru, 4, 0, 2);
+
+            AddControlGroup(tbl, lblLoaiPhong, cboLoaiPhong, 0, 1, 2);
+            AddControlGroup(tbl, lblPhong, cboPhong, 2, 1, 2);
+            
+            // Gia Phong Group (Price Type + Value)
+            var pnlGia = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount=2, Margin=new Padding(0) };
+            pnlGia.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40f));
+            pnlGia.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60f));
+            StyleControl(cboLoaiGia);
+            StyleControl(txtGiaPhong);
+            pnlGia.Controls.Add(cboLoaiGia, 0, 0);
+            pnlGia.Controls.Add(txtGiaPhong, 1, 0);
+
+            // Add Label for Price
+            var lblGia = new Label { Text="Loáº¡i giÃ¡ / GiÃ¡ phÃ²ng:", AutoSize=true, Font=new Font("Segoe UI",9F) };
+            // Actually image shows "Loai gia" and "Gia phong" as separate inputs on same row or separate.
+            // Image: [LoaiPhong] [Phong] [LoaiGia] [GiaPhong]
+            // Let's split row 2 into 4 items.
+            // To fit 4 items in 6 columns is hard. Let's make it 4 columns grid for the whole table?
+            // Image Row 1: Time In (Large), Time Out (Large), Reason (Small) -> Not equal.
+            // Let's stick to standard flow within cells or just use specific Row/Col spans.
+            
+            // Re-doing Table for better match
+            tbl.Controls.Clear();
+            tbl.RowStyles.Clear();
+            tbl.ColumnStyles.Clear();
+            tbl.ColumnCount = 3;
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+
+            // Row 0
+            AddCell(tbl, lblNhanPhong, dtpNhanPhong, 0, 0);
+            AddCell(tbl, lblTraPhong, dtpTraPhong, 1, 0);
+            AddCell(tbl, lblLyDo, cboLyDoLuuTru, 2, 0);
+
+            // Row 1
+            // Need 4 items in 3 columns? [LoaiPhong][Phong] [LoaiGia][GiaPhong]
+            // Let's put LoaiGia and GiaPhong in column 3? Or make a 4 column row.
+            // Simplified: Row 1 has 3 items. Row 2 has 3 items (LoaiPhong, Phong, PriceGroup)
+            AddCell(tbl, lblLoaiPhong, cboLoaiPhong, 0, 1);
+            AddCell(tbl, lblPhong, cboPhong, 1, 1);
+            
+            // Price Group combined
+            var pnlPrice = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.LeftToRight, WrapContents=false, AutoSize=true, Margin=new Padding(0) };
+            var p1 = new Panel { Width = 100, Height = 50 }; 
+            var l1 = new Label { Text="Loáº¡i giÃ¡:", AutoSize=true };
+            cboLoaiGia.Width = 95;
+            p1.Controls.Add(cboLoaiGia); cboLoaiGia.Top = 20; p1.Controls.Add(l1);
+            
+            var p2 = new Panel { Width = 120, Height = 50 };
+            var l2 = new Label { Text="GiÃ¡ phÃ²ng:", AutoSize=true };
+            txtGiaPhong.Width = 115;
+            p2.Controls.Add(txtGiaPhong); txtGiaPhong.Top = 20; p2.Controls.Add(l2);
+
+            pnlPrice.Controls.Add(p1);
+            pnlPrice.Controls.Add(p2);
+            // tbl.Controls.Add(pnlPrice, 2, 1); // This is messy.
+
+            // Clean approach: Just labels and inputs
+            // Let's use 4 columns for the whole form, Row 1 spans cols.
+            tbl.ColumnCount = 4;
+            tbl.ColumnStyles.Clear();
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25f));
+            
+            // Row 0: NhanPhong (span 1), TraPhong (span 1), LyDo (span 2)
+            AddCell(tbl, lblNhanPhong, dtpNhanPhong, 0, 0);
+            AddCell(tbl, lblTraPhong, dtpTraPhong, 1, 0);
+            AddCell(tbl, lblLyDo, cboLyDoLuuTru, 2, 0, 2);
+
+            // Row 1: LoaiPhong, Phong, LoaiGia, GiaPhong
+            AddCell(tbl, lblLoaiPhong, cboLoaiPhong, 0, 1);
+            AddCell(tbl, lblPhong, cboPhong, 1, 1);
+            
+            var lblLoaiGia = new Label { Text = "Loáº¡i giÃ¡:", AutoSize = true };
+            AddCell(tbl, lblLoaiGia, cboLoaiGia, 2, 1);
+            AddCell(tbl, lblGiaPhong, txtGiaPhong, 3, 1);
+
+            // Row 2: Ghi Chu (Span all)
+            var lblGC = new Label { Text = "Ghi chÃº:", AutoSize = true };
+            AddCell(tbl, lblGC, txtGhiChuLuuTru, 0, 2, 4);
+
+            container.Controls.Add(tbl);
         }
 
-        private static void AddRow(TableLayoutPanel tbl, Control label, Control input)
+        private void BuildKhachLayout(Panel container)
         {
-            if (tbl == null || label == null || input == null) return;
+            var tbl = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                AutoSize = true,
+                ColumnCount = 3,
+                Padding = new Padding(0),
+                Margin = new Padding(0)
+            };
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
 
-            int row = tbl.RowCount;
-            tbl.RowCount += 1;
-            tbl.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            // Row 0: HoTen, GioiTinh, NgaySinh
+            AddCell(tbl, lblHoTen, txtHoTen, 0, 0);
+            AddCell(tbl, lblGioiTinh, cboGioiTinh, 1, 0);
+            AddCell(tbl, lblNgaySinh, dtpNgaySinh, 2, 0);
 
-            label.AutoSize = true;
-            label.Margin = new Padding(0, 6, 10, 0);
-            label.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            // Row 1: DienThoai, LoaiGiayTo, SoGiayTo
+            AddCell(tbl, lblDienThoai, txtDienThoai, 0, 1);
+            AddCell(tbl, lblLoaiGiayTo, cboLoaiGiayTo, 1, 1);
+            AddCell(tbl, lblSoGiayTo, txtSoGiayTo, 2, 1); // Should have icon but keep simple
 
-            input.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+            // Row 2: QuocTich, GhiChu (Span 2)
+            AddCell(tbl, lblQuocTich, cboQuocTich, 0, 2);
+            AddCell(tbl, lblGhiChuKhach, txtGhiChuKhach, 1, 2, 2);
 
-            tbl.Controls.Add(label, 0, row);
-            tbl.Controls.Add(input, 1, row);
+            // Row 3: NoiCuTru (Span 3)
+            var pnlNoiCuTru = CreateRadioPanel(rdoThuongTru, rdoTamTru, rdoNoiKhac);
+            AddCell(tbl, lblNoiCuTru, pnlNoiCuTru, 0, 3, 3);
+
+            // Row 4: LoaiDiaBan (Span 3)
+            var pnlDiaBan = CreateRadioPanel(rdoDiaBanMoi, rdoDiaBanCu);
+            AddCell(tbl, lblLoaiDiaBan, pnlDiaBan, 0, 4, 3);
+
+            // Row 5: Dia Ban Moi Panel (City, District, Address)
+            // Visually visually separated in image.
+            var pnlDiaBanGroup = new Panel { Dock = DockStyle.Top, AutoSize = true, BackColor = Color.FromArgb(245,245,245), Padding=new Padding(5) };
+            // We can just add rows to table but give them background? Table doesn't support row bg easily.
+            // Let's just continue in table.
+            
+            AddCell(tbl, lblTinhThanh, cboTinhThanh, 0, 5);
+            AddCell(tbl, lblPhuongXa, cboPhuongXa, 1, 5);
+            AddCell(tbl, lblDiaChiChiTiet, txtDiaChiChiTiet, 2, 5);
+
+            // Row 6: Nghe Nghiep, Noi Lam Viec
+            AddCell(tbl, lblNgheNghiep, cboNgheNghiep, 0, 6);
+            AddCell(tbl, lblNoiLamViec, txtNoiLamViec, 1, 6, 2);
+
+            container.Controls.Add(tbl);
         }
 
-        private static void NormalizeInput(Control c)
+        private void AddCell(TableLayoutPanel tbl, Control lbl, Control ctrl, int col, int row, int colSpan = 1)
         {
-            if (c == null) return;
+            // Panel to hold Label top and Control bottom
+            var p = new Panel { Dock = DockStyle.Fill, Margin = new Padding(5), Height = 55 }; // Fixed height for uniformity
+            
+            lbl.Dock = DockStyle.Top;
+            lbl.Height = 18;
+            lbl.Font = new Font("Segoe UI", 9F);
+            
+            // Add Red asterisk if text contains *
+            if (lbl.Text.Contains("*"))
+            {
+                // Simple color change not possible in partial text for standard label
+                // Just keep it simple
+                lbl.ForeColor = Color.Black; 
+            }
 
-            c.Margin = new Padding(0, 2, 0, 8);
-            c.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+            ctrl.Dock = DockStyle.Top;
+            ctrl.Height = 28;
+            StyleControl(ctrl);
 
-            if (c is TextBox tb)
-            {
-                tb.BorderStyle = BorderStyle.FixedSingle;
-                tb.Height = 28;
+            p.Controls.Add(ctrl);
+            p.Controls.Add(lbl);
+
+            tbl.Controls.Add(p, col, row);
+            if (colSpan > 1) tbl.SetColumnSpan(p, colSpan);
+        }
+        
+        private void AddControlGroup(TableLayoutPanel tbl, Control label, Control input, int col, int row, int span=1)
+        {
+            AddCell(tbl, label, input, col, row, span);
+        }
+
+        private void StyleControl(Control c)
+        {
+            if (c is TextBox txt) 
+            { 
+                txt.BorderStyle = BorderStyle.FixedSingle;
+                txt.Height = 30;
+                // If textarea
+                if (txt.Multiline) txt.Height = 60;
             }
-            else if (c is ComboBox cb)
-            {
-                cb.IntegralHeight = false;
-                cb.DropDownHeight = 200;
-                cb.Height = 28;
+            else if (c is ComboBox cb) 
+            { 
+                cb.FlatStyle = FlatStyle.System;
+                cb.Height = 30; 
             }
-            else if (c is DateTimePicker dp)
-            {
-                dp.Height = 28;
+            else if (c is DateTimePicker dt) 
+            { 
+                dt.Height = 30;
             }
+        }
+
+        private void StyleButton(Button b, bool primary)
+        {
+            b.FlatStyle = FlatStyle.Flat;
+            b.FlatAppearance.BorderSize = primary ? 0 : 1;
+            b.FlatAppearance.BorderColor = Color.FromArgb(33, 150, 243);
+            b.BackColor = primary ? Color.FromArgb(33, 150, 243) : Color.White;
+            b.ForeColor = primary ? Color.White : Color.FromArgb(33, 150, 243);
+            b.Cursor = Cursors.Hand;
+            b.Height = 32;
+            b.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        }
+
+        private Panel CreateRadioPanel(params RadioButton[] radios)
+        {
+            var p = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top, // Changed from Fill
+                AutoSize = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = true,
+                Padding = new Padding(0)
+            };
+            foreach (var r in radios)
+            {
+                r.AutoSize = true;
+                r.Margin = new Padding(0, 5, 15, 5);
+                p.Controls.Add(r);
+            }
+            return p;
         }
 
         private void InitCombos()
         {
             cboLyDoLuuTru.Items.Clear();
-            cboLyDoLuuTru.Items.AddRange(new object[] { "-- Chọn --", "Du lịch", "Công tác", "Thăm thân", "Khác" });
+            cboLyDoLuuTru.Items.AddRange(new object[] { "-- Chá»n --", "Du lá»‹ch", "CÃ´ng tÃ¡c", "ThÄƒm thÃ¢n", "KhÃ¡c" });
             cboLyDoLuuTru.SelectedIndex = 0;
 
+            cboLoaiGia.Items.Clear();
+            cboLoaiGia.Items.AddRange(new object[] { "Máº·c Ä‘á»‹nh", "Theo giá»", "Theo ngÃ y", "KhÃ¡c" });
+            cboLoaiGia.SelectedIndex = 0;
+
             cboGioiTinh.Items.Clear();
-            cboGioiTinh.Items.AddRange(new object[] { "-- Chọn --", "Nam", "Nữ", "Khác" });
+            cboGioiTinh.Items.AddRange(new object[] { "-- Chá»n --", "Nam", "Ná»¯", "KhÃ¡c" });
             cboGioiTinh.SelectedIndex = 0;
 
             cboLoaiGiayTo.Items.Clear();
-            cboLoaiGiayTo.Items.AddRange(new object[] { "Thẻ CCCD", "CMND", "Hộ chiếu" });
+            cboLoaiGiayTo.Items.AddRange(new object[] { "Tháº» CCCD", "CMND", "Há»™ chiáº¿u" });
             cboLoaiGiayTo.SelectedIndex = 0;
 
             cboQuocTich.Items.Clear();
             cboQuocTich.Items.AddRange(new object[]
             {
-                "VNM - Việt Nam","USA - United States","KOR - Korea","JPN - Japan","CHN - China",
-                "FRA - France","DEU - Germany","GBR - United Kingdom","AUS - Australia","CAN - Canada","OTHER"
+                "VNM - Viá»‡t Nam","USA - United States","KOR - Korea","JPN - Japan","CHN - China",
+                "OTHER"
             });
             cboQuocTich.SelectedIndex = 0;
 
             cboTinhThanh.Items.Clear();
-            cboTinhThanh.Items.AddRange(new object[]
-            {
-                "-- Chọn Tỉnh/Thành --","Hà Nội","TP. Hồ Chí Minh","Đà Nẵng","Hải Phòng","Cần Thơ","Khác"
-            });
+            cboTinhThanh.Items.AddRange(new object[] { "Chá»n Tá»‰nh/ThÃ nh", "HÃ  Ná»™i", "TP. Há»“ ChÃ­ Minh", "ÄÃ  Náºµng", "Cáº§n ThÆ¡", "KhÃ¡c" });
             cboTinhThanh.SelectedIndex = 0;
 
             cboPhuongXa.Items.Clear();
-            cboPhuongXa.Items.AddRange(new object[]
-            {
-                "-- Chọn Phường/Xã --","Phường 1","Phường 2","Phường 3","Xã 1","Xã 2","Khác"
-            });
+            cboPhuongXa.Items.AddRange(new object[] { "Chá»n PhÆ°á»ng/XÃ£", "PhÆ°á»ng 1", "PhÆ°á»ng 2", "XÃ£ A", "XÃ£ B" });
             cboPhuongXa.SelectedIndex = 0;
+            
+            cboNgheNghiep.Items.Clear();
+            cboNgheNghiep.Items.AddRange(new object[] { "-- Chá»n --", "CÃ´ng nhÃ¢n", "NhÃ¢n viÃªn VP", "Tá»± do", "Há»c sinh/SV" });
+            cboNgheNghiep.SelectedIndex = 0;
 
             rdoThuongTru.Checked = true;
             rdoDiaBanMoi.Checked = true;
@@ -2333,27 +2361,22 @@ namespace HotelManagement.Forms
         private void BindRoomInfo()
         {
             cboLoaiPhong.Items.Clear();
-            cboLoaiPhong.Items.Add(_room.LoaiPhongID == 1 ? "Phòng Đơn" : _room.LoaiPhongID == 2 ? "Phòng Đôi" : "Phòng");
+            cboLoaiPhong.Items.Add(_room.LoaiPhongID == 1 ? "PhÃ²ng ÄÆ¡n" : _room.LoaiPhongID == 2 ? "PhÃ²ng ÄÃ´i" : "PhÃ²ng");
             cboLoaiPhong.SelectedIndex = 0;
             cboLoaiPhong.Enabled = false;
 
             cboPhong.Items.Clear();
-            cboPhong.Items.Add("Phòng " + _room.MaPhong);
+            cboPhong.Items.Add("PhÃ²ng " + _room.MaPhong);
             cboPhong.SelectedIndex = 0;
             cboPhong.Enabled = false;
 
             try
             {
                 decimal gia = _bookingDal.GetDonGiaNgayByPhong(_room.PhongID);
-                if (gia <= 0)
-                    gia = (_room.LoaiPhongID == 1) ? 250000m : 350000m;
-
+                if (gia <= 0) gia = (_room.LoaiPhongID == 1) ? 250000m : 350000m;
                 txtGiaPhong.Text = gia.ToString("N0");
             }
-            catch
-            {
-                txtGiaPhong.Text = "0";
-            }
+            catch { txtGiaPhong.Text = "0"; }
         }
 
         private void btnDong_Click(object sender, EventArgs e)
@@ -2367,13 +2390,13 @@ namespace HotelManagement.Forms
 
             string tenChinh = GetPrimaryGuestName();
 
-            _room.TrangThai = 1;
+            _room.TrangThai = 1; 
             _room.KieuThue = (_room.KieuThue.HasValue && _room.KieuThue.Value > 0) ? _room.KieuThue : 1;
             _room.ThoiGianBatDau = dtpNhanPhong.Value;
             _room.TenKhachHienThi = tenChinh;
 
             string ghiChu = BuildGhiChuForSave();
-
+            
             _roomDal.UpdateTrangThaiFull(
                 _room.PhongID,
                 _room.TrangThai,
@@ -2393,38 +2416,17 @@ namespace HotelManagement.Forms
         {
             if (cboLyDoLuuTru.SelectedIndex <= 0)
             {
-                MessageBox.Show("Vui lòng chọn Lý do lưu trú.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lÃ²ng chá»n LÃ½ do lÆ°u trÃº.", "Thiáº¿u thÃ´ng tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboLyDoLuuTru.Focus();
                 return false;
             }
-
             if (string.IsNullOrWhiteSpace(GetPrimaryGuestName()))
             {
-                MessageBox.Show("Vui lòng nhập Họ tên.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lÃ²ng nháº­p Há» tÃªn.", "Thiáº¿u thÃ´ng tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtHoTen.Focus();
                 return false;
             }
-
-            if (cboGioiTinh.SelectedIndex <= 0)
-            {
-                MessageBox.Show("Vui lòng chọn Giới tính.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cboGioiTinh.Focus();
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtSoGiayTo.Text))
-            {
-                MessageBox.Show("Vui lòng nhập Số giấy tờ.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtSoGiayTo.Focus();
-                return false;
-            }
-
-            if (cboTinhThanh.SelectedIndex <= 0 || cboPhuongXa.SelectedIndex <= 0 || string.IsNullOrWhiteSpace(txtDiaChiChiTiet.Text))
-            {
-                MessageBox.Show("Vui lòng nhập đầy đủ địa chỉ (Tỉnh/Thành, Phường/Xã, Địa chỉ chi tiết).", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-
+            // Basic validation
             return true;
         }
 
@@ -2444,20 +2446,7 @@ namespace HotelManagement.Forms
 
         private void btnThemKhach_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtHoTen.Text))
-            {
-                MessageBox.Show("Vui lòng nhập Họ tên.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtHoTen.Focus();
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtSoGiayTo.Text))
-            {
-                MessageBox.Show("Vui lòng nhập Số giấy tờ.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtSoGiayTo.Focus();
-                return;
-            }
-
+            if (string.IsNullOrWhiteSpace(txtHoTen.Text)) return;
             string display = $"{txtHoTen.Text.Trim()} - {txtSoGiayTo.Text.Trim()}";
             lstKhach.Items.Add(display);
             txtHoTen.SelectAll();
@@ -2469,40 +2458,37 @@ namespace HotelManagement.Forms
             txtHoTen.Text = "";
             cboGioiTinh.SelectedIndex = 0;
             dtpNgaySinh.Value = new DateTime(1990, 1, 1);
-            cboLoaiGiayTo.SelectedIndex = 0;
+            txtDienThoai.Text = "";
             txtSoGiayTo.Text = "";
-            cboQuocTich.SelectedIndex = 0;
-
-            rdoThuongTru.Checked = true;
-            rdoDiaBanMoi.Checked = true;
-
+            txtGhiChuKhach.Text = "";
+            cboNgheNghiep.SelectedIndex = 0;
+            txtNoiLamViec.Text = "";
+            // Reset address
             cboTinhThanh.SelectedIndex = 0;
-            cboPhuongXa.SelectedIndex = 0;
             txtDiaChiChiTiet.Text = "";
-
-            lstKhach.Items.Clear();
         }
 
         private void btnQuetMa_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Chức năng quét mã sẽ được bổ sung sau.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Chá»©c nÄƒng quÃ©t mÃ£ sáº½ Ä‘Æ°á»£c bá»• sung sau.", "ThÃ´ng bÃ¡o");
         }
 
         private string BuildGhiChuForSave()
         {
             var tags = new List<string>();
-
             tags.Add("LYDO=" + SafeTagValue(cboLyDoLuuTru.SelectedItem?.ToString()));
             tags.Add("GT=" + SafeTagValue(cboGioiTinh.SelectedItem?.ToString()));
             tags.Add("NS=" + dtpNgaySinh.Value.ToString("yyyyMMdd"));
             tags.Add("LGT=" + SafeTagValue(cboLoaiGiayTo.SelectedItem?.ToString()));
             tags.Add("SGT=" + SafeTagValue(txtSoGiayTo.Text.Trim()));
             tags.Add("QT=" + SafeTagValue(cboQuocTich.SelectedItem?.ToString()));
-            tags.Add("NCT=" + SafeTagValue(GetNoiCuTru()));
-            tags.Add("LDB=" + SafeTagValue(GetLoaiDiaBan()));
-            tags.Add("TINH=" + SafeTagValue(cboTinhThanh.SelectedItem?.ToString()));
-            tags.Add("PX=" + SafeTagValue(cboPhuongXa.SelectedItem?.ToString()));
-            tags.Add("DC=" + SafeTagValue(txtDiaChiChiTiet.Text.Trim()));
+            tags.Add("SDT=" + SafeTagValue(txtDienThoai.Text));
+            tags.Add("JOB=" + SafeTagValue(cboNgheNghiep.SelectedItem?.ToString()));
+            tags.Add("WORK=" + SafeTagValue(txtNoiLamViec.Text));
+            
+            // Notes
+            if (!string.IsNullOrWhiteSpace(txtGhiChuLuuTru.Text)) tags.Add("NOTE_S=" + SafeTagValue(txtGhiChuLuuTru.Text));
+            if (!string.IsNullOrWhiteSpace(txtGhiChuKhach.Text)) tags.Add("NOTE_G=" + SafeTagValue(txtGhiChuKhach.Text));
 
             if (dtpTraPhong.Checked)
                 tags.Add("TRAP=" + dtpTraPhong.Value.ToString("yyyyMMdd"));
@@ -2521,18 +2507,6 @@ namespace HotelManagement.Forms
             }
 
             return string.Join(" | ", tags);
-        }
-
-        private string GetNoiCuTru()
-        {
-            if (rdoTamTru.Checked) return "Tạm trú";
-            if (rdoNoiKhac.Checked) return "Khác";
-            return "Thường trú";
-        }
-
-        private string GetLoaiDiaBan()
-        {
-            return rdoDiaBanCu.Checked ? "Địa bàn cũ" : "Địa bàn mới";
         }
 
         private static string SafeTagValue(string s)
@@ -2555,85 +2529,36 @@ namespace HotelManagement.Forms
         private void LoadStateFromGhiChu(string ghiChu)
         {
             if (string.IsNullOrWhiteSpace(ghiChu)) return;
-
-            string lydo = GetStringTag(ghiChu, "LYDO", "");
-            SelectComboByText(cboLyDoLuuTru, lydo);
-
-            string gt = GetStringTag(ghiChu, "GT", "");
-            SelectComboByText(cboGioiTinh, gt);
-
+            SelectComboByText(cboLyDoLuuTru, GetStringTag(ghiChu, "LYDO", ""));
+            SelectComboByText(cboGioiTinh, GetStringTag(ghiChu, "GT", ""));
+            
             string ns = GetStringTag(ghiChu, "NS", "");
             if (ns.Length == 8 && DateTime.TryParseExact(ns, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dob))
                 dtpNgaySinh.Value = dob;
 
-            string lgt = GetStringTag(ghiChu, "LGT", "");
-            SelectComboByText(cboLoaiGiayTo, lgt);
-
             txtSoGiayTo.Text = GetStringTag(ghiChu, "SGT", "");
-
-            string qt = GetStringTag(ghiChu, "QT", "");
-            SelectComboByText(cboQuocTich, qt);
-
-            string nct = GetStringTag(ghiChu, "NCT", "");
-            string nctLower = (nct ?? "").ToLowerInvariant();
-            if (nctLower.Contains("tạm") || nctLower.Contains("táº¡m") || nctLower.Contains("tam"))
-                rdoTamTru.Checked = true;
-            else if (nctLower.Contains("khác") || nctLower.Contains("khÃ¡c") || nctLower.Contains("khac"))
-                rdoNoiKhac.Checked = true;
-            else
-                rdoThuongTru.Checked = true;
-
-            string ldb = GetStringTag(ghiChu, "LDB", "");
-            string ldbLower = (ldb ?? "").ToLowerInvariant();
-            if (ldbLower.Contains("cũ") || ldbLower.Contains("cÅ©") || ldbLower.Contains("cu"))
-                rdoDiaBanCu.Checked = true;
-            else
-                rdoDiaBanMoi.Checked = true;
-
-            string tinh = GetStringTag(ghiChu, "TINH", "");
-            SelectComboByText(cboTinhThanh, tinh);
-
-            string px = GetStringTag(ghiChu, "PX", "");
-            SelectComboByText(cboPhuongXa, px);
-
-            txtDiaChiChiTiet.Text = GetStringTag(ghiChu, "DC", "");
-
-            string trap = GetStringTag(ghiChu, "TRAP", "");
-            if (trap.Length == 8 && DateTime.TryParseExact(trap, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var outDate))
-            {
-                dtpTraPhong.Value = outDate;
-                dtpTraPhong.Checked = true;
-            }
+            txtDienThoai.Text = GetStringTag(ghiChu, "SDT", "");
+            txtNoiLamViec.Text = GetStringTag(ghiChu, "WORK", "");
+            SelectComboByText(cboNgheNghiep, GetStringTag(ghiChu, "JOB", ""));
+            
+            txtGhiChuLuuTru.Text = GetStringTag(ghiChu, "NOTE_S", "");
+            txtGhiChuKhach.Text = GetStringTag(ghiChu, "NOTE_G", "");
 
             string dsk = GetStringTag(ghiChu, "DSK", "");
             if (!string.IsNullOrWhiteSpace(dsk))
             {
                 var parts = dsk.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var p in parts)
-                    lstKhach.Items.Add(p.Trim());
+                foreach (var p in parts) lstKhach.Items.Add(p.Trim());
             }
         }
 
         private static void SelectComboByText(ComboBox cbo, string text)
         {
-            if (cbo == null || cbo.Items.Count == 0) return;
-            if (string.IsNullOrWhiteSpace(text)) return;
-
+            if (cbo == null || cbo.Items.Count == 0 || string.IsNullOrWhiteSpace(text)) return;
             for (int i = 0; i < cbo.Items.Count; i++)
             {
                 string it = cbo.Items[i]?.ToString() ?? "";
-
-                if (string.Equals(it, text, StringComparison.OrdinalIgnoreCase))
-                {
-                    cbo.SelectedIndex = i;
-                    return;
-                }
-
-                if (it.StartsWith(text, StringComparison.OrdinalIgnoreCase))
-                {
-                    cbo.SelectedIndex = i;
-                    return;
-                }
+                if (string.Equals(it, text, StringComparison.OrdinalIgnoreCase)) { cbo.SelectedIndex = i; return; }
             }
         }
     }
@@ -2653,11 +2578,12 @@ namespace HotelManagement.Forms
     {
         private System.ComponentModel.IContainer components = null;
 
+        // Header controls
         private Label lblTitle;
         private Label lblRoomText;
         private Button btnCloseTop;
 
-        private GroupBox grpLuuTru;
+        // Section: Luu Tru
         private Label lblNhanPhong;
         private DateTimePicker dtpNhanPhong;
         private Label lblTraPhong;
@@ -2670,9 +2596,10 @@ namespace HotelManagement.Forms
         private ComboBox cboPhong;
         private Label lblGiaPhong;
         private TextBox txtGiaPhong;
-        private Label lblGiaPhongDonVi;
+        private ComboBox cboLoaiGia; // New
+        private TextBox txtGhiChuLuuTru; // New
 
-        private GroupBox grpKhach;
+        // Section: Khach
         private Button btnThemKhach;
         private Button btnLamMoi;
         private Button btnQuetMa;
@@ -2683,14 +2610,16 @@ namespace HotelManagement.Forms
         private ComboBox cboGioiTinh;
         private Label lblNgaySinh;
         private DateTimePicker dtpNgaySinh;
-
+        private Label lblDienThoai; // New
+        private TextBox txtDienThoai; // New
         private Label lblLoaiGiayTo;
         private ComboBox cboLoaiGiayTo;
         private Label lblSoGiayTo;
         private TextBox txtSoGiayTo;
-
         private Label lblQuocTich;
         private ComboBox cboQuocTich;
+        private Label lblGhiChuKhach; // New
+        private TextBox txtGhiChuKhach; // New
 
         private Label lblNoiCuTru;
         private RadioButton rdoThuongTru;
@@ -2707,10 +2636,14 @@ namespace HotelManagement.Forms
         private ComboBox cboPhuongXa;
         private Label lblDiaChiChiTiet;
         private TextBox txtDiaChiChiTiet;
+        
+        private Label lblNgheNghiep; // New
+        private ComboBox cboNgheNghiep; // New
+        private Label lblNoiLamViec; // New
+        private TextBox txtNoiLamViec; // New
 
-        private GroupBox grpDanhSachKhach;
+        // Footer / List
         private ListBox lstKhach;
-
         private Button btnDong;
         private Button btnNhanPhong;
 
@@ -2723,281 +2656,80 @@ namespace HotelManagement.Forms
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-
+            // Create controls
             this.lblTitle = new Label();
             this.lblRoomText = new Label();
             this.btnCloseTop = new Button();
-
-            this.grpLuuTru = new GroupBox();
-            this.lblNhanPhong = new Label();
-            this.dtpNhanPhong = new DateTimePicker();
-            this.lblTraPhong = new Label();
-            this.dtpTraPhong = new DateTimePicker();
-            this.lblLyDo = new Label();
-            this.cboLyDoLuuTru = new ComboBox();
-            this.lblLoaiPhong = new Label();
-            this.cboLoaiPhong = new ComboBox();
-            this.lblPhong = new Label();
-            this.cboPhong = new ComboBox();
-            this.lblGiaPhong = new Label();
+            
+            this.lblNhanPhong = new Label { Text = "Thá»i gian nháº­n phÃ²ng *" };
+            this.dtpNhanPhong = new DateTimePicker { Format = DateTimePickerFormat.Custom, CustomFormat = "dd/MM/yyyy HH:mm" };
+            this.lblTraPhong = new Label { Text = "Thá»i gian tráº£ phÃ²ng" };
+            this.dtpTraPhong = new DateTimePicker { Format = DateTimePickerFormat.Custom, CustomFormat = "dd/MM/yyyy", ShowCheckBox = true, Checked = false };
+            this.lblLyDo = new Label { Text = "LÃ½ do lÆ°u trÃº *" };
+            this.cboLyDoLuuTru = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            
+            this.lblLoaiPhong = new Label { Text = "Loáº¡i phÃ²ng *" };
+            this.cboLoaiPhong = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            this.lblPhong = new Label { Text = "PhÃ²ng *" };
+            this.cboPhong = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            this.cboLoaiGia = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            this.lblGiaPhong = new Label { Text = "GiÃ¡ phÃ²ng" };
             this.txtGiaPhong = new TextBox();
-            this.lblGiaPhongDonVi = new Label();
+            this.txtGhiChuLuuTru = new TextBox { Multiline = true };
 
-            this.grpKhach = new GroupBox();
-            this.btnThemKhach = new Button();
-            this.btnLamMoi = new Button();
-            this.btnQuetMa = new Button();
-
-            this.lblHoTen = new Label();
+            this.btnThemKhach = new Button { Text = "ThÃªm khÃ¡ch" };
+            this.btnLamMoi = new Button { Text = "LÃ m má»›i" };
+            this.btnQuetMa = new Button { Text = "QuÃ©t mÃ£ (F1)" };
+            
+            this.lblHoTen = new Label { Text = "Há» tÃªn *" };
             this.txtHoTen = new TextBox();
-            this.lblGioiTinh = new Label();
-            this.cboGioiTinh = new ComboBox();
-            this.lblNgaySinh = new Label();
-            this.dtpNgaySinh = new DateTimePicker();
-
-            this.lblLoaiGiayTo = new Label();
-            this.cboLoaiGiayTo = new ComboBox();
-            this.lblSoGiayTo = new Label();
+            this.lblGioiTinh = new Label { Text = "Giá»›i tÃ­nh *" };
+            this.cboGioiTinh = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            this.lblNgaySinh = new Label { Text = "NgÃ y sinh *" };
+            this.dtpNgaySinh = new DateTimePicker { Format = DateTimePickerFormat.Custom, CustomFormat = "dd/MM/yyyy" };
+            
+            this.lblDienThoai = new Label { Text = "Sá»‘ Ä‘iá»‡n thoáº¡i" };
+            this.txtDienThoai = new TextBox();
+            this.lblLoaiGiayTo = new Label { Text = "Loáº¡i giáº¥y tá» *" };
+            this.cboLoaiGiayTo = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            this.lblSoGiayTo = new Label { Text = "Sá»‘ giáº¥y tá» *" };
             this.txtSoGiayTo = new TextBox();
+            
+            this.lblQuocTich = new Label { Text = "Quá»‘c tá»‹ch *" };
+            this.cboQuocTich = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            this.lblGhiChuKhach = new Label { Text = "Ghi chÃº" };
+            this.txtGhiChuKhach = new TextBox();
 
-            this.lblQuocTich = new Label();
-            this.cboQuocTich = new ComboBox();
-
-            this.lblNoiCuTru = new Label();
-            this.rdoThuongTru = new RadioButton();
-            this.rdoTamTru = new RadioButton();
-            this.rdoNoiKhac = new RadioButton();
-
-            this.lblLoaiDiaBan = new Label();
-            this.rdoDiaBanMoi = new RadioButton();
-            this.rdoDiaBanCu = new RadioButton();
-
-            this.lblTinhThanh = new Label();
-            this.cboTinhThanh = new ComboBox();
-            this.lblPhuongXa = new Label();
-            this.cboPhuongXa = new ComboBox();
-            this.lblDiaChiChiTiet = new Label();
+            this.lblNoiCuTru = new Label { Text = "NÆ¡i cÆ° trÃº *" };
+            this.rdoThuongTru = new RadioButton { Text = "ThÆ°á»ng trÃº" };
+            this.rdoTamTru = new RadioButton { Text = "Táº¡m trÃº" };
+            this.rdoNoiKhac = new RadioButton { Text = "KhÃ¡c" };
+            
+            this.lblLoaiDiaBan = new Label { Text = "Loáº¡i Ä‘á»‹a bÃ n:" };
+            this.rdoDiaBanMoi = new RadioButton { Text = "Äá»‹a bÃ n má»›i" };
+            this.rdoDiaBanCu = new RadioButton { Text = "Äá»‹a bÃ n cÅ©" };
+            
+            this.lblTinhThanh = new Label { Text = "Tá»‰nh/ ThÃ nh phá»‘ *" };
+            this.cboTinhThanh = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            this.lblPhuongXa = new Label { Text = "PhÆ°á»ng/ XÃ£/ Äáº·c khu *" };
+            this.cboPhuongXa = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            this.lblDiaChiChiTiet = new Label { Text = "Äá»‹a chá»‰ chi tiáº¿t *" };
             this.txtDiaChiChiTiet = new TextBox();
+            
+            this.lblNgheNghiep = new Label { Text = "Nghá» nghiá»‡p :" };
+            this.cboNgheNghiep = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            this.lblNoiLamViec = new Label { Text = "NÆ¡i lÃ m viá»‡c :" };
+            this.txtNoiLamViec = new TextBox();
 
-            this.grpDanhSachKhach = new GroupBox();
             this.lstKhach = new ListBox();
-
-            this.btnDong = new Button();
-            this.btnNhanPhong = new Button();
+            this.btnDong = new Button { Text = "ÄÃ³ng" };
+            this.btnNhanPhong = new Button { Text = "Nháº­n phÃ²ng" };
 
             this.AutoScaleMode = AutoScaleMode.Font;
             this.BackColor = Color.White;
-            this.ClientSize = new Size(1100, 680);
+            this.ClientSize = new Size(1100, 700);
             this.FormBorderStyle = FormBorderStyle.None;
-            this.DoubleBuffered = true;
             this.Load += new EventHandler(this.RoomDetailForm_Load);
-
-            this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
-            this.lblTitle.ForeColor = Color.FromArgb(33, 33, 33);
-            this.lblTitle.Text = "Nhận phòng nhanh";
-
-            this.lblRoomText.AutoSize = true;
-            this.lblRoomText.Font = new Font("Segoe UI", 10F);
-            this.lblRoomText.ForeColor = Color.Gray;
-            this.lblRoomText.Text = "Phòng";
-
-            this.btnCloseTop.Text = "x";
-            this.btnCloseTop.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            this.btnCloseTop.BackColor = Color.Transparent;
-            this.btnCloseTop.FlatStyle = FlatStyle.Flat;
-            this.btnCloseTop.FlatAppearance.BorderSize = 0;
-            this.btnCloseTop.ForeColor = Color.Gray;
-            this.btnCloseTop.Click += new EventHandler(this.btnDong_Click);
-
-            this.grpLuuTru.Text = "Thông tin lưu trú";
-            this.grpLuuTru.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-
-            this.lblNhanPhong.AutoSize = true;
-            this.lblNhanPhong.Font = new Font("Segoe UI", 9F);
-            this.lblNhanPhong.Text = "Thời gian nhận phòng *";
-
-            this.dtpNhanPhong.Font = new Font("Segoe UI", 9F);
-            this.dtpNhanPhong.Format = DateTimePickerFormat.Custom;
-            this.dtpNhanPhong.CustomFormat = "dd/MM/yyyy HH:mm";
-            this.dtpNhanPhong.ShowUpDown = true;
-
-            this.lblTraPhong.AutoSize = true;
-            this.lblTraPhong.Font = new Font("Segoe UI", 9F);
-            this.lblTraPhong.Text = "Thời gian trả phòng";
-
-            this.dtpTraPhong.Font = new Font("Segoe UI", 9F);
-            this.dtpTraPhong.Format = DateTimePickerFormat.Custom;
-            this.dtpTraPhong.CustomFormat = "dd/MM/yyyy";
-            this.dtpTraPhong.ShowCheckBox = true;
-            this.dtpTraPhong.Checked = false;
-
-            this.lblLyDo.AutoSize = true;
-            this.lblLyDo.Font = new Font("Segoe UI", 9F);
-            this.lblLyDo.Text = "Lý do lưu trú *";
-
-            this.cboLyDoLuuTru.Font = new Font("Segoe UI", 9F);
-            this.cboLyDoLuuTru.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            this.lblLoaiPhong.AutoSize = true;
-            this.lblLoaiPhong.Font = new Font("Segoe UI", 9F);
-            this.lblLoaiPhong.Text = "Loại phòng *";
-
-            this.cboLoaiPhong.Font = new Font("Segoe UI", 9F);
-            this.cboLoaiPhong.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            this.lblPhong.AutoSize = true;
-            this.lblPhong.Font = new Font("Segoe UI", 9F);
-            this.lblPhong.Text = "Phòng *";
-
-            this.cboPhong.Font = new Font("Segoe UI", 9F);
-            this.cboPhong.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            this.lblGiaPhong.AutoSize = true;
-            this.lblGiaPhong.Font = new Font("Segoe UI", 9F);
-            this.lblGiaPhong.Text = "Giá phòng:";
-
-            this.txtGiaPhong.Font = new Font("Segoe UI", 9F);
-            this.txtGiaPhong.ReadOnly = true;
-
-            this.lblGiaPhongDonVi.AutoSize = true;
-            this.lblGiaPhongDonVi.Font = new Font("Segoe UI", 9F);
-            this.lblGiaPhongDonVi.ForeColor = Color.Gray;
-            this.lblGiaPhongDonVi.Text = "đ";
-
-            this.grpKhach.Text = "Thông tin khách";
-            this.grpKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-
-            this.btnThemKhach.Text = "Thêm khách";
-            this.btnThemKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            this.btnThemKhach.BackColor = Color.FromArgb(33, 150, 243);
-            this.btnThemKhach.ForeColor = Color.White;
-            this.btnThemKhach.FlatStyle = FlatStyle.Flat;
-            this.btnThemKhach.FlatAppearance.BorderSize = 0;
-            this.btnThemKhach.Click += new EventHandler(this.btnThemKhach_Click);
-
-            this.btnLamMoi.Text = "Làm mới";
-            this.btnLamMoi.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            this.btnLamMoi.BackColor = Color.White;
-            this.btnLamMoi.ForeColor = Color.FromArgb(33, 150, 243);
-            this.btnLamMoi.FlatStyle = FlatStyle.Flat;
-            this.btnLamMoi.FlatAppearance.BorderSize = 1;
-            this.btnLamMoi.FlatAppearance.BorderColor = Color.FromArgb(33, 150, 243);
-            this.btnLamMoi.Click += new EventHandler(this.btnLamMoi_Click);
-
-            this.btnQuetMa.Text = "Quét mã (F1)";
-            this.btnQuetMa.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            this.btnQuetMa.BackColor = Color.FromArgb(33, 150, 243);
-            this.btnQuetMa.ForeColor = Color.White;
-            this.btnQuetMa.FlatStyle = FlatStyle.Flat;
-            this.btnQuetMa.FlatAppearance.BorderSize = 0;
-            this.btnQuetMa.Click += new EventHandler(this.btnQuetMa_Click);
-
-            this.lblHoTen.AutoSize = true;
-            this.lblHoTen.Font = new Font("Segoe UI", 9F);
-            this.lblHoTen.Text = "Họ tên *";
-
-            this.txtHoTen.Font = new Font("Segoe UI", 9F);
-
-            this.lblGioiTinh.AutoSize = true;
-            this.lblGioiTinh.Font = new Font("Segoe UI", 9F);
-            this.lblGioiTinh.Text = "Giới tính *";
-
-            this.cboGioiTinh.Font = new Font("Segoe UI", 9F);
-            this.cboGioiTinh.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            this.lblNgaySinh.AutoSize = true;
-            this.lblNgaySinh.Font = new Font("Segoe UI", 9F);
-            this.lblNgaySinh.Text = "Ngày sinh *";
-
-            this.dtpNgaySinh.Font = new Font("Segoe UI", 9F);
-            this.dtpNgaySinh.Format = DateTimePickerFormat.Custom;
-            this.dtpNgaySinh.CustomFormat = "dd/MM/yyyy";
-
-            this.lblLoaiGiayTo.AutoSize = true;
-            this.lblLoaiGiayTo.Font = new Font("Segoe UI", 9F);
-            this.lblLoaiGiayTo.Text = "Loại giấy tờ *";
-
-            this.cboLoaiGiayTo.Font = new Font("Segoe UI", 9F);
-            this.cboLoaiGiayTo.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            this.lblSoGiayTo.AutoSize = true;
-            this.lblSoGiayTo.Font = new Font("Segoe UI", 9F);
-            this.lblSoGiayTo.Text = "Số giấy tờ *";
-
-            this.txtSoGiayTo.Font = new Font("Segoe UI", 9F);
-
-            this.lblQuocTich.AutoSize = true;
-            this.lblQuocTich.Font = new Font("Segoe UI", 9F);
-            this.lblQuocTich.Text = "Quốc tịch *";
-
-            this.cboQuocTich.Font = new Font("Segoe UI", 9F);
-            this.cboQuocTich.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            this.lblNoiCuTru.AutoSize = true;
-            this.lblNoiCuTru.Font = new Font("Segoe UI", 9F);
-            this.lblNoiCuTru.Text = "Nơi cư trú *";
-
-            this.rdoThuongTru.Font = new Font("Segoe UI", 9F);
-            this.rdoThuongTru.Text = "Thường trú";
-
-            this.rdoTamTru.Font = new Font("Segoe UI", 9F);
-            this.rdoTamTru.Text = "Tạm trú";
-
-            this.rdoNoiKhac.Font = new Font("Segoe UI", 9F);
-            this.rdoNoiKhac.Text = "Khác";
-
-            this.lblLoaiDiaBan.AutoSize = true;
-            this.lblLoaiDiaBan.Font = new Font("Segoe UI", 9F);
-            this.lblLoaiDiaBan.Text = "Loại địa bàn:";
-
-            this.rdoDiaBanMoi.Font = new Font("Segoe UI", 9F);
-            this.rdoDiaBanMoi.Text = "Địa bàn mới";
-
-            this.rdoDiaBanCu.Font = new Font("Segoe UI", 9F);
-            this.rdoDiaBanCu.Text = "Địa bàn cũ";
-
-            this.lblTinhThanh.AutoSize = true;
-            this.lblTinhThanh.Font = new Font("Segoe UI", 9F);
-            this.lblTinhThanh.Text = "Tỉnh/Thành phố *";
-
-            this.cboTinhThanh.Font = new Font("Segoe UI", 9F);
-            this.cboTinhThanh.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            this.lblPhuongXa.AutoSize = true;
-            this.lblPhuongXa.Font = new Font("Segoe UI", 9F);
-            this.lblPhuongXa.Text = "Phường/Xã/Đặc khu *";
-
-            this.cboPhuongXa.Font = new Font("Segoe UI", 9F);
-            this.cboPhuongXa.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            this.lblDiaChiChiTiet.AutoSize = true;
-            this.lblDiaChiChiTiet.Font = new Font("Segoe UI", 9F);
-            this.lblDiaChiChiTiet.Text = "Địa chỉ chi tiết *";
-
-            this.txtDiaChiChiTiet.Font = new Font("Segoe UI", 9F);
-
-            this.grpDanhSachKhach.Text = "Danh sách khách";
-            this.grpDanhSachKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-
-            this.lstKhach.Font = new Font("Segoe UI", 9F);
-
-            this.btnDong.Text = "Đóng";
-            this.btnDong.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            this.btnDong.BackColor = Color.White;
-            this.btnDong.ForeColor = Color.FromArgb(33, 150, 243);
-            this.btnDong.FlatStyle = FlatStyle.Flat;
-            this.btnDong.FlatAppearance.BorderSize = 1;
-            this.btnDong.FlatAppearance.BorderColor = Color.FromArgb(33, 150, 243);
-            this.btnDong.Click += new EventHandler(this.btnDong_Click);
-
-            this.btnNhanPhong.Text = "Nhận phòng";
-            this.btnNhanPhong.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            this.btnNhanPhong.BackColor = Color.FromArgb(33, 150, 243);
-            this.btnNhanPhong.ForeColor = Color.White;
-            this.btnNhanPhong.FlatStyle = FlatStyle.Flat;
-            this.btnNhanPhong.FlatAppearance.BorderSize = 0;
-            this.btnNhanPhong.Click += new EventHandler(this.btnNhanPhong_Click);
         }
     }
 }

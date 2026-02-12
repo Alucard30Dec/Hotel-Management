@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -32,8 +32,9 @@ namespace HotelManagement.Forms
         private void RoomDetailForm_Load(object sender, EventArgs e)
         {
             lblTitle.Text = "Nhận phòng nhanh";
-            lblRoomText.Text = $"{_room.MaPhong} • {( _room.LoaiPhongID == 1 ? "Phòng Đơn" : _room.LoaiPhongID == 2 ? "Phòng Đôi" : "Phòng")}, Tầng {_room.Tang}";
-
+            // Format title text
+            lblRoomText.Text = $"{_room.MaPhong} • {(_room.LoaiPhongID == 1 ? "Phòng Đơn" : _room.LoaiPhongID == 2 ? "Phòng Đôi" : "Phòng")}, Tầng {_room.Tang}";
+            
             InitCombos();
             BindRoomInfo();
 
@@ -50,315 +51,426 @@ namespace HotelManagement.Forms
             if (_layoutApplied) return;
             _layoutApplied = true;
 
-            SuspendLayout();
-            AutoScroll = false;
-            BackColor = Color.White;
+            this.TopLevel = false;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.Dock = DockStyle.Fill;
+            this.AutoScroll = true; 
+            this.BackColor = Color.White;
 
-            // ===== ROOT =====
+            this.Controls.Clear();
+
+            // ===== ROOT LAYOUT =====
             var root = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 1,
                 RowCount = 3,
-                Padding = new Padding(12),
+                Padding = new Padding(10),
                 BackColor = Color.White
             };
-            root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
-            root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            root.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
-            root.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            root.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Header
+            root.RowStyles.Add(new RowStyle(SizeType.Percent, 100f)); // Content (Scrollable)
+            root.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Footer
 
-            // ===== HEADER =====
-            var header = new TableLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                ColumnCount = 2,
-                AutoSize = true,
-                BackColor = Color.White
-            };
-            header.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
-            header.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-
-            var headerText = new FlowLayoutPanel
+            // ===== 1. HEADER =====
+            var header = new Panel
             {
                 Dock = DockStyle.Fill,
-                FlowDirection = FlowDirection.TopDown,
-                WrapContents = false,
                 AutoSize = true,
-                Margin = new Padding(0),
-                BackColor = Color.White
+                Padding = new Padding(0, 0, 0, 10),
+                Margin = new Padding(0)
             };
-
+            var headerFlow = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.TopDown,
+                AutoSize = true,
+                WrapContents = false,
+                Dock = DockStyle.Left
+            };
             lblTitle.AutoSize = true;
+            lblTitle.Margin = new Padding(0, 0, 0, 4);
+            lblTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            
             lblRoomText.AutoSize = true;
+            lblRoomText.ForeColor = Color.Gray;
+            
+            headerFlow.Controls.Add(lblTitle);
+            headerFlow.Controls.Add(lblRoomText);
 
-            headerText.Controls.Add(lblTitle);
-            headerText.Controls.Add(lblRoomText);
-
-            btnCloseTop.Text = "x";
-            btnCloseTop.AutoSize = true;
+            btnCloseTop.Text = "✕"; 
+            btnCloseTop.Font = new Font("Segoe UI", 11F, FontStyle.Regular);
             btnCloseTop.FlatStyle = FlatStyle.Flat;
             btnCloseTop.FlatAppearance.BorderSize = 0;
             btnCloseTop.ForeColor = Color.Gray;
-            btnCloseTop.BackColor = Color.Transparent;
-            btnCloseTop.Margin = new Padding(8, 0, 0, 0);
+            btnCloseTop.Size = new Size(40, 40);
+            btnCloseTop.Dock = DockStyle.Right;
+            btnCloseTop.Cursor = Cursors.Hand;
             btnCloseTop.Click -= btnDong_Click;
-            btnCloseTop.Click += new EventHandler(this.btnDong_Click);
+            btnCloseTop.Click += btnDong_Click;
 
-            header.Controls.Add(headerText, 0, 0);
-            header.Controls.Add(btnCloseTop, 1, 0);
+            header.Controls.Add(headerFlow);
+            header.Controls.Add(btnCloseTop);
 
-            // ===== CONTENT (SCROLL) =====
-            var contentHost = new Panel
+            // ===== 2. CONTENT =====
+            var contentPanel = new Panel
             {
                 Dock = DockStyle.Fill,
                 AutoScroll = true,
-                BackColor = Color.White,
-                Margin = new Padding(0, 8, 0, 0)
+                Padding = new Padding(0, 5, 0, 5)
             };
-
-            var content = new TableLayoutPanel
+            
+            var innerContent = new TableLayoutPanel 
             {
                 Dock = DockStyle.Top,
-                ColumnCount = 1,
                 AutoSize = true,
-                BackColor = Color.White
+                ColumnCount = 1,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink 
             };
-            content.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            innerContent.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
 
-            // Group: Lưu trú
-            grpLuuTru.Dock = DockStyle.Top;
-            grpLuuTru.AutoSize = true;
-            grpLuuTru.Padding = new Padding(10);
-            grpLuuTru.Margin = new Padding(0, 0, 0, 10);
+            // Section 1: Thông tin lưu trú
+            var pnlLuuTruHeader = CreateSectionHeader("Thông tin lưu trú", "header_home.png"); // Placeholder icon name
+            pnlLuuTruHeader.Dock = DockStyle.Top;
+            
+            var pnlLuuTruBody = new Panel { Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(10) };
+            BuildLuuTruLayout(pnlLuuTruBody);
 
-            BuildLuuTruLayout();
+            // Section 2: Thông tin khách
+            var pnlKhachHeader = CreateSectionHeader("Thông tin khách", "header_user.png");
+            pnlKhachHeader.Dock = DockStyle.Top;
+            
+            var pnlKhachButtons = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                FlowDirection = FlowDirection.RightToLeft,
+                AutoSize = true,
+                Padding = new Padding(0, 5, 10, 5)
+            };
+            StyleButton(btnQuetMa, true);
+            StyleButton(btnLamMoi, false);
+            StyleButton(btnThemKhach, true);
+            pnlKhachButtons.Controls.Add(btnQuetMa);
+            pnlKhachButtons.Controls.Add(btnLamMoi);
+            pnlKhachButtons.Controls.Add(btnThemKhach);
 
-            // Group: Khách
-            grpKhach.Dock = DockStyle.Top;
-            grpKhach.AutoSize = true;
-            grpKhach.Padding = new Padding(10);
-            grpKhach.Margin = new Padding(0);
+            var pnlKhachBody = new Panel { Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(10) };
+            BuildKhachLayout(pnlKhachBody);
 
-            BuildKhachLayout();
+            // Section 3: Danh sách khách
+            var pnlListHeader = CreateSectionHeader("Danh sách khách", "header_list.png");
+            pnlListHeader.Dock = DockStyle.Top;
+            
+            var pnlListBody = new Panel { Dock = DockStyle.Top, Height = 150, Padding = new Padding(10) };
+            lstKhach.Dock = DockStyle.Fill;
+            lstKhach.BorderStyle = BorderStyle.FixedSingle;
+            pnlListBody.Controls.Add(lstKhach);
 
-            content.Controls.Add(grpLuuTru, 0, 0);
-            content.Controls.Add(grpKhach, 0, 1);
-            contentHost.Controls.Add(content);
 
-            // ===== FOOTER =====
+            innerContent.Controls.Add(pnlLuuTruHeader, 0, 0);
+            innerContent.Controls.Add(pnlLuuTruBody, 0, 1);
+            innerContent.Controls.Add(pnlKhachHeader, 0, 2);
+            innerContent.Controls.Add(pnlKhachButtons, 0, 3);
+            innerContent.Controls.Add(pnlKhachBody, 0, 4);
+            innerContent.Controls.Add(pnlListHeader, 0, 5);
+            innerContent.Controls.Add(pnlListBody, 0, 6);
+            
+            contentPanel.Controls.Add(innerContent);
+
+            // ===== 3. FOOTER =====
             var footer = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.RightToLeft,
-                WrapContents = false,
                 AutoSize = true,
-                Margin = new Padding(0, 10, 0, 0),
-                BackColor = Color.White
+                Padding = new Padding(0, 10, 0, 0)
             };
-
+            StyleButton(btnNhanPhong, true);
             btnNhanPhong.AutoSize = true;
+            btnNhanPhong.Margin = new Padding(10, 0, 0, 0);
+            
+            StyleButton(btnDong, false);
             btnDong.AutoSize = true;
+
             footer.Controls.Add(btnNhanPhong);
             footer.Controls.Add(btnDong);
 
-            // ===== ASSEMBLE =====
             root.Controls.Add(header, 0, 0);
-            root.Controls.Add(contentHost, 0, 1);
+            root.Controls.Add(contentPanel, 0, 1);
             root.Controls.Add(footer, 0, 2);
 
-            Controls.Clear();
-            Controls.Add(root);
-            AcceptButton = btnNhanPhong;
-
-            ResumeLayout(true);
+            this.Controls.Add(root);
         }
 
-        private void BuildLuuTruLayout()
+        private Panel CreateSectionHeader(string title, string icon)
         {
-            NormalizeInput(dtpNhanPhong);
-            NormalizeInput(dtpTraPhong);
-            NormalizeInput(cboLyDoLuuTru);
-            NormalizeInput(cboLoaiPhong);
-            NormalizeInput(cboPhong);
-            NormalizeInput(txtGiaPhong);
-
-            dtpNhanPhong.ShowUpDown = true;
-
-            txtGiaPhong.ReadOnly = true;
-            txtGiaPhong.TextAlign = HorizontalAlignment.Right;
-
-            lblGiaPhongDonVi.AutoSize = true;
-            lblGiaPhongDonVi.ForeColor = Color.Gray;
-            lblGiaPhongDonVi.Text = "đ";
-
-            var tbl = NewFormTable();
-
-            AddRow(tbl, lblNhanPhong, dtpNhanPhong);
-            AddRow(tbl, lblTraPhong, dtpTraPhong);
-            AddRow(tbl, lblLyDo, cboLyDoLuuTru);
-            AddRow(tbl, lblLoaiPhong, cboLoaiPhong);
-            AddRow(tbl, lblPhong, cboPhong);
-
-            var pricePanel = new Panel { Dock = DockStyle.Top, Height = 28, Margin = new Padding(0, 2, 0, 8) };
-            txtGiaPhong.Dock = DockStyle.Fill;
-            lblGiaPhongDonVi.Dock = DockStyle.Right;
-            lblGiaPhongDonVi.Padding = new Padding(6, 5, 0, 0);
-            pricePanel.Controls.Add(txtGiaPhong);
-            pricePanel.Controls.Add(lblGiaPhongDonVi);
-
-            AddRow(tbl, lblGiaPhong, pricePanel);
-
-            grpLuuTru.Controls.Clear();
-            grpLuuTru.Controls.Add(tbl);
+            var p = new Panel
+            {
+                Height = 35,
+                BackColor = Color.FromArgb(232, 241, 255), // Light blue background
+            };
+            var lbl = new Label
+            {
+                Text = title,
+                Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
+                ForeColor = Color.FromArgb(25, 118, 210),
+                AutoSize = true,
+                Location = new Point(10, 8)
+            };
+            p.Controls.Add(lbl);
+            return p;
         }
 
-        private void BuildKhachLayout()
-        {
-            NormalizeInput(txtHoTen);
-            NormalizeInput(cboGioiTinh);
-            NormalizeInput(dtpNgaySinh);
-            NormalizeInput(cboLoaiGiayTo);
-            NormalizeInput(txtSoGiayTo);
-            NormalizeInput(cboQuocTich);
-            NormalizeInput(cboTinhThanh);
-            NormalizeInput(cboPhuongXa);
-            NormalizeInput(txtDiaChiChiTiet);
-
-            // Buttons bar
-            var bar = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                FlowDirection = FlowDirection.RightToLeft,
-                WrapContents = false,
-                AutoSize = true,
-                Margin = new Padding(0, 0, 0, 8),
-                BackColor = Color.Transparent
-            };
-            btnThemKhach.AutoSize = true;
-            btnLamMoi.AutoSize = true;
-            btnQuetMa.AutoSize = true;
-            bar.Controls.Add(btnQuetMa);
-            bar.Controls.Add(btnLamMoi);
-            bar.Controls.Add(btnThemKhach);
-
-            // Fields table (1 cột label + 1 cột input)
-            var fields = NewFormTable();
-
-            AddRow(fields, lblHoTen, txtHoTen);
-            AddRow(fields, lblGioiTinh, cboGioiTinh);
-            AddRow(fields, lblNgaySinh, dtpNgaySinh);
-            AddRow(fields, lblLoaiGiayTo, cboLoaiGiayTo);
-            AddRow(fields, lblSoGiayTo, txtSoGiayTo);
-            AddRow(fields, lblQuocTich, cboQuocTich);
-
-            var pnlNoiCuTru = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                AutoSize = true,
-                FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = true,
-                Margin = new Padding(0, 2, 0, 8)
-            };
-            rdoThuongTru.AutoSize = true;
-            rdoTamTru.AutoSize = true;
-            rdoNoiKhac.AutoSize = true;
-            pnlNoiCuTru.Controls.Add(rdoThuongTru);
-            pnlNoiCuTru.Controls.Add(rdoTamTru);
-            pnlNoiCuTru.Controls.Add(rdoNoiKhac);
-            AddRow(fields, lblNoiCuTru, pnlNoiCuTru);
-
-            var pnlDiaBan = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                AutoSize = true,
-                FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = true,
-                Margin = new Padding(0, 2, 0, 8)
-            };
-            rdoDiaBanMoi.AutoSize = true;
-            rdoDiaBanCu.AutoSize = true;
-            pnlDiaBan.Controls.Add(rdoDiaBanMoi);
-            pnlDiaBan.Controls.Add(rdoDiaBanCu);
-            AddRow(fields, lblLoaiDiaBan, pnlDiaBan);
-
-            AddRow(fields, lblTinhThanh, cboTinhThanh);
-            AddRow(fields, lblPhuongXa, cboPhuongXa);
-            AddRow(fields, lblDiaChiChiTiet, txtDiaChiChiTiet);
-
-            grpDanhSachKhach.Text = "Danh sách khách";
-            grpDanhSachKhach.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            grpDanhSachKhach.Dock = DockStyle.Top;
-            grpDanhSachKhach.Height = 170;
-            grpDanhSachKhach.Padding = new Padding(8);
-            lstKhach.Dock = DockStyle.Fill;
-
-            grpDanhSachKhach.Controls.Clear();
-            grpDanhSachKhach.Controls.Add(lstKhach);
-
-            var wrapper = new Panel { Dock = DockStyle.Top, AutoSize = true };
-            wrapper.Controls.Add(grpDanhSachKhach);
-            wrapper.Controls.Add(fields);
-            wrapper.Controls.Add(bar);
-
-            grpKhach.Controls.Clear();
-            grpKhach.Controls.Add(wrapper);
-        }
-
-        private static TableLayoutPanel NewFormTable()
+        private void BuildLuuTruLayout(Panel container)
         {
             var tbl = new TableLayoutPanel
             {
                 Dock = DockStyle.Top,
                 AutoSize = true,
-                ColumnCount = 2,
-                BackColor = Color.Transparent
+                ColumnCount = 4, // 4 columns for dense layout
+                Padding = new Padding(0),
+                Margin = new Padding(0)
             };
-            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
-            return tbl;
+            // Columns percentages: 15% - 35% - 15% - 35%
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 15f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 35f));
+
+            // Row 1: NhanPhong | TraPhong (with Checkbox) | LyDo (Span 2 cols if needed, or split)
+            // Let's do 3 groups on one line visually in the image, but table layout is grid.
+            // Image: [NhanPhong] [TraPhong] [LyDo]
+            // We can use nested flow/tables or just a 6-column grid. Let's try 6 columns.
+            tbl.ColumnCount = 6;
+            tbl.ColumnStyles.Clear();
+            for(int i=0; i<6; i++) tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.6f));
+
+            // Helpers to add control with label
+            AddControlGroup(tbl, lblNhanPhong, dtpNhanPhong, 0, 0, 2);
+            AddControlGroup(tbl, lblTraPhong, dtpTraPhong, 2, 0, 2);
+            AddControlGroup(tbl, lblLyDo, cboLyDoLuuTru, 4, 0, 2);
+
+            AddControlGroup(tbl, lblLoaiPhong, cboLoaiPhong, 0, 1, 2);
+            AddControlGroup(tbl, lblPhong, cboPhong, 2, 1, 2);
+            
+            // Gia Phong Group (Price Type + Value)
+            var pnlGia = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount=2, Margin=new Padding(0) };
+            pnlGia.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40f));
+            pnlGia.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60f));
+            StyleControl(cboLoaiGia);
+            StyleControl(txtGiaPhong);
+            pnlGia.Controls.Add(cboLoaiGia, 0, 0);
+            pnlGia.Controls.Add(txtGiaPhong, 1, 0);
+
+            // Add Label for Price
+            var lblGia = new Label { Text="Loại giá / Giá phòng:", AutoSize=true, Font=new Font("Segoe UI",9F) };
+            // Actually image shows "Loai gia" and "Gia phong" as separate inputs on same row or separate.
+            // Image: [LoaiPhong] [Phong] [LoaiGia] [GiaPhong]
+            // Let's split row 2 into 4 items.
+            // To fit 4 items in 6 columns is hard. Let's make it 4 columns grid for the whole table?
+            // Image Row 1: Time In (Large), Time Out (Large), Reason (Small) -> Not equal.
+            // Let's stick to standard flow within cells or just use specific Row/Col spans.
+            
+            // Re-doing Table for better match
+            tbl.Controls.Clear();
+            tbl.RowStyles.Clear();
+            tbl.ColumnStyles.Clear();
+            tbl.ColumnCount = 3;
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+
+            // Row 0
+            AddCell(tbl, lblNhanPhong, dtpNhanPhong, 0, 0);
+            AddCell(tbl, lblTraPhong, dtpTraPhong, 1, 0);
+            AddCell(tbl, lblLyDo, cboLyDoLuuTru, 2, 0);
+
+            // Row 1
+            // Need 4 items in 3 columns? [LoaiPhong][Phong] [LoaiGia][GiaPhong]
+            // Let's put LoaiGia and GiaPhong in column 3? Or make a 4 column row.
+            // Simplified: Row 1 has 3 items. Row 2 has 3 items (LoaiPhong, Phong, PriceGroup)
+            AddCell(tbl, lblLoaiPhong, cboLoaiPhong, 0, 1);
+            AddCell(tbl, lblPhong, cboPhong, 1, 1);
+            
+            // Price Group combined
+            var pnlPrice = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.LeftToRight, WrapContents=false, AutoSize=true, Margin=new Padding(0) };
+            var p1 = new Panel { Width = 100, Height = 50 }; 
+            var l1 = new Label { Text="Loại giá:", AutoSize=true };
+            cboLoaiGia.Width = 95;
+            p1.Controls.Add(cboLoaiGia); cboLoaiGia.Top = 20; p1.Controls.Add(l1);
+            
+            var p2 = new Panel { Width = 120, Height = 50 };
+            var l2 = new Label { Text="Giá phòng:", AutoSize=true };
+            txtGiaPhong.Width = 115;
+            p2.Controls.Add(txtGiaPhong); txtGiaPhong.Top = 20; p2.Controls.Add(l2);
+
+            pnlPrice.Controls.Add(p1);
+            pnlPrice.Controls.Add(p2);
+            // tbl.Controls.Add(pnlPrice, 2, 1); // This is messy.
+
+            // Clean approach: Just labels and inputs
+            // Let's use 4 columns for the whole form, Row 1 spans cols.
+            tbl.ColumnCount = 4;
+            tbl.ColumnStyles.Clear();
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25f));
+            
+            // Row 0: NhanPhong (span 1), TraPhong (span 1), LyDo (span 2)
+            AddCell(tbl, lblNhanPhong, dtpNhanPhong, 0, 0);
+            AddCell(tbl, lblTraPhong, dtpTraPhong, 1, 0);
+            AddCell(tbl, lblLyDo, cboLyDoLuuTru, 2, 0, 2);
+
+            // Row 1: LoaiPhong, Phong, LoaiGia, GiaPhong
+            AddCell(tbl, lblLoaiPhong, cboLoaiPhong, 0, 1);
+            AddCell(tbl, lblPhong, cboPhong, 1, 1);
+            
+            var lblLoaiGia = new Label { Text = "Loại giá:", AutoSize = true };
+            AddCell(tbl, lblLoaiGia, cboLoaiGia, 2, 1);
+            AddCell(tbl, lblGiaPhong, txtGiaPhong, 3, 1);
+
+            // Row 2: Ghi Chu (Span all)
+            var lblGC = new Label { Text = "Ghi chú:", AutoSize = true };
+            AddCell(tbl, lblGC, txtGhiChuLuuTru, 0, 2, 4);
+
+            container.Controls.Add(tbl);
         }
 
-        private static void AddRow(TableLayoutPanel tbl, Control label, Control input)
+        private void BuildKhachLayout(Panel container)
         {
-            if (tbl == null || label == null || input == null) return;
+            var tbl = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                AutoSize = true,
+                ColumnCount = 3,
+                Padding = new Padding(0),
+                Margin = new Padding(0)
+            };
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.3f));
 
-            int row = tbl.RowCount;
-            tbl.RowCount += 1;
-            tbl.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            // Row 0: HoTen, GioiTinh, NgaySinh
+            AddCell(tbl, lblHoTen, txtHoTen, 0, 0);
+            AddCell(tbl, lblGioiTinh, cboGioiTinh, 1, 0);
+            AddCell(tbl, lblNgaySinh, dtpNgaySinh, 2, 0);
 
-            label.AutoSize = true;
-            label.Margin = new Padding(0, 6, 10, 0);
-            label.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+            // Row 1: DienThoai, LoaiGiayTo, SoGiayTo
+            AddCell(tbl, lblDienThoai, txtDienThoai, 0, 1);
+            AddCell(tbl, lblLoaiGiayTo, cboLoaiGiayTo, 1, 1);
+            AddCell(tbl, lblSoGiayTo, txtSoGiayTo, 2, 1); // Should have icon but keep simple
 
-            input.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+            // Row 2: QuocTich, GhiChu (Span 2)
+            AddCell(tbl, lblQuocTich, cboQuocTich, 0, 2);
+            AddCell(tbl, lblGhiChuKhach, txtGhiChuKhach, 1, 2, 2);
 
-            tbl.Controls.Add(label, 0, row);
-            tbl.Controls.Add(input, 1, row);
+            // Row 3: NoiCuTru (Span 3)
+            var pnlNoiCuTru = CreateRadioPanel(rdoThuongTru, rdoTamTru, rdoNoiKhac);
+            AddCell(tbl, lblNoiCuTru, pnlNoiCuTru, 0, 3, 3);
+
+            // Row 4: LoaiDiaBan (Span 3)
+            var pnlDiaBan = CreateRadioPanel(rdoDiaBanMoi, rdoDiaBanCu);
+            AddCell(tbl, lblLoaiDiaBan, pnlDiaBan, 0, 4, 3);
+
+            // Row 5: Dia Ban Moi Panel (City, District, Address)
+            // Visually visually separated in image.
+            var pnlDiaBanGroup = new Panel { Dock = DockStyle.Top, AutoSize = true, BackColor = Color.FromArgb(245,245,245), Padding=new Padding(5) };
+            // We can just add rows to table but give them background? Table doesn't support row bg easily.
+            // Let's just continue in table.
+            
+            AddCell(tbl, lblTinhThanh, cboTinhThanh, 0, 5);
+            AddCell(tbl, lblPhuongXa, cboPhuongXa, 1, 5);
+            AddCell(tbl, lblDiaChiChiTiet, txtDiaChiChiTiet, 2, 5);
+
+            // Row 6: Nghe Nghiep, Noi Lam Viec
+            AddCell(tbl, lblNgheNghiep, cboNgheNghiep, 0, 6);
+            AddCell(tbl, lblNoiLamViec, txtNoiLamViec, 1, 6, 2);
+
+            container.Controls.Add(tbl);
         }
 
-        private static void NormalizeInput(Control c)
+        private void AddCell(TableLayoutPanel tbl, Control lbl, Control ctrl, int col, int row, int colSpan = 1)
         {
-            if (c == null) return;
+            // Panel to hold Label top and Control bottom
+            var p = new Panel { Dock = DockStyle.Fill, Margin = new Padding(5), Height = 55 }; // Fixed height for uniformity
+            
+            lbl.Dock = DockStyle.Top;
+            lbl.Height = 18;
+            lbl.Font = new Font("Segoe UI", 9F);
+            
+            // Add Red asterisk if text contains *
+            if (lbl.Text.Contains("*"))
+            {
+                // Simple color change not possible in partial text for standard label
+                // Just keep it simple
+                lbl.ForeColor = Color.Black; 
+            }
 
-            c.Margin = new Padding(0, 2, 0, 8);
-            c.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+            ctrl.Dock = DockStyle.Top;
+            ctrl.Height = 28;
+            StyleControl(ctrl);
 
-            if (c is TextBox tb)
-            {
-                tb.BorderStyle = BorderStyle.FixedSingle;
-                tb.Height = 28;
+            p.Controls.Add(ctrl);
+            p.Controls.Add(lbl);
+
+            tbl.Controls.Add(p, col, row);
+            if (colSpan > 1) tbl.SetColumnSpan(p, colSpan);
+        }
+        
+        private void AddControlGroup(TableLayoutPanel tbl, Control label, Control input, int col, int row, int span=1)
+        {
+            AddCell(tbl, label, input, col, row, span);
+        }
+
+        private void StyleControl(Control c)
+        {
+            if (c is TextBox txt) 
+            { 
+                txt.BorderStyle = BorderStyle.FixedSingle;
+                txt.Height = 30;
+                // If textarea
+                if (txt.Multiline) txt.Height = 60;
             }
-            else if (c is ComboBox cb)
-            {
-                cb.IntegralHeight = false;
-                cb.DropDownHeight = 200;
-                cb.Height = 28;
+            else if (c is ComboBox cb) 
+            { 
+                cb.FlatStyle = FlatStyle.System;
+                cb.Height = 30; 
             }
-            else if (c is DateTimePicker dp)
-            {
-                dp.Height = 28;
+            else if (c is DateTimePicker dt) 
+            { 
+                dt.Height = 30;
             }
+        }
+
+        private void StyleButton(Button b, bool primary)
+        {
+            b.FlatStyle = FlatStyle.Flat;
+            b.FlatAppearance.BorderSize = primary ? 0 : 1;
+            b.FlatAppearance.BorderColor = Color.FromArgb(33, 150, 243);
+            b.BackColor = primary ? Color.FromArgb(33, 150, 243) : Color.White;
+            b.ForeColor = primary ? Color.White : Color.FromArgb(33, 150, 243);
+            b.Cursor = Cursors.Hand;
+            b.Height = 32;
+            b.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        }
+
+        private Panel CreateRadioPanel(params RadioButton[] radios)
+        {
+            var p = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top, // Changed from Fill
+                AutoSize = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = true,
+                Padding = new Padding(0)
+            };
+            foreach (var r in radios)
+            {
+                r.AutoSize = true;
+                r.Margin = new Padding(0, 5, 15, 5);
+                p.Controls.Add(r);
+            }
+            return p;
         }
 
         private void InitCombos()
@@ -366,6 +478,10 @@ namespace HotelManagement.Forms
             cboLyDoLuuTru.Items.Clear();
             cboLyDoLuuTru.Items.AddRange(new object[] { "-- Chọn --", "Du lịch", "Công tác", "Thăm thân", "Khác" });
             cboLyDoLuuTru.SelectedIndex = 0;
+
+            cboLoaiGia.Items.Clear();
+            cboLoaiGia.Items.AddRange(new object[] { "Mặc định", "Theo giờ", "Theo ngày", "Khác" });
+            cboLoaiGia.SelectedIndex = 0;
 
             cboGioiTinh.Items.Clear();
             cboGioiTinh.Items.AddRange(new object[] { "-- Chọn --", "Nam", "Nữ", "Khác" });
@@ -379,23 +495,21 @@ namespace HotelManagement.Forms
             cboQuocTich.Items.AddRange(new object[]
             {
                 "VNM - Việt Nam","USA - United States","KOR - Korea","JPN - Japan","CHN - China",
-                "FRA - France","DEU - Germany","GBR - United Kingdom","AUS - Australia","CAN - Canada","OTHER"
+                "OTHER"
             });
             cboQuocTich.SelectedIndex = 0;
 
             cboTinhThanh.Items.Clear();
-            cboTinhThanh.Items.AddRange(new object[]
-            {
-                "-- Chọn Tỉnh/Thành --","Hà Nội","TP. Hồ Chí Minh","Đà Nẵng","Hải Phòng","Cần Thơ","Khác"
-            });
+            cboTinhThanh.Items.AddRange(new object[] { "Chọn Tỉnh/Thành", "Hà Nội", "TP. Hồ Chí Minh", "Đà Nẵng", "Cần Thơ", "Khác" });
             cboTinhThanh.SelectedIndex = 0;
 
             cboPhuongXa.Items.Clear();
-            cboPhuongXa.Items.AddRange(new object[]
-            {
-                "-- Chọn Phường/Xã --","Phường 1","Phường 2","Phường 3","Xã 1","Xã 2","Khác"
-            });
+            cboPhuongXa.Items.AddRange(new object[] { "Chọn Phường/Xã", "Phường 1", "Phường 2", "Xã A", "Xã B" });
             cboPhuongXa.SelectedIndex = 0;
+            
+            cboNgheNghiep.Items.Clear();
+            cboNgheNghiep.Items.AddRange(new object[] { "-- Chọn --", "Công nhân", "Nhân viên VP", "Tự do", "Học sinh/SV" });
+            cboNgheNghiep.SelectedIndex = 0;
 
             rdoThuongTru.Checked = true;
             rdoDiaBanMoi.Checked = true;
@@ -418,15 +532,10 @@ namespace HotelManagement.Forms
             try
             {
                 decimal gia = _bookingDal.GetDonGiaNgayByPhong(_room.PhongID);
-                if (gia <= 0)
-                    gia = (_room.LoaiPhongID == 1) ? 250000m : 350000m;
-
+                if (gia <= 0) gia = (_room.LoaiPhongID == 1) ? 250000m : 350000m;
                 txtGiaPhong.Text = gia.ToString("N0");
             }
-            catch
-            {
-                txtGiaPhong.Text = "0";
-            }
+            catch { txtGiaPhong.Text = "0"; }
         }
 
         private void btnDong_Click(object sender, EventArgs e)
@@ -440,13 +549,13 @@ namespace HotelManagement.Forms
 
             string tenChinh = GetPrimaryGuestName();
 
-            _room.TrangThai = 1;
+            _room.TrangThai = 1; 
             _room.KieuThue = (_room.KieuThue.HasValue && _room.KieuThue.Value > 0) ? _room.KieuThue : 1;
             _room.ThoiGianBatDau = dtpNhanPhong.Value;
             _room.TenKhachHienThi = tenChinh;
 
             string ghiChu = BuildGhiChuForSave();
-
+            
             _roomDal.UpdateTrangThaiFull(
                 _room.PhongID,
                 _room.TrangThai,
@@ -470,34 +579,13 @@ namespace HotelManagement.Forms
                 cboLyDoLuuTru.Focus();
                 return false;
             }
-
             if (string.IsNullOrWhiteSpace(GetPrimaryGuestName()))
             {
                 MessageBox.Show("Vui lòng nhập Họ tên.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtHoTen.Focus();
                 return false;
             }
-
-            if (cboGioiTinh.SelectedIndex <= 0)
-            {
-                MessageBox.Show("Vui lòng chọn Giới tính.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cboGioiTinh.Focus();
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtSoGiayTo.Text))
-            {
-                MessageBox.Show("Vui lòng nhập Số giấy tờ.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtSoGiayTo.Focus();
-                return false;
-            }
-
-            if (cboTinhThanh.SelectedIndex <= 0 || cboPhuongXa.SelectedIndex <= 0 || string.IsNullOrWhiteSpace(txtDiaChiChiTiet.Text))
-            {
-                MessageBox.Show("Vui lòng nhập đầy đủ địa chỉ (Tỉnh/Thành, Phường/Xã, Địa chỉ chi tiết).", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
-            }
-
+            // Basic validation
             return true;
         }
 
@@ -517,20 +605,7 @@ namespace HotelManagement.Forms
 
         private void btnThemKhach_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtHoTen.Text))
-            {
-                MessageBox.Show("Vui lòng nhập Họ tên.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtHoTen.Focus();
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtSoGiayTo.Text))
-            {
-                MessageBox.Show("Vui lòng nhập Số giấy tờ.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtSoGiayTo.Focus();
-                return;
-            }
-
+            if (string.IsNullOrWhiteSpace(txtHoTen.Text)) return;
             string display = $"{txtHoTen.Text.Trim()} - {txtSoGiayTo.Text.Trim()}";
             lstKhach.Items.Add(display);
             txtHoTen.SelectAll();
@@ -542,40 +617,37 @@ namespace HotelManagement.Forms
             txtHoTen.Text = "";
             cboGioiTinh.SelectedIndex = 0;
             dtpNgaySinh.Value = new DateTime(1990, 1, 1);
-            cboLoaiGiayTo.SelectedIndex = 0;
+            txtDienThoai.Text = "";
             txtSoGiayTo.Text = "";
-            cboQuocTich.SelectedIndex = 0;
-
-            rdoThuongTru.Checked = true;
-            rdoDiaBanMoi.Checked = true;
-
+            txtGhiChuKhach.Text = "";
+            cboNgheNghiep.SelectedIndex = 0;
+            txtNoiLamViec.Text = "";
+            // Reset address
             cboTinhThanh.SelectedIndex = 0;
-            cboPhuongXa.SelectedIndex = 0;
             txtDiaChiChiTiet.Text = "";
-
-            lstKhach.Items.Clear();
         }
 
         private void btnQuetMa_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Chức năng quét mã sẽ được bổ sung sau.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Chức năng quét mã sẽ được bổ sung sau.", "Thông báo");
         }
 
         private string BuildGhiChuForSave()
         {
             var tags = new List<string>();
-
             tags.Add("LYDO=" + SafeTagValue(cboLyDoLuuTru.SelectedItem?.ToString()));
             tags.Add("GT=" + SafeTagValue(cboGioiTinh.SelectedItem?.ToString()));
             tags.Add("NS=" + dtpNgaySinh.Value.ToString("yyyyMMdd"));
             tags.Add("LGT=" + SafeTagValue(cboLoaiGiayTo.SelectedItem?.ToString()));
             tags.Add("SGT=" + SafeTagValue(txtSoGiayTo.Text.Trim()));
             tags.Add("QT=" + SafeTagValue(cboQuocTich.SelectedItem?.ToString()));
-            tags.Add("NCT=" + SafeTagValue(GetNoiCuTru()));
-            tags.Add("LDB=" + SafeTagValue(GetLoaiDiaBan()));
-            tags.Add("TINH=" + SafeTagValue(cboTinhThanh.SelectedItem?.ToString()));
-            tags.Add("PX=" + SafeTagValue(cboPhuongXa.SelectedItem?.ToString()));
-            tags.Add("DC=" + SafeTagValue(txtDiaChiChiTiet.Text.Trim()));
+            tags.Add("SDT=" + SafeTagValue(txtDienThoai.Text));
+            tags.Add("JOB=" + SafeTagValue(cboNgheNghiep.SelectedItem?.ToString()));
+            tags.Add("WORK=" + SafeTagValue(txtNoiLamViec.Text));
+            
+            // Notes
+            if (!string.IsNullOrWhiteSpace(txtGhiChuLuuTru.Text)) tags.Add("NOTE_S=" + SafeTagValue(txtGhiChuLuuTru.Text));
+            if (!string.IsNullOrWhiteSpace(txtGhiChuKhach.Text)) tags.Add("NOTE_G=" + SafeTagValue(txtGhiChuKhach.Text));
 
             if (dtpTraPhong.Checked)
                 tags.Add("TRAP=" + dtpTraPhong.Value.ToString("yyyyMMdd"));
@@ -594,18 +666,6 @@ namespace HotelManagement.Forms
             }
 
             return string.Join(" | ", tags);
-        }
-
-        private string GetNoiCuTru()
-        {
-            if (rdoTamTru.Checked) return "Tạm trú";
-            if (rdoNoiKhac.Checked) return "Khác";
-            return "Thường trú";
-        }
-
-        private string GetLoaiDiaBan()
-        {
-            return rdoDiaBanCu.Checked ? "Địa bàn cũ" : "Địa bàn mới";
         }
 
         private static string SafeTagValue(string s)
@@ -628,85 +688,36 @@ namespace HotelManagement.Forms
         private void LoadStateFromGhiChu(string ghiChu)
         {
             if (string.IsNullOrWhiteSpace(ghiChu)) return;
-
-            string lydo = GetStringTag(ghiChu, "LYDO", "");
-            SelectComboByText(cboLyDoLuuTru, lydo);
-
-            string gt = GetStringTag(ghiChu, "GT", "");
-            SelectComboByText(cboGioiTinh, gt);
-
+            SelectComboByText(cboLyDoLuuTru, GetStringTag(ghiChu, "LYDO", ""));
+            SelectComboByText(cboGioiTinh, GetStringTag(ghiChu, "GT", ""));
+            
             string ns = GetStringTag(ghiChu, "NS", "");
             if (ns.Length == 8 && DateTime.TryParseExact(ns, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dob))
                 dtpNgaySinh.Value = dob;
 
-            string lgt = GetStringTag(ghiChu, "LGT", "");
-            SelectComboByText(cboLoaiGiayTo, lgt);
-
             txtSoGiayTo.Text = GetStringTag(ghiChu, "SGT", "");
-
-            string qt = GetStringTag(ghiChu, "QT", "");
-            SelectComboByText(cboQuocTich, qt);
-
-            string nct = GetStringTag(ghiChu, "NCT", "");
-            string nctLower = (nct ?? "").ToLowerInvariant();
-            if (nctLower.Contains("tạm") || nctLower.Contains("táº¡m") || nctLower.Contains("tam"))
-                rdoTamTru.Checked = true;
-            else if (nctLower.Contains("khác") || nctLower.Contains("khÃ¡c") || nctLower.Contains("khac"))
-                rdoNoiKhac.Checked = true;
-            else
-                rdoThuongTru.Checked = true;
-
-            string ldb = GetStringTag(ghiChu, "LDB", "");
-            string ldbLower = (ldb ?? "").ToLowerInvariant();
-            if (ldbLower.Contains("cũ") || ldbLower.Contains("cÅ©") || ldbLower.Contains("cu"))
-                rdoDiaBanCu.Checked = true;
-            else
-                rdoDiaBanMoi.Checked = true;
-
-            string tinh = GetStringTag(ghiChu, "TINH", "");
-            SelectComboByText(cboTinhThanh, tinh);
-
-            string px = GetStringTag(ghiChu, "PX", "");
-            SelectComboByText(cboPhuongXa, px);
-
-            txtDiaChiChiTiet.Text = GetStringTag(ghiChu, "DC", "");
-
-            string trap = GetStringTag(ghiChu, "TRAP", "");
-            if (trap.Length == 8 && DateTime.TryParseExact(trap, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var outDate))
-            {
-                dtpTraPhong.Value = outDate;
-                dtpTraPhong.Checked = true;
-            }
+            txtDienThoai.Text = GetStringTag(ghiChu, "SDT", "");
+            txtNoiLamViec.Text = GetStringTag(ghiChu, "WORK", "");
+            SelectComboByText(cboNgheNghiep, GetStringTag(ghiChu, "JOB", ""));
+            
+            txtGhiChuLuuTru.Text = GetStringTag(ghiChu, "NOTE_S", "");
+            txtGhiChuKhach.Text = GetStringTag(ghiChu, "NOTE_G", "");
 
             string dsk = GetStringTag(ghiChu, "DSK", "");
             if (!string.IsNullOrWhiteSpace(dsk))
             {
                 var parts = dsk.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var p in parts)
-                    lstKhach.Items.Add(p.Trim());
+                foreach (var p in parts) lstKhach.Items.Add(p.Trim());
             }
         }
 
         private static void SelectComboByText(ComboBox cbo, string text)
         {
-            if (cbo == null || cbo.Items.Count == 0) return;
-            if (string.IsNullOrWhiteSpace(text)) return;
-
+            if (cbo == null || cbo.Items.Count == 0 || string.IsNullOrWhiteSpace(text)) return;
             for (int i = 0; i < cbo.Items.Count; i++)
             {
                 string it = cbo.Items[i]?.ToString() ?? "";
-
-                if (string.Equals(it, text, StringComparison.OrdinalIgnoreCase))
-                {
-                    cbo.SelectedIndex = i;
-                    return;
-                }
-
-                if (it.StartsWith(text, StringComparison.OrdinalIgnoreCase))
-                {
-                    cbo.SelectedIndex = i;
-                    return;
-                }
+                if (string.Equals(it, text, StringComparison.OrdinalIgnoreCase)) { cbo.SelectedIndex = i; return; }
             }
         }
     }
