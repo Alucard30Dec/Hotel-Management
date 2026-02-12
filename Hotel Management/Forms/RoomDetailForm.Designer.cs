@@ -8,28 +8,27 @@ namespace HotelManagement.Forms
     {
         private System.ComponentModel.IContainer components = null;
 
-        // Header controls
         private Label lblTitle;
         private Label lblRoomText;
         private Button btnCloseTop;
 
-        // Section: Luu Tru
         private Label lblNhanPhong;
         private DateTimePicker dtpNhanPhong;
         private Label lblTraPhong;
         private DateTimePicker dtpTraPhong;
         private Label lblLyDo;
         private ComboBox cboLyDoLuuTru;
+        
         private Label lblLoaiPhong;
         private ComboBox cboLoaiPhong;
         private Label lblPhong;
         private ComboBox cboPhong;
+        
+        private ComboBox cboLoaiGia;
         private Label lblGiaPhong;
         private TextBox txtGiaPhong;
-        private ComboBox cboLoaiGia; // New
-        private TextBox txtGhiChuLuuTru; // New
+        private TextBox txtGhiChuLuuTru;
 
-        // Section: Khach
         private Button btnThemKhach;
         private Button btnLamMoi;
         private Button btnQuetMa;
@@ -40,16 +39,18 @@ namespace HotelManagement.Forms
         private ComboBox cboGioiTinh;
         private Label lblNgaySinh;
         private DateTimePicker dtpNgaySinh;
-        private Label lblDienThoai; // New
-        private TextBox txtDienThoai; // New
+        
+        private Label lblDienThoai; 
+        private TextBox txtDienThoai;
         private Label lblLoaiGiayTo;
         private ComboBox cboLoaiGiayTo;
         private Label lblSoGiayTo;
         private TextBox txtSoGiayTo;
+        
         private Label lblQuocTich;
         private ComboBox cboQuocTich;
-        private Label lblGhiChuKhach; // New
-        private TextBox txtGhiChuKhach; // New
+        private Label lblGhiChuKhach;
+        private TextBox txtGhiChuKhach;
 
         private Label lblNoiCuTru;
         private RadioButton rdoThuongTru;
@@ -67,12 +68,11 @@ namespace HotelManagement.Forms
         private Label lblDiaChiChiTiet;
         private TextBox txtDiaChiChiTiet;
         
-        private Label lblNgheNghiep; // New
-        private ComboBox cboNgheNghiep; // New
-        private Label lblNoiLamViec; // New
-        private TextBox txtNoiLamViec; // New
+        private Label lblNgheNghiep;
+        private ComboBox cboNgheNghiep;
+        private Label lblNoiLamViec;
+        private TextBox txtNoiLamViec;
 
-        // Footer / List
         private ListBox lstKhach;
         private Button btnDong;
         private Button btnNhanPhong;
@@ -86,7 +86,7 @@ namespace HotelManagement.Forms
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            // Create controls
+            
             this.lblTitle = new Label();
             this.lblRoomText = new Label();
             this.btnCloseTop = new Button();
@@ -156,9 +156,7 @@ namespace HotelManagement.Forms
             this.btnNhanPhong = new Button { Text = "Nhận phòng" };
 
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.BackColor = Color.White;
             this.ClientSize = new Size(1100, 700);
-            this.FormBorderStyle = FormBorderStyle.None;
             this.Load += new EventHandler(this.RoomDetailForm_Load);
         }
     }
