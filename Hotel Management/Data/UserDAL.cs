@@ -1,4 +1,4 @@
-﻿using System.Data.SqlClient;
+﻿using MySql.Data.MySqlClient;
 using HotelManagement.Models;
 
 namespace HotelManagement.Data
@@ -7,28 +7,30 @@ namespace HotelManagement.Data
     {
         public User Login(string username, string password)
         {
-            using (SqlConnection conn = DbHelper.GetConnection())
+            using (MySqlConnection conn = DbHelper.GetConnection())
             {
-                string query = @"SELECT UserID, Username, [Password], [Role]
+                string query = @"SELECT UserID, Username, `Password`, `Role`
                                  FROM USERS
-                                 WHERE Username = @Username AND [Password] = @Password";
-                SqlCommand cmd = new SqlCommand(query, conn);
+                                 WHERE Username = @Username AND `Password` = @Password";
+                MySqlCommand cmd = new MySqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@Username", username);
                 cmd.Parameters.AddWithValue("@Password", password);
 
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
+                using (var reader = cmd.ExecuteReader())
                 {
-                    return new User
+                    if (reader.Read())
                     {
-                        UserID = reader.GetInt32(0),
-                        Username = reader.GetString(1),
-                        Password = reader.GetString(2),
-                        Role = reader.GetString(3)
-                    };
+                        return new User
+                        {
+                            UserID = reader.GetInt32(0),
+                            Username = reader.GetString(1),
+                            Password = reader.GetString(2),
+                            Role = reader.GetString(3)
+                        };
+                    }
                 }
             }
-            return null; // không tìm thấy -> đăng nhập sai
+            return null; // not found -> login failed
         }
     }
 }

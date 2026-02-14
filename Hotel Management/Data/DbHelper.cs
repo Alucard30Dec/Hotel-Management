@@ -1,58 +1,60 @@
 ﻿using System;
-using System.Data.SqlClient;
+using System.Configuration;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace HotelManagement.Data
 {
     public static class DbHelper
     {
-        // *** CHỖ NÀY BẠN CẦN CHỈNH LẠI THEO SQL SERVER CỦA BẠN ***
+        // Reads connection string from App.config (connectionStrings name = "HotelDb")
+        private static readonly string _connectionString;
 
-        // Nếu bạn dùng SQL Server Express trên máy:
-        // private static readonly string _connectionString =
-        //     @"Data Source=.\SQLEXPRESS;Initial Catalog=HotelDb;Integrated Security=True";
-
-        // Nếu bạn dùng LocalDB (VS cài sẵn):
-        // private static readonly string _connectionString =
-        //     @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=HotelDb;Integrated Security=True";
-
-        // Tạm thời mình để LocalDB – nếu bạn đang dùng SQLEXPRESS thì đổi lại dòng trên.
-        private static readonly string _connectionString =
-            @"Data Source=ALUCARD;Initial Catalog=HotelDb;Integrated Security=True";
-
-        /// <summary>
-        /// Lấy SqlConnection đã mở sẵn.
-        /// Nếu lỗi sẽ hiện message box tiếng Việt và ném exception ra ngoài.
-        /// </summary>
-        public static SqlConnection GetConnection()
+        static DbHelper()
         {
             try
             {
-                var conn = new SqlConnection(_connectionString);
-                conn.Open();
-                return conn;
-            }
-            catch (SqlException ex)
-            {
-                MessageBox.Show(
-                    "Không kết nối được đến SQL Server.\n" +
-                    "Vui lòng kiểm tra lại DbHelper._connectionString và database HotelDb.\n\n" +
-                    "Chi tiết lỗi:\n" + ex.Message,
-                    "Lỗi kết nối CSDL",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-
-                throw; // ném lỗi tiếp để code gọi biết là đã lỗi
+                var cs = ConfigurationManager.ConnectionStrings["HotelDb"];
+                _connectionString = cs?.ConnectionString ?? throw new InvalidOperationException("Connection string 'HotelDb' not found in App.config.");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Đã xảy ra lỗi không mong muốn khi kết nối CSDL.\n\n" +
-                    "Chi tiết lỗi:\n" + ex.Message,
-                    "Lỗi kết nối CSDL",
+                    "Cannot read connection string from App.config.\n\nDetails:\n" + ex.Message,
+                    "Configuration error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
+                throw;
+            }
+        }
 
+        /// <summary>
+        /// Returns an opened MySqlConnection. Shows friendly message boxes on failure and rethrows.
+        /// </summary>
+        public static MySqlConnection GetConnection()
+        {
+            try
+            {
+                var conn = new MySqlConnection(_connectionString);
+                conn.Open();
+                return conn;
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(
+                    "Cannot connect to TiDB / MySQL.\nPlease check the connection string in App.config and network access to TiDB Cloud.\n\nDetails:\n" + ex.Message,
+                    "Database connection error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Unexpected error when opening database connection.\n\nDetails:\n" + ex.Message,
+                    "Database connection error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
                 throw;
             }
         }

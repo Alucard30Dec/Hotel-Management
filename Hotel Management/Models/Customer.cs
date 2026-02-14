@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations; // Cần thêm dòng này
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace HotelManagement.Models
 {
     public class Customer
     {
+        [Key] // Đánh dấu thuộc tính này là khóa chính
         public int KhachHangID { get; set; }
         public string HoTen { get; set; }
         public string CCCD { get; set; }

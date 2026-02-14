@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 using HotelManagement.Models;
 
 namespace HotelManagement.Data
@@ -12,14 +12,14 @@ namespace HotelManagement.Data
         {
             var list = new List<Room>();
 
-            using (SqlConnection conn = DbHelper.GetConnection())
+            using (MySqlConnection conn = DbHelper.GetConnection())
             {
                 string query = @"SELECT PhongID, MaPhong, LoaiPhongID, Tang, TrangThai, GhiChu,
                                         ThoiGianBatDau, KieuThue, TenKhachHienThi
                                  FROM PHONG";
 
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                using (SqlDataReader rd = cmd.ExecuteReader())
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (MySqlDataReader rd = cmd.ExecuteReader())
                 {
                     while (rd.Read())
                     {
@@ -47,18 +47,18 @@ namespace HotelManagement.Data
         // Lấy 1 phòng theo ID
         public Room GetById(int id)
         {
-            using (SqlConnection conn = DbHelper.GetConnection())
+            using (MySqlConnection conn = DbHelper.GetConnection())
             {
                 string query = @"SELECT PhongID, MaPhong, LoaiPhongID, Tang, TrangThai, GhiChu,
                                         ThoiGianBatDau, KieuThue, TenKhachHienThi
                                  FROM PHONG
                                  WHERE PhongID = @Id";
 
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Id", id);
 
-                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    using (MySqlDataReader rd = cmd.ExecuteReader())
                     {
                         if (rd.Read())
                         {
@@ -106,7 +106,7 @@ namespace HotelManagement.Data
                                         int? kieuThue,
                                         string tenKhachHienThi)
         {
-            using (SqlConnection conn = DbHelper.GetConnection())
+            using (MySqlConnection conn = DbHelper.GetConnection())
             {
                 string query = @"UPDATE PHONG SET
                                     TrangThai       = @TrangThai,
@@ -116,7 +116,7 @@ namespace HotelManagement.Data
                                     TenKhachHienThi = @TenKhachHienThi
                                  WHERE PhongID = @PhongID";
 
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@TrangThai", trangThai);
 
