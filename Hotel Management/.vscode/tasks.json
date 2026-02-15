@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Hotel Management",
+      "type": "process",
+      "command": "${workspaceFolder}\\bin\\Debug\\Hotel Management.exe",
+      "dependsOn": [
+        "Build Hotel Management"
+      ],
+      "dependsOrder": "sequence",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build Hotel Management",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "Hotel Management.sln",
+        "-c",
+        "Debug"
+      ],
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}
