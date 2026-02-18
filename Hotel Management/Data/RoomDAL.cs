@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 using MySql.Data.MySqlClient;
 using HotelManagement.Models;
 
@@ -7,6 +9,46 @@ namespace HotelManagement.Data
 {
     public class RoomDAL
     {
+        public string GetRoomStateFingerprint()
+        {
+            var sb = new StringBuilder(1024);
+
+            using (MySqlConnection conn = DbHelper.GetConnection())
+            {
+                string query = @"SELECT PhongID, TrangThai, ThoiGianBatDau, KieuThue, TenKhachHienThi, GhiChu
+                                 FROM PHONG
+                                 ORDER BY PhongID";
+
+                using (var cmd = new MySqlCommand(query, conn))
+                using (var rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        int phongId = rd.GetInt32(0);
+                        int trangThai = rd.IsDBNull(1) ? 0 : rd.GetInt32(1);
+                        string batDau = rd.IsDBNull(2) ? "" : rd.GetDateTime(2).ToString("yyyyMMddHHmmss");
+                        string kieuThue = rd.IsDBNull(3) ? "" : rd.GetInt32(3).ToString();
+                        string tenKhach = rd.IsDBNull(4) ? "" : rd.GetString(4);
+                        string ghiChu = rd.IsDBNull(5) ? "" : rd.GetString(5);
+
+                        sb.Append(phongId).Append('|')
+                          .Append(trangThai).Append('|')
+                          .Append(batDau).Append('|')
+                          .Append(kieuThue).Append('|')
+                          .Append(tenKhach).Append('|')
+                          .Append(ghiChu).Append('\n');
+                    }
+                }
+            }
+
+            using (var sha = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(sb.ToString());
+                byte[] hash = sha.ComputeHash(bytes);
+                return Convert.ToBase64String(hash);
+            }
+        }
+
         // Lấy tất cả phòng
         public List<Room> GetAll()
         {

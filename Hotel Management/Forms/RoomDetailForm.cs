@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using HotelManagement.Data;
 using HotelManagement.Models;
+using HotelManagement.Services;
 
 namespace HotelManagement.Forms
 {
@@ -20,6 +23,9 @@ namespace HotelManagement.Forms
         public event EventHandler Saved;
 
         private bool _layoutApplied = false;
+        private readonly AutoCompleteStringCollection _priceSuggestionSource = new AutoCompleteStringCollection();
+        private Timer _nhanPhongTimer;
+        private bool _isGiaPhongFormatting;
 
         // Colors
         private readonly Color clrHeaderBg = Color.FromArgb(227, 242, 253); 
@@ -32,7 +38,38 @@ namespace HotelManagement.Forms
             _room = room;
 
             InitializeComponent();
+            WireEvents();
             ApplyResponsiveLayout();
+        }
+
+        private void WireEvents()
+        {
+            btnDong.Click -= btnDong_Click;
+            btnDong.Click += btnDong_Click;
+
+            btnNhanPhong.Click -= btnNhanPhong_Click;
+            btnNhanPhong.Click += btnNhanPhong_Click;
+
+            btnThemKhach.Click -= btnThemKhach_Click;
+            btnThemKhach.Click += btnThemKhach_Click;
+
+            btnLamMoi.Click -= btnLamMoi_Click;
+            btnLamMoi.Click += btnLamMoi_Click;
+
+            btnQuetMa.Click -= btnQuetMa_Click;
+            btnQuetMa.Click += btnQuetMa_Click;
+
+            txtGiaPhong.KeyPress -= txtGiaPhong_KeyPress;
+            txtGiaPhong.KeyPress += txtGiaPhong_KeyPress;
+            txtGiaPhong.Leave -= txtGiaPhong_Leave;
+            txtGiaPhong.Leave += txtGiaPhong_Leave;
+
+            KeyPreview = true;
+            KeyDown -= RoomDetailForm_KeyDown;
+            KeyDown += RoomDetailForm_KeyDown;
+
+            FormClosed -= RoomDetailForm_FormClosed;
+            FormClosed += RoomDetailForm_FormClosed;
         }
 
         private void RoomDetailForm_Load(object sender, EventArgs e)
@@ -43,7 +80,8 @@ namespace HotelManagement.Forms
             InitCombos();
             BindRoomInfo();
 
-            dtpNhanPhong.Value = _room.ThoiGianBatDau ?? DateTime.Now;
+            SetNhanPhongNow();
+            StartNhanPhongClock();
             LoadStateFromGhiChu(_room.GhiChu);
 
             if (!string.IsNullOrWhiteSpace(_room.TenKhachHienThi) && string.IsNullOrWhiteSpace(txtHoTen.Text))
@@ -135,42 +173,12 @@ namespace HotelManagement.Forms
             var pnlLuuTruBody = new Panel { Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(5) };
             BuildLuuTruLayout(pnlLuuTruBody);
 
-            // Section 2: Khach (Using IconHelper)
-            var pnlKhachHeader = CreateSectionHeader("Thông tin khách", IconHelper.CreateUserIcon());
-            
-            var pnlKhachButtons = new Panel { Dock = DockStyle.Top, Height = 45, Padding = new Padding(5) };
-            StyleButton(btnThemKhach, true); btnThemKhach.Width = 110;
-            StyleButton(btnLamMoi, false); btnLamMoi.Width = 100;
-            StyleButton(btnQuetMa, true); btnQuetMa.Width = 110;
-            
-            btnThemKhach.Dock = DockStyle.Left;
-            var spacer = new Panel { Dock = DockStyle.Left, Width = 10 };
-            btnLamMoi.Dock = DockStyle.Left;
-            btnQuetMa.Dock = DockStyle.Right;
-
-            pnlKhachButtons.Controls.Add(btnLamMoi);
-            pnlKhachButtons.Controls.Add(spacer);
-            pnlKhachButtons.Controls.Add(btnThemKhach);
-            pnlKhachButtons.Controls.Add(btnQuetMa);
-
-            var pnlKhachBody = new Panel { Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(5) };
-            BuildKhachLayout(pnlKhachBody);
-
-            // Section 3: List (Using IconHelper)
-            var pnlListHeader = CreateSectionHeader("Danh sách khách", IconHelper.CreateListIcon());
-            var pnlListBody = new Panel { Dock = DockStyle.Top, Height = 120, Padding = new Padding(5) };
-            lstKhach.Dock = DockStyle.Fill;
-            lstKhach.BorderStyle = BorderStyle.FixedSingle;
-            lstKhach.Font = new Font("Segoe UI", 10F);
-            pnlListBody.Controls.Add(lstKhach);
+            // Section 2: Thong tin khach + danh sach khach (layout theo 2 cot)
+            var pnlKhachSection = BuildKhachSectionLayout();
 
             innerContent.Controls.Add(pnlLuuTruHeader, 0, 0);
             innerContent.Controls.Add(pnlLuuTruBody, 0, 1);
-            innerContent.Controls.Add(pnlKhachHeader, 0, 2);
-            innerContent.Controls.Add(pnlKhachButtons, 0, 3);
-            innerContent.Controls.Add(pnlKhachBody, 0, 4);
-            innerContent.Controls.Add(pnlListHeader, 0, 5);
-            innerContent.Controls.Add(pnlListBody, 0, 6);
+            innerContent.Controls.Add(pnlKhachSection, 0, 2);
             contentPanel.Controls.Add(innerContent);
 
             // 3. Footer
@@ -231,6 +239,122 @@ namespace HotelManagement.Forms
             return p;
         }
 
+        private Panel BuildKhachSectionLayout()
+        {
+            var section = new Panel
+            {
+                Dock = DockStyle.Top,
+                AutoSize = true,
+                Margin = new Padding(0, 10, 0, 0)
+            };
+
+            var split = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                AutoSize = true,
+                ColumnCount = 2,
+                RowCount = 1
+            };
+            split.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 76f));
+            split.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 24f));
+
+            var left = new Panel { Dock = DockStyle.Fill, AutoSize = true };
+            var leftHeader = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 44,
+                BackColor = clrHeaderBg,
+                Padding = new Padding(8, 6, 8, 6)
+            };
+
+            var leftHeaderTable = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2 };
+            leftHeaderTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            leftHeaderTable.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+
+            var headerTitle = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                AutoSize = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false
+            };
+            var khachIcon = new PictureBox
+            {
+                Image = IconHelper.CreateUserIcon(20),
+                SizeMode = PictureBoxSizeMode.CenterImage,
+                Size = new Size(24, 24),
+                Margin = new Padding(0, 0, 6, 0)
+            };
+            var khachLabel = new Label
+            {
+                Text = "Thông tin khách",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = clrHeaderText,
+                AutoSize = true,
+                Margin = new Padding(0, 3, 0, 0)
+            };
+            headerTitle.Controls.Add(khachIcon);
+            headerTitle.Controls.Add(khachLabel);
+
+            StyleButton(btnThemKhach, true);
+            StyleButton(btnLamMoi, false);
+            StyleButton(btnQuetMa, true);
+            btnThemKhach.Text = "Thêm khách";
+            btnLamMoi.Text = "Làm mới";
+            btnQuetMa.Text = "Quét mã (F1)";
+            btnThemKhach.Width = 104;
+            btnLamMoi.Width = 94;
+            btnQuetMa.Width = 114;
+            btnThemKhach.Height = 30;
+            btnLamMoi.Height = 30;
+            btnQuetMa.Height = 30;
+            btnThemKhach.Dock = DockStyle.None;
+            btnLamMoi.Dock = DockStyle.None;
+            btnQuetMa.Dock = DockStyle.None;
+            btnThemKhach.Margin = new Padding(0, 0, 8, 0);
+            btnLamMoi.Margin = new Padding(0, 0, 8, 0);
+            btnQuetMa.Margin = new Padding(0);
+
+            var buttonFlow = new FlowLayoutPanel
+            {
+                AutoSize = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Margin = new Padding(0),
+                Padding = new Padding(0)
+            };
+            buttonFlow.Controls.Add(btnThemKhach);
+            buttonFlow.Controls.Add(btnLamMoi);
+            buttonFlow.Controls.Add(btnQuetMa);
+
+            leftHeaderTable.Controls.Add(headerTitle, 0, 0);
+            leftHeaderTable.Controls.Add(buttonFlow, 1, 0);
+            leftHeader.Controls.Add(leftHeaderTable);
+
+            var leftBody = new Panel { Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(5, 5, 5, 0) };
+            BuildKhachLayout(leftBody);
+            left.Controls.Add(leftBody);
+            left.Controls.Add(leftHeader);
+
+            var right = new Panel { Dock = DockStyle.Fill, AutoSize = true, Padding = new Padding(12, 0, 0, 0) };
+            var rightHeader = CreateSectionHeader("Danh sách khách", IconHelper.CreateListIcon());
+            rightHeader.Margin = new Padding(0);
+            rightHeader.Dock = DockStyle.Top;
+            var rightBody = new Panel { Dock = DockStyle.Top, Height = 420, Padding = new Padding(0, 5, 0, 0) };
+            lstKhach.Dock = DockStyle.Fill;
+            lstKhach.BorderStyle = BorderStyle.FixedSingle;
+            lstKhach.Font = new Font("Segoe UI", 10F);
+            rightBody.Controls.Add(lstKhach);
+            right.Controls.Add(rightBody);
+            right.Controls.Add(rightHeader);
+
+            split.Controls.Add(left, 0, 0);
+            split.Controls.Add(right, 1, 0);
+            section.Controls.Add(split);
+            return section;
+        }
+
         private void BuildLuuTruLayout(Panel container)
         {
             var tbl = new TableLayoutPanel
@@ -249,10 +373,7 @@ namespace HotelManagement.Forms
 
             AddCell(tbl, lblLoaiPhong, cboLoaiPhong, 0, 1);
             AddCell(tbl, lblPhong, cboPhong, 1, 1);
-            AddCell(tbl, new Label { Text = "Loại giá :" }, cboLoaiGia, 2, 1);
-            AddCell(tbl, lblGiaPhong, txtGiaPhong, 3, 1);
-
-            AddCell(tbl, new Label { Text = "Ghi chú :" }, txtGhiChuLuuTru, 0, 2, 4);
+            AddCell(tbl, lblGiaPhong, txtGiaPhong, 2, 1, 2);
             container.Controls.Add(tbl);
         }
 
@@ -272,7 +393,7 @@ namespace HotelManagement.Forms
             AddCell(tbl, lblGioiTinh, cboGioiTinh, 1, 0);
             AddCell(tbl, lblNgaySinh, dtpNgaySinh, 2, 0);
 
-            AddCell(tbl, lblDienThoai, txtDienThoai, 0, 1);
+            AddCell(tbl, lblSoDienThoai, txtSoDienThoai, 0, 1);
             AddCell(tbl, lblLoaiGiayTo, cboLoaiGiayTo, 1, 1);
             
             var pnlGiayTo = new Panel { Dock = DockStyle.Top, Height = 30, BorderStyle = BorderStyle.FixedSingle };
@@ -286,6 +407,7 @@ namespace HotelManagement.Forms
                 Cursor = Cursors.Hand 
             };
             btnSearchGT.FlatAppearance.BorderSize = 0;
+            btnSearchGT.Click += btnQuetMa_Click;
             txtSoGiayTo.BorderStyle = BorderStyle.None;
             txtSoGiayTo.Dock = DockStyle.Fill;
             var pnlTxtWrapper = new Panel { Dock = DockStyle.Fill, Padding = new Padding(3,5,0,0), BackColor = Color.White };
@@ -297,7 +419,8 @@ namespace HotelManagement.Forms
             tbl.Controls.Add(pCellGT, 2, 1);
 
             AddCell(tbl, lblQuocTich, cboQuocTich, 0, 2);
-            AddCell(tbl, lblGhiChuKhach, txtGhiChuKhach, 1, 2, 2);
+            AddCell(tbl, lblGhiChuKhach, txtGhiChuKhach, 1, 2);
+            tbl.Controls.Add(new Panel { Dock = DockStyle.Fill }, 2, 2);
 
             var pnlCuTru = CreateRadioPanel(rdoThuongTru, rdoTamTru, rdoNoiKhac);
             AddCell(tbl, lblNoiCuTru, pnlCuTru, 0, 3, 3);
@@ -305,14 +428,39 @@ namespace HotelManagement.Forms
             var pnlDiaBan = CreateRadioPanel(rdoDiaBanMoi, rdoDiaBanCu);
             AddCell(tbl, lblLoaiDiaBan, pnlDiaBan, 0, 4, 3);
 
-            AddCell(tbl, lblTinhThanh, cboTinhThanh, 0, 5);
-            AddCell(tbl, lblPhuongXa, cboPhuongXa, 1, 5);
-            AddCell(tbl, lblDiaChiChiTiet, txtDiaChiChiTiet, 2, 5);
+            var diaBanHeader = CreateInlineHeader("Địa bàn mới");
+            tbl.Controls.Add(diaBanHeader, 0, 5);
+            tbl.SetColumnSpan(diaBanHeader, 3);
 
-            AddCell(tbl, lblNgheNghiep, cboNgheNghiep, 0, 6);
-            AddCell(tbl, lblNoiLamViec, txtNoiLamViec, 1, 6, 2);
+            AddCell(tbl, lblTinhThanh, cboTinhThanh, 0, 6);
+            AddCell(tbl, lblPhuongXa, cboPhuongXa, 1, 6);
+            AddCell(tbl, lblDiaChiChiTiet, txtDiaChiChiTiet, 2, 6);
+            AddCell(tbl, lblNgheNghiep, cboNgheNghiep, 0, 7);
+            AddCell(tbl, lblNoiLamViec, txtNoiLamViec, 1, 7);
+            tbl.Controls.Add(new Panel { Dock = DockStyle.Fill }, 2, 7);
 
             container.Controls.Add(tbl);
+        }
+
+        private Panel CreateInlineHeader(string title)
+        {
+            var p = new Panel
+            {
+                Height = 26,
+                Dock = DockStyle.Fill,
+                BackColor = Color.FromArgb(239, 246, 255),
+                Margin = new Padding(5, 2, 5, 8)
+            };
+            var lbl = new Label
+            {
+                Text = title,
+                AutoSize = true,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = clrHeaderText,
+                Location = new Point(10, 5)
+            };
+            p.Controls.Add(lbl);
+            return p;
         }
 
         private Panel CreateCellPanel(Control label, Control input)
@@ -387,11 +535,9 @@ namespace HotelManagement.Forms
         private void InitCombos()
         {
             cboLyDoLuuTru.Items.Clear();
-            cboLyDoLuuTru.Items.AddRange(new object[] { "-- Chọn --", "Du lịch", "Công tác", "Thăm thân", "Khác" });
-            cboLyDoLuuTru.SelectedIndex = 0;
-            cboLoaiGia.Items.Clear();
-            cboLoaiGia.Items.AddRange(new object[] { "Mặc định", "Theo giờ", "Theo ngày", "Khác" });
-            cboLoaiGia.SelectedIndex = 0;
+            cboLyDoLuuTru.Items.AddRange(new object[] { "-- Chọn --", "Du lịch", "Công tác", "Thăm thân", "Mục đích khác" });
+            int defaultLyDoIndex = cboLyDoLuuTru.FindStringExact("Mục đích khác");
+            cboLyDoLuuTru.SelectedIndex = defaultLyDoIndex >= 0 ? defaultLyDoIndex : 0;
             cboGioiTinh.Items.Clear();
             cboGioiTinh.Items.AddRange(new object[] { "-- Chọn --", "Nam", "Nữ", "Khác" });
             cboGioiTinh.SelectedIndex = 0;
@@ -408,11 +554,14 @@ namespace HotelManagement.Forms
             cboPhuongXa.Items.AddRange(new object[] { "Chọn Phường/Xã", "Phường 1", "Phường 2", "Xã A", "Xã B" });
             cboPhuongXa.SelectedIndex = 0;
             cboNgheNghiep.Items.Clear();
-            cboNgheNghiep.Items.AddRange(new object[] { "-- Chọn --", "Công nhân", "Nhân viên VP", "Tự do", "Học sinh/SV" });
+            cboNgheNghiep.Items.AddRange(new object[] { "-- Chọn --", "Học sinh/Sinh viên", "Nhân viên văn phòng", "Kinh doanh tự do", "Công chức/Viên chức", "Khác" });
             cboNgheNghiep.SelectedIndex = 0;
             rdoThuongTru.Checked = true;
             rdoDiaBanMoi.Checked = true;
+            if (cboTinhThanh.Items.Count > 0) cboTinhThanh.SelectedIndex = 0;
+            if (cboPhuongXa.Items.Count > 0) cboPhuongXa.SelectedIndex = 0;
             if (dtpNgaySinh.Value.Year < 1900) dtpNgaySinh.Value = new DateTime(1990, 1, 1);
+            dtpNhanPhong.Enabled = false;
         }
 
         private void BindRoomInfo()
@@ -430,20 +579,177 @@ namespace HotelManagement.Forms
                 decimal gia = _bookingDal.GetDonGiaNgayByPhong(_room.PhongID);
                 if (gia <= 0) gia = (_room.LoaiPhongID == 1) ? 250000m : 350000m;
                 txtGiaPhong.Text = gia.ToString("N0");
+                ConfigureGiaPhongSuggestions(gia);
             }
-            catch { txtGiaPhong.Text = "0"; }
+            catch
+            {
+                txtGiaPhong.Text = "0";
+                ConfigureGiaPhongSuggestions(0);
+            }
+        }
+
+        private void SetNhanPhongNow()
+        {
+            dtpNhanPhong.Value = DateTime.Now;
+        }
+
+        private void StartNhanPhongClock()
+        {
+            if (_nhanPhongTimer == null)
+            {
+                _nhanPhongTimer = new Timer { Interval = 1000 };
+                _nhanPhongTimer.Tick += NhanPhongTimer_Tick;
+            }
+            dtpNhanPhong.Enabled = false;
+            _nhanPhongTimer.Start();
+        }
+
+        private void NhanPhongTimer_Tick(object sender, EventArgs e)
+        {
+            SetNhanPhongNow();
+        }
+
+        private void StopNhanPhongClock()
+        {
+            if (_nhanPhongTimer == null) return;
+            _nhanPhongTimer.Stop();
+            _nhanPhongTimer.Tick -= NhanPhongTimer_Tick;
+            _nhanPhongTimer.Dispose();
+            _nhanPhongTimer = null;
+        }
+
+        private void ConfigureGiaPhongSuggestions(decimal basePrice)
+        {
+            var presets = new[] { 100000m, 150000m, 200000m, 250000m, 300000m, 350000m, 400000m, 500000m, 700000m, 1000000m, basePrice };
+            _priceSuggestionSource.Clear();
+            foreach (var value in presets.Distinct().OrderBy(v => v))
+            {
+                if (value <= 0) continue;
+                _priceSuggestionSource.Add(value.ToString("N0"));
+            }
+
+            txtGiaPhong.ReadOnly = false;
+            txtGiaPhong.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            txtGiaPhong.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            txtGiaPhong.AutoCompleteCustomSource = _priceSuggestionSource;
+            txtGiaPhong.TextAlign = HorizontalAlignment.Right;
+        }
+
+        private void txtGiaPhong_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (char.IsControl(e.KeyChar)) return;
+            if (char.IsDigit(e.KeyChar)) return;
+            e.Handled = true;
+        }
+
+        private void txtGiaPhong_Leave(object sender, EventArgs e)
+        {
+            FormatGiaPhongText();
+        }
+
+        private void FormatGiaPhongText()
+        {
+            if (_isGiaPhongFormatting) return;
+            _isGiaPhongFormatting = true;
+            try
+            {
+                var number = ParseMoneyToDecimal(txtGiaPhong.Text);
+                txtGiaPhong.Text = number.ToString("N0");
+            }
+            finally
+            {
+                _isGiaPhongFormatting = false;
+            }
+        }
+
+        private static decimal ParseMoneyToDecimal(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return 0;
+            var digitsOnly = Regex.Replace(text, @"[^\d]", "");
+            if (string.IsNullOrWhiteSpace(digitsOnly)) return 0;
+            if (decimal.TryParse(digitsOnly, out var value)) return value;
+            return 0;
+        }
+
+        private void RoomDetailForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            StopNhanPhongClock();
         }
 
         private void btnDong_Click(object sender, EventArgs e) { BackRequested?.Invoke(this, EventArgs.Empty); }
-        private void btnQuetMa_Click(object sender, EventArgs e) { MessageBox.Show("Chức năng quét mã sẽ được bổ sung sau.", "Thông báo"); }
+
+        private void RoomDetailForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.F1) return;
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+            btnQuetMa_Click(sender, EventArgs.Empty);
+        }
+
+        private void btnQuetMa_Click(object sender, EventArgs e)
+        {
+            using (var scanForm = new FrmCccdScan())
+            {
+                if (scanForm.ShowDialog(this) != DialogResult.OK || scanForm.ResultInfo == null)
+                    return;
+
+                ApplyCccdInfoToCheckinForm(scanForm.ResultInfo);
+            }
+
+            txtHoTen.Focus();
+            txtHoTen.SelectAll();
+            MessageBox.Show("Đã áp dụng dữ liệu CCCD lên phiếu nhận phòng.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void ApplyCccdInfoToCheckinForm(CccdInfo info)
+        {
+            if (info == null) return;
+
+            SelectComboByText(cboLoaiGiayTo, "Thẻ CCCD");
+            SelectComboByText(cboQuocTich, string.IsNullOrWhiteSpace(info.Nationality) ? "VNM - Việt Nam" : info.Nationality);
+
+            if (!string.IsNullOrWhiteSpace(info.DocumentNumber))
+                txtSoGiayTo.Text = info.DocumentNumber;
+
+            if (!string.IsNullOrWhiteSpace(info.FullName))
+                txtHoTen.Text = info.FullName;
+
+            if (info.DateOfBirth.HasValue)
+                dtpNgaySinh.Value = info.DateOfBirth.Value;
+
+            if (!string.IsNullOrWhiteSpace(info.Gender))
+                SelectComboByText(cboGioiTinh, info.Gender);
+
+            rdoThuongTru.Checked = true;
+            rdoDiaBanMoi.Checked = true;
+
+            if (!string.IsNullOrWhiteSpace(info.Province))
+                SelectComboByContains(cboTinhThanh, info.Province);
+            else if (!string.IsNullOrWhiteSpace(info.AddressRaw))
+                SelectComboByContains(cboTinhThanh, info.AddressRaw);
+
+            if (!string.IsNullOrWhiteSpace(info.Ward))
+                SelectComboByContains(cboPhuongXa, info.Ward);
+            else if (!string.IsNullOrWhiteSpace(info.AddressRaw))
+                SelectComboByContains(cboPhuongXa, info.AddressRaw);
+
+            if (!string.IsNullOrWhiteSpace(info.AddressDetail))
+                txtDiaChiChiTiet.Text = info.AddressDetail;
+            else if (!string.IsNullOrWhiteSpace(info.AddressRaw))
+                txtDiaChiChiTiet.Text = info.AddressRaw;
+            else
+                txtDiaChiChiTiet.Text = string.Empty;
+        }
 
         private void btnNhanPhong_Click(object sender, EventArgs e)
         {
             if (!ValidateForm()) return;
             string tenChinh = GetPrimaryGuestName();
+            var checkinNow = DateTime.Now;
+            dtpNhanPhong.Value = checkinNow;
             _room.TrangThai = 1; 
             _room.KieuThue = (_room.KieuThue.HasValue && _room.KieuThue.Value > 0) ? _room.KieuThue : 1;
-            _room.ThoiGianBatDau = dtpNhanPhong.Value;
+            _room.ThoiGianBatDau = checkinNow;
             _room.TenKhachHienThi = tenChinh;
             string ghiChu = BuildGhiChuForSave();
             _roomDal.UpdateTrangThaiFull(_room.PhongID, _room.TrangThai, ghiChu, _room.ThoiGianBatDau, _room.KieuThue, _room.TenKhachHienThi);
@@ -485,8 +791,11 @@ namespace HotelManagement.Forms
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
             txtHoTen.Text = ""; cboGioiTinh.SelectedIndex = 0; dtpNgaySinh.Value = new DateTime(1990, 1, 1);
-            txtDienThoai.Text = ""; txtSoGiayTo.Text = ""; txtGhiChuKhach.Text = "";
-            cboNgheNghiep.SelectedIndex = 0; txtNoiLamViec.Text = "";
+            txtSoGiayTo.Text = "";
+            txtSoDienThoai.Text = "";
+            txtGhiChuKhach.Text = "";
+            cboNgheNghiep.SelectedIndex = 0;
+            txtNoiLamViec.Text = "";
             cboTinhThanh.SelectedIndex = 0; cboPhuongXa.SelectedIndex = 0; txtDiaChiChiTiet.Text = "";
         }
 
@@ -498,12 +807,12 @@ namespace HotelManagement.Forms
             tags.Add("NS=" + dtpNgaySinh.Value.ToString("yyyyMMdd"));
             tags.Add("LGT=" + SafeTagValue(cboLoaiGiayTo.SelectedItem?.ToString()));
             tags.Add("SGT=" + SafeTagValue(txtSoGiayTo.Text.Trim()));
+            tags.Add("SDT=" + SafeTagValue(txtSoDienThoai.Text.Trim()));
             tags.Add("QT=" + SafeTagValue(cboQuocTich.SelectedItem?.ToString()));
-            tags.Add("SDT=" + SafeTagValue(txtDienThoai.Text));
-            tags.Add("JOB=" + SafeTagValue(cboNgheNghiep.SelectedItem?.ToString()));
-            tags.Add("WORK=" + SafeTagValue(txtNoiLamViec.Text));
-            if (!string.IsNullOrWhiteSpace(txtGhiChuLuuTru.Text)) tags.Add("NOTE_S=" + SafeTagValue(txtGhiChuLuuTru.Text));
-            if (!string.IsNullOrWhiteSpace(txtGhiChuKhach.Text)) tags.Add("NOTE_G=" + SafeTagValue(txtGhiChuKhach.Text));
+            tags.Add("GHICHUKH=" + SafeTagValue(txtGhiChuKhach.Text.Trim()));
+            tags.Add("NN=" + SafeTagValue(cboNgheNghiep.SelectedItem?.ToString()));
+            tags.Add("NLV=" + SafeTagValue(txtNoiLamViec.Text.Trim()));
+            tags.Add("GIA=" + ParseMoneyToDecimal(txtGiaPhong.Text).ToString("0"));
             if (dtpTraPhong.Checked) tags.Add("TRAP=" + dtpTraPhong.Value.ToString("yyyyMMdd"));
             if (lstKhach.Items.Count > 0)
             {
@@ -538,21 +847,63 @@ namespace HotelManagement.Forms
         private void LoadStateFromGhiChu(string ghiChu)
         {
             if (string.IsNullOrWhiteSpace(ghiChu)) return;
-            SelectComboByText(cboLyDoLuuTru, GetStringTag(ghiChu, "LYDO", ""));
+            string lyDo = GetStringTag(ghiChu, "LYDO", "");
+            if (string.Equals(lyDo, "Khác", StringComparison.OrdinalIgnoreCase)) lyDo = "Mục đích khác";
+            SelectComboByText(cboLyDoLuuTru, lyDo);
             SelectComboByText(cboGioiTinh, GetStringTag(ghiChu, "GT", ""));
             string ns = GetStringTag(ghiChu, "NS", "");
             if (ns.Length == 8 && DateTime.TryParseExact(ns, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dob)) dtpNgaySinh.Value = dob;
             txtSoGiayTo.Text = GetStringTag(ghiChu, "SGT", "");
-            txtDienThoai.Text = GetStringTag(ghiChu, "SDT", "");
-            txtNoiLamViec.Text = GetStringTag(ghiChu, "WORK", "");
-            SelectComboByText(cboNgheNghiep, GetStringTag(ghiChu, "JOB", ""));
-            txtGhiChuLuuTru.Text = GetStringTag(ghiChu, "NOTE_S", "");
-            txtGhiChuKhach.Text = GetStringTag(ghiChu, "NOTE_G", "");
+            txtSoDienThoai.Text = GetStringTag(ghiChu, "SDT", "");
+            txtGhiChuKhach.Text = GetStringTag(ghiChu, "GHICHUKH", "");
+            SelectComboByText(cboNgheNghiep, GetStringTag(ghiChu, "NN", ""));
+            txtNoiLamViec.Text = GetStringTag(ghiChu, "NLV", "");
+            string gia = GetStringTag(ghiChu, "GIA", "");
+            if (!string.IsNullOrWhiteSpace(gia))
+            {
+                var giaDecimal = ParseMoneyToDecimal(gia);
+                txtGiaPhong.Text = giaDecimal.ToString("N0");
+            }
             string dsk = GetStringTag(ghiChu, "DSK", "");
             if (!string.IsNullOrWhiteSpace(dsk)) {
                 var parts = dsk.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var p in parts) lstKhach.Items.Add(p.Trim());
             }
+        }
+
+        private static void SelectComboByContains(ComboBox cbo, string source)
+        {
+            if (cbo == null || cbo.Items.Count == 0 || string.IsNullOrWhiteSpace(source)) return;
+            var normalizedSource = NormalizeForCompare(source);
+            for (int i = 1; i < cbo.Items.Count; i++)
+            {
+                var item = cbo.Items[i]?.ToString() ?? "";
+                if (item.Length == 0) continue;
+                var normalizedItem = NormalizeForCompare(item);
+                if (normalizedSource.Contains(normalizedItem))
+                {
+                    cbo.SelectedIndex = i;
+                    return;
+                }
+            }
+        }
+
+        private static string NormalizeForCompare(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return "";
+            var normalized = text.Normalize(NormalizationForm.FormD);
+            var sb = new StringBuilder(normalized.Length);
+            for (int i = 0; i < normalized.Length; i++)
+            {
+                var ch = normalized[i];
+                var category = CharUnicodeInfo.GetUnicodeCategory(ch);
+                if (category != UnicodeCategory.NonSpacingMark)
+                    sb.Append(ch);
+            }
+            var result = sb.ToString().Normalize(NormalizationForm.FormC).ToLowerInvariant();
+            result = result.Replace('đ', 'd');
+            result = Regex.Replace(result, @"\s+", " ");
+            return result.Trim();
         }
 
         private static void SelectComboByText(ComboBox cbo, string text)

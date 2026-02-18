@@ -37,8 +37,21 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>HotelManagement.Program</StartupObject>
+    <UseExternalCccdLibs>false</UseExternalCccdLibs>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(UseExternalCccdLibs)' == 'true'">
+    <DefineConstants>$(DefineConstants);USE_CCCD_EXTERNAL_LIBS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AForge" Condition="'$(UseExternalCccdLibs)' == 'true'">
+      <HintPath>packages\AForge.2.2.5\lib\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video" Condition="'$(UseExternalCccdLibs)' == 'true'">
+      <HintPath>packages\AForge.Video.2.2.5\lib\AForge.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video.DirectShow" Condition="'$(UseExternalCccdLibs)' == 'true'">
+      <HintPath>packages\AForge.Video.DirectShow.2.2.5\lib\AForge.Video.DirectShow.dll</HintPath>
+    </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
@@ -124,6 +137,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tesseract" Condition="'$(UseExternalCccdLibs)' == 'true'">
+      <HintPath>packages\Tesseract.4.1.1\lib\net20\Tesseract.dll</HintPath>
+    </Reference>
     <Reference Include="Ubiety.Dns.Core, Version=2.2.1.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>packages\MySql.Data.8.0.26\lib\net48\Ubiety.Dns.Core.dll</HintPath>
     </Reference>
@@ -133,8 +149,22 @@
     <Reference Include="ZstdSharp, Version=0.8.1.0, Culture=neutral, PublicKeyToken=8d151af33a4ad5cf, processorArchitecture=MSIL">
       <HintPath>packages\ZstdSharp.Port.0.8.1\lib\net462\ZstdSharp.dll</HintPath>
     </Reference>
+    <Reference Include="zxing" Condition="'$(UseExternalCccdLibs)' == 'true'">
+      <HintPath>packages\ZXing.Net.0.16.9\lib\net40\zxing.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\CccdInfo.cs" />
+    <Compile Include="Services\CameraScannerService.cs" />
+    <Compile Include="Services\QrDecoderService.cs" />
+    <Compile Include="Services\OcrService.cs" />
+    <Compile Include="Services\CccdParser.cs" />
+    <Compile Include="Forms\FrmCccdScan.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmCccdScan.Designer.cs">
+      <DependentUpon>FrmCccdScan.cs</DependentUpon>
+    </Compile>
     <Compile Include="Data\TiDbEfConfiguration.cs" />
     <Compile Include="Data\HotelDbContext.cs" />
     <Compile Include="Forms\RoomDetailForm.cs">
@@ -144,6 +174,9 @@
       <DependentUpon>RoomDetailForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HourlyCheckoutForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MainForm.Designer.cs">
@@ -199,8 +232,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="tessdata\*.traineddata">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <AutoKillRunningExeOnBuild>true</AutoKillRunningExeOnBuild>
+  </PropertyGroup>
+  <Target Name="KillRunningTargetExe"
+          BeforeTargets="PrepareForBuild;Build"
+          Condition="'$(OS)' == 'Windows_NT' and '$(AutoKillRunningExeOnBuild)' == 'true'">
+    <Exec ContinueOnError="true"
+          Command="taskkill /F /IM &quot;$(TargetFileName)&quot; &gt;NUL 2&gt;&amp;1" />
+  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

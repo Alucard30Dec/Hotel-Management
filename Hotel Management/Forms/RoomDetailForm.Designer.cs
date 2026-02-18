@@ -24,10 +24,8 @@ namespace HotelManagement.Forms
         private Label lblPhong;
         private ComboBox cboPhong;
         
-        private ComboBox cboLoaiGia;
         private Label lblGiaPhong;
         private TextBox txtGiaPhong;
-        private TextBox txtGhiChuLuuTru;
 
         private Button btnThemKhach;
         private Button btnLamMoi;
@@ -40,12 +38,12 @@ namespace HotelManagement.Forms
         private Label lblNgaySinh;
         private DateTimePicker dtpNgaySinh;
         
-        private Label lblDienThoai; 
-        private TextBox txtDienThoai;
         private Label lblLoaiGiayTo;
         private ComboBox cboLoaiGiayTo;
         private Label lblSoGiayTo;
         private TextBox txtSoGiayTo;
+        private Label lblSoDienThoai;
+        private TextBox txtSoDienThoai;
         
         private Label lblQuocTich;
         private ComboBox cboQuocTich;
@@ -67,12 +65,11 @@ namespace HotelManagement.Forms
         private ComboBox cboPhuongXa;
         private Label lblDiaChiChiTiet;
         private TextBox txtDiaChiChiTiet;
-        
         private Label lblNgheNghiep;
         private ComboBox cboNgheNghiep;
         private Label lblNoiLamViec;
         private TextBox txtNoiLamViec;
-
+        
         private ListBox lstKhach;
         private Button btnDong;
         private Button btnNhanPhong;
@@ -102,14 +99,12 @@ namespace HotelManagement.Forms
             this.cboLoaiPhong = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
             this.lblPhong = new Label { Text = "Phòng *" };
             this.cboPhong = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
-            this.cboLoaiGia = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
             this.lblGiaPhong = new Label { Text = "Giá phòng" };
             this.txtGiaPhong = new TextBox();
-            this.txtGhiChuLuuTru = new TextBox { Multiline = true };
 
             this.btnThemKhach = new Button { Text = "Thêm khách" };
             this.btnLamMoi = new Button { Text = "Làm mới" };
-            this.btnQuetMa = new Button { Text = "Quét mã (F1)" };
+            this.btnQuetMa = new Button { Text = "Quét CCCD (F1)" };
             
             this.lblHoTen = new Label { Text = "Họ tên *" };
             this.txtHoTen = new TextBox();
@@ -118,12 +113,12 @@ namespace HotelManagement.Forms
             this.lblNgaySinh = new Label { Text = "Ngày sinh *" };
             this.dtpNgaySinh = new DateTimePicker { Format = DateTimePickerFormat.Custom, CustomFormat = "dd/MM/yyyy" };
             
-            this.lblDienThoai = new Label { Text = "Số điện thoại" };
-            this.txtDienThoai = new TextBox();
             this.lblLoaiGiayTo = new Label { Text = "Loại giấy tờ *" };
             this.cboLoaiGiayTo = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
             this.lblSoGiayTo = new Label { Text = "Số giấy tờ *" };
             this.txtSoGiayTo = new TextBox();
+            this.lblSoDienThoai = new Label { Text = "Số điện thoại" };
+            this.txtSoDienThoai = new TextBox();
             
             this.lblQuocTich = new Label { Text = "Quốc tịch *" };
             this.cboQuocTich = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
@@ -145,10 +140,9 @@ namespace HotelManagement.Forms
             this.cboPhuongXa = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
             this.lblDiaChiChiTiet = new Label { Text = "Địa chỉ chi tiết *" };
             this.txtDiaChiChiTiet = new TextBox();
-            
-            this.lblNgheNghiep = new Label { Text = "Nghề nghiệp :" };
+            this.lblNgheNghiep = new Label { Text = "Nghề nghiệp" };
             this.cboNgheNghiep = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
-            this.lblNoiLamViec = new Label { Text = "Nơi làm việc :" };
+            this.lblNoiLamViec = new Label { Text = "Nơi làm việc" };
             this.txtNoiLamViec = new TextBox();
 
             this.lstKhach = new ListBox();
