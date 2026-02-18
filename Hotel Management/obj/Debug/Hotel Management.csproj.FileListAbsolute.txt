@@ -68,3 +68,5 @@ E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel Management.exe.conf
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\Ubiety.Dns.Core.dll
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\Zstandard.Net.dll
 E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel_Management.Migrations.init.resources
+E:\Project\Hotel-Management\Hotel Management\bin\Debug\diaban.json
+E:\Project\Hotel-Management\Hotel Management\bin\Debug\Address\dvhc_optimized.json

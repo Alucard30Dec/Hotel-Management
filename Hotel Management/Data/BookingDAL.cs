@@ -199,17 +199,43 @@ namespace HotelManagement.Data
         {
             using (MySqlConnection conn = DbHelper.GetConnection())
             {
-                string query = @"SELECT lp.DonGiaNgay
-                                 FROM PHONG p
-                                 JOIN LOAIPHONG lp ON p.LoaiPhongID = lp.LoaiPhongID
-                                 WHERE p.PhongID = @PhongID";
-                MySqlCommand cmd = new MySqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@PhongID", phongID);
-                object result = cmd.ExecuteScalar();
-                if (result != null && result != DBNull.Value)
-                    return Convert.ToDecimal(result);
+                // Ưu tiên lấy theo bảng LOAIPHONG nếu có.
+                const string queryWithLoaiPhong = @"SELECT lp.DonGiaNgay
+                                                    FROM PHONG p
+                                                    JOIN LOAIPHONG lp ON p.LoaiPhongID = lp.LoaiPhongID
+                                                    WHERE p.PhongID = @PhongID";
+                try
+                {
+                    using (var cmd = new MySqlCommand(queryWithLoaiPhong, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@PhongID", phongID);
+                        object result = cmd.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                            return Convert.ToDecimal(result);
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    // 1146: Table doesn't exist, 1054: Unknown column
+                    if (ex.Number != 1146 && ex.Number != 1054)
+                        throw;
+                }
+
+                // Fallback cho schema không có LOAIPHONG: dựa vào LoaiPhongID của PHONG.
+                const string queryLoaiPhongId = @"SELECT LoaiPhongID FROM PHONG WHERE PhongID = @PhongID";
+                using (var cmd = new MySqlCommand(queryLoaiPhongId, conn))
+                {
+                    cmd.Parameters.AddWithValue("@PhongID", phongID);
+                    object result = cmd.ExecuteScalar();
+                    if (result == null || result == DBNull.Value)
+                        return 0m;
+
+                    int loaiPhongId = Convert.ToInt32(result);
+                    if (loaiPhongId == 1) return 250000m;
+                    if (loaiPhongId == 2) return 350000m;
+                    return 300000m;
+                }
             }
-            return 0;
         }
 
         public BookingDateRangeInfo GetBookingDateRange()

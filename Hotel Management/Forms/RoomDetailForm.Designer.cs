@@ -61,6 +61,8 @@ namespace HotelManagement.Forms
 
         private Label lblTinhThanh;
         private ComboBox cboTinhThanh;
+        private Label lblHuyen;
+        private ComboBox cboHuyen;
         private Label lblPhuongXa;
         private ComboBox cboPhuongXa;
         private Label lblDiaChiChiTiet;
@@ -136,7 +138,9 @@ namespace HotelManagement.Forms
             
             this.lblTinhThanh = new Label { Text = "Tỉnh/ Thành phố *" };
             this.cboTinhThanh = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
-            this.lblPhuongXa = new Label { Text = "Phường/ Xã/ Đặc khu *" };
+            this.lblHuyen = new Label { Text = "Quận/ Huyện *" };
+            this.cboHuyen = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+            this.lblPhuongXa = new Label { Text = "Phường/ Xã *" };
             this.cboPhuongXa = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
             this.lblDiaChiChiTiet = new Label { Text = "Địa chỉ chi tiết *" };
             this.txtDiaChiChiTiet = new TextBox();

@@ -1200,7 +1200,7 @@ namespace HotelManagement.Forms
             panelDetailHost.Dock = DockStyle.Fill;
             panelDetailHost.Controls.Clear();
 
-            var detail = new RoomDetailForm(room)
+            var detail = new RoomDetailForm(room, false, null, @"Address\dvhc_optimized.json")
             {
                 TopLevel = false,
                 FormBorderStyle = FormBorderStyle.None,
