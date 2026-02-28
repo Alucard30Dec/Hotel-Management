@@ -120,8 +120,8 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Security" />
     <Reference Include="System.Runtime.Serialization" />
@@ -155,10 +155,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\AppExceptions.cs" />
+    <Compile Include="Services\AppLogger.cs" />
+    <Compile Include="Services\PerformanceTracker.cs" />
+    <Compile Include="Services\UiExceptionHandler.cs" />
+    <Compile Include="Services\CheckoutService.cs" />
     <Compile Include="Services\JsonException.cs" />
     <Compile Include="Services\GeoDataLoader.cs" />
     <Compile Include="Services\CccdInfo.cs" />
     <Compile Include="Services\CameraScannerService.cs" />
+    <Compile Include="Services\PricingService.cs" />
     <Compile Include="Services\QrDecoderService.cs" />
     <Compile Include="Services\OcrService.cs" />
     <Compile Include="Services\CccdParser.cs" />
@@ -182,6 +188,13 @@
     <Compile Include="Forms\HourlyCheckoutForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\ToastNotifier.cs" />
+    <Compile Include="Forms\OvernightCheckoutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ManagementControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
@@ -192,6 +205,12 @@
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\DbHelper.cs" />
+    <Compile Include="Data\AuditContext.cs" />
+    <Compile Include="Data\SchemaMaintenanceService.cs" />
+    <Compile Include="Data\SettingsDAL.cs" />
+    <Compile Include="Data\LegacyDataMigrationService.cs" />
+    <Compile Include="Data\AuditLogDAL.cs" />
+    <Compile Include="Data\StatisticsDAL.cs" />
     <Compile Include="Data\RoomDAL.cs" />
     <Compile Include="Data\BookingDAL.cs" />
     <Compile Include="Data\CustomerDAL.cs" />
@@ -201,13 +220,29 @@
     <Compile Include="Migrations\202602141602248_init.Designer.cs">
       <DependentUpon>202602141602248_init.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202602180533352_TenMigrationMoi.cs" />
+    <Compile Include="Migrations\202602180533352_TenMigrationMoi.Designer.cs">
+      <DependentUpon>202602180533352_TenMigrationMoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202602190900000_UpdateRoomLayoutByFloor.cs" />
+    <Compile Include="Migrations\202602190900000_UpdateRoomLayoutByFloor.Designer.cs">
+      <DependentUpon>202602190900000_UpdateRoomLayoutByFloor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202602221330000_RemoveRoomGhiChu.cs" />
+    <Compile Include="Migrations\202602221330000_RemoveRoomGhiChu.Designer.cs">
+      <DependentUpon>202602221330000_RemoveRoomGhiChu.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ComboBoxItem.cs" />
     <Compile Include="Models\Tinh.cs" />
     <Compile Include="Models\Huyen.cs" />
     <Compile Include="Models\Xa.cs" />
     <Compile Include="Models\Booking.cs" />
+    <Compile Include="Models\StayInfo.cs" />
+    <Compile Include="Models\BookingExtra.cs" />
+    <Compile Include="Models\HotelSetting.cs" />
     <Compile Include="Models\Invoice.cs" />
+    <Compile Include="Models\StatusCodes.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Room.cs" />
@@ -215,6 +250,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Migrations\202602141602248_init.resx">
       <DependentUpon>202602141602248_init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202602180533352_TenMigrationMoi.resx">
+      <DependentUpon>202602180533352_TenMigrationMoi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202602190900000_UpdateRoomLayoutByFloor.resx">
+      <DependentUpon>202602190900000_UpdateRoomLayoutByFloor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202602221330000_RemoveRoomGhiChu.resx">
+      <DependentUpon>202602221330000_RemoveRoomGhiChu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -226,6 +270,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="packages.config" />
+    <None Include="docs\sql\20260221_bookingtype_stayinfo_extras_migration.sql" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -258,7 +303,7 @@
   <Target Name="KillRunningTargetExe"
           BeforeTargets="PrepareForBuild;Build"
           Condition="'$(OS)' == 'Windows_NT' and '$(AutoKillRunningExeOnBuild)' == 'true'">
-    <Exec ContinueOnError="true"
+    <Exec IgnoreExitCode="true"
           Command="taskkill /F /IM &quot;$(TargetFileName)&quot; &gt;NUL 2&gt;&amp;1" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

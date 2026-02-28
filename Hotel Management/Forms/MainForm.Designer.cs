@@ -20,14 +20,16 @@ namespace HotelManagement.Forms
 
         private Button btnSoDoPhong;
         private Button btnThongKe;
-        private Button btnReports;
+        private Button btnQuanLy;
         private Label lblCurrentUser;
 
         private Button btnFilterAll;
         private Button btnFilterTrong;
         private Button btnFilterCoKhach;
         private Button btnFilterChuaDon;
-        private Button btnFilterDaDat;
+        private Label lblFilterHourlyCount;
+        private Label lblFilterOvernightCount;
+        private Label lblFilterTodayIncome;
 
         protected override void Dispose(bool disposing)
         {
@@ -149,7 +151,7 @@ namespace HotelManagement.Forms
             btnSoDoPhong.Click += new System.EventHandler(this.btnRooms_Click);
 
             btnThongKe = MakeLeftButton("Thống kê", 50);
-            btnReports = MakeLeftButton("Báo cáo", 90);
+            btnQuanLy = MakeLeftButton("Quản lí", 90);
 
             lblCurrentUser = new Label
             {
@@ -164,7 +166,7 @@ namespace HotelManagement.Forms
 
             panelLeft.Controls.Add(btnSoDoPhong);
             panelLeft.Controls.Add(btnThongKe);
-            panelLeft.Controls.Add(btnReports);
+            panelLeft.Controls.Add(btnQuanLy);
             panelLeft.Controls.Add(lblCurrentUser);
 
             // ===== PANEL MAIN =====
@@ -183,12 +185,31 @@ namespace HotelManagement.Forms
                 Padding = new Padding(10)
             };
 
+            var panelFilterLayout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 1
+            };
+            panelFilterLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+            panelFilterLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+
             var panelFilterInner = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = false,
                 AutoScroll = true
+            };
+
+            var panelFilterSummary = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Anchor = AnchorStyles.Right | AnchorStyles.Top
             };
 
             btnFilterAll = MakeFilter("Tất cả", Color.FromArgb(158, 158, 158));
@@ -203,16 +224,22 @@ namespace HotelManagement.Forms
             btnFilterChuaDon = MakeFilter("Chưa dọn", Color.FromArgb(96, 125, 139));
             btnFilterChuaDon.Click += new System.EventHandler(this.btnFilterChuaDon_Click);
 
-            btnFilterDaDat = MakeFilter("Đã có khách đặt", Color.FromArgb(255, 152, 0));
-            btnFilterDaDat.Click += new System.EventHandler(this.btnFilterDaDat_Click);
-
             panelFilterInner.Controls.Add(btnFilterAll);
             panelFilterInner.Controls.Add(btnFilterTrong);
             panelFilterInner.Controls.Add(btnFilterCoKhach);
             panelFilterInner.Controls.Add(btnFilterChuaDon);
-            panelFilterInner.Controls.Add(btnFilterDaDat);
 
-            panelFilter.Controls.Add(panelFilterInner);
+            lblFilterHourlyCount = MakeFilterSummaryLabel("Lượt giờ: 0");
+            lblFilterOvernightCount = MakeFilterSummaryLabel("Lượt ngày/đêm: 0");
+            lblFilterTodayIncome = MakeFilterSummaryLabel("Thu hôm nay: 0đ");
+
+            panelFilterSummary.Controls.Add(lblFilterHourlyCount);
+            panelFilterSummary.Controls.Add(lblFilterOvernightCount);
+            panelFilterSummary.Controls.Add(lblFilterTodayIncome);
+
+            panelFilterLayout.Controls.Add(panelFilterInner, 0, 0);
+            panelFilterLayout.Controls.Add(panelFilterSummary, 1, 0);
+            panelFilter.Controls.Add(panelFilterLayout);
 
             // ----- CENTER: DANH SÁCH PHÒNG + CHI TIẾT -----
             var panelCenter = new Panel
@@ -293,6 +320,20 @@ namespace HotelManagement.Forms
                 };
                 btn.FlatAppearance.BorderSize = 0;
                 return btn;
+            }
+
+            Label MakeFilterSummaryLabel(string text)
+            {
+                return new Label
+                {
+                    AutoSize = true,
+                    Margin = new Padding(8, 10, 0, 0),
+                    Padding = new Padding(8, 3, 8, 3),
+                    Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(55, 71, 79),
+                    BackColor = Color.FromArgb(238, 243, 255),
+                    Text = text
+                };
             }
         }
     }

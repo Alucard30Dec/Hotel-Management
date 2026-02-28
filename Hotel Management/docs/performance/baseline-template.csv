@@ -1,0 +1,10 @@
+Scenario,BeforeMs,CPUPercent,AllocMB,MemoryPeakMB,Notes
+Cold start,,,,,
+Warm start,,,,,
+Open BookingStatistics,,,,,
+Open RevenueReport,,,,,
+Save Hourly Checkout,,,,,
+Pay Hourly Checkout,,,,,
+Save Overnight Checkout,,,,,
+Pay Overnight Checkout,,,,,
+Export CSV,,,,,

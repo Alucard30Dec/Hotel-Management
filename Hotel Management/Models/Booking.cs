@@ -17,6 +17,7 @@ namespace HotelManagement.Models
         public DateTime NgayDiDuKien { get; set; }
         public DateTime? NgayDiThucTe { get; set; }
         public int TrangThai { get; set; }
+        public int BookingType { get; set; }
         public decimal TienCoc { get; set; }
     }
 }

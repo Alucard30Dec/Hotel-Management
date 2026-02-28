@@ -1,0 +1,11 @@
+Scenario,BeforeMs,AfterCS02Ms,AfterCS03Ms,AfterCS05Ms,CPU_Delta,Alloc_Delta,MemoryPeak_Delta,Notes
+Cold start,,,,,,,,
+Warm start,,,,,,,,
+Open RoomMap,,,,,,,,
+Open BookingStatistics,,,,,,,,
+Load KPI Dashboard,,,,,,,,
+Load Explorer page,,,,,,,,
+Load Audit + Alerts,,,,,,,,
+Load RevenueReport,,,,,,,,
+Export CSV,,,,,,,,
+Pay Overnight,,,,,,,,

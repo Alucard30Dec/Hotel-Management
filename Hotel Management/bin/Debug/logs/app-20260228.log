@@ -1,0 +1,992 @@
+﻿2026-02-28 00:00:02.502 [INFO] [corr=startup-98daa9e75bb94ec4bdfbe300e67ca94e] PerfScope: MainForm.Load | ElapsedMs=37 | MemoryDeltaBytes=111064 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:00:04.398 [INFO] [corr=startup-98daa9e75bb94ec4bdfbe300e67ca94e] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=133 | MemoryDeltaBytes=98020 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:00:04.398 [INFO] [corr=startup-98daa9e75bb94ec4bdfbe300e67ca94e] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1906 | MemoryDeltaBytes=1317532 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:00:08.710 [INFO] [corr=52deb6a4ad1e42ad8347421a44f19f34] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=1211 | MemoryDeltaBytes=-5212724 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 00:00:25.048 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=7421 | MemoryDeltaBytes=1977820 | Gc0Delta=4 | Gc1Delta=3 | Gc2Delta=0 | ThreadId=11
+2026-02-28 00:00:27.909 [INFO] [corr=startup-98daa9e75bb94ec4bdfbe300e67ca94e] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=162 | MemoryDeltaBytes=204396 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:00:29.053 [INFO] [corr=d6299211bdae425f836f58b7be4bffc8] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=647 | MemoryDeltaBytes=-3724400 | Gc0Delta=2 | Gc1Delta=2 | Gc2Delta=1 | ThreadId=1
+2026-02-28 00:01:04.217 [INFO] [corr=startup-98daa9e75bb94ec4bdfbe300e67ca94e] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=155 | MemoryDeltaBytes=178764 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:01:15.248 [INFO] [corr=startup-98daa9e75bb94ec4bdfbe300e67ca94e] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=141 | MemoryDeltaBytes=114144 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:01:25.001 [INFO] [corr=startup-98daa9e75bb94ec4bdfbe300e67ca94e] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=214 | MemoryDeltaBytes=89804 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:02:45.992 [INFO] [corr=startup-98daa9e75bb94ec4bdfbe300e67ca94e] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=145 | MemoryDeltaBytes=204748 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:02:47.899 [INFO] [corr=startup-98daa9e75bb94ec4bdfbe300e67ca94e] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=132 | MemoryDeltaBytes=40888 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:03:01.802 [INFO] [corr=startup-98daa9e75bb94ec4bdfbe300e67ca94e] PerfScope: Program.Main.Bootstrap | ElapsedMs=182277 | MemoryDeltaBytes=11349644 | Gc0Delta=13 | Gc1Delta=7 | Gc2Delta=2 | ThreadId=1
+2026-02-28 00:03:01.802 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=182318 | MemoryDeltaBytes=11374220 | Gc0Delta=13 | Gc1Delta=7 | Gc2Delta=2 | ThreadId=1
+2026-02-28 00:10:31.430 [INFO] [corr=startup-8af6c3877e3744d1b092e4bcae317807] PerfScope: MainForm.Load | ElapsedMs=25 | MemoryDeltaBytes=109108 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:10:32.733 [INFO] [corr=startup-8af6c3877e3744d1b092e4bcae317807] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=133 | MemoryDeltaBytes=163672 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:10:32.733 [INFO] [corr=startup-8af6c3877e3744d1b092e4bcae317807] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1318 | MemoryDeltaBytes=1366360 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:10:36.212 [INFO] [corr=92c78d79d46c43949c651bf37ec2347f] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=1185 | MemoryDeltaBytes=-6219440 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 00:10:49.074 [INFO] [corr=startup-8af6c3877e3744d1b092e4bcae317807] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=134 | MemoryDeltaBytes=-4682292 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:10:53.686 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=7135 | MemoryDeltaBytes=1120728 | Gc0Delta=5 | Gc1Delta=5 | Gc2Delta=1 | ThreadId=13
+2026-02-28 00:12:04.575 [INFO] [corr=startup-8af6c3877e3744d1b092e4bcae317807] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=153 | MemoryDeltaBytes=212920 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:12:37.256 [INFO] [corr=startup-8af6c3877e3744d1b092e4bcae317807] PerfScope: Program.Main.Bootstrap | ElapsedMs=127873 | MemoryDeltaBytes=9544180 | Gc0Delta=9 | Gc1Delta=7 | Gc2Delta=2 | ThreadId=1
+2026-02-28 00:12:37.256 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=127880 | MemoryDeltaBytes=9568756 | Gc0Delta=9 | Gc1Delta=7 | Gc2Delta=2 | ThreadId=1
+2026-02-28 00:25:44.834 [INFO] [corr=startup-9a14d56526924d8992291d4ce588699d] PerfScope: MainForm.Load | ElapsedMs=27 | MemoryDeltaBytes=119884 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:25:46.199 [INFO] [corr=startup-9a14d56526924d8992291d4ce588699d] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=138 | MemoryDeltaBytes=163672 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:25:46.199 [INFO] [corr=startup-9a14d56526924d8992291d4ce588699d] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1373 | MemoryDeltaBytes=1378576 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:25:48.481 [INFO] [corr=95c27f37d77a4ecdb839b165fc9bef3d] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=1102 | MemoryDeltaBytes=7729116 | Gc0Delta=2 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:26:02.031 [INFO] [corr=55c7de4ff9904bf591369302947d08f2] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=593 | MemoryDeltaBytes=1012968 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:26:06.891 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=6941 | MemoryDeltaBytes=-905604 | Gc0Delta=6 | Gc1Delta=5 | Gc2Delta=1 | ThreadId=11
+2026-02-28 00:26:07.962 [INFO] [corr=startup-9a14d56526924d8992291d4ce588699d] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=157 | MemoryDeltaBytes=212872 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:26:16.297 [INFO] [corr=startup-9a14d56526924d8992291d4ce588699d] PerfScope: Program.Main.Bootstrap | ElapsedMs=33960 | MemoryDeltaBytes=11965844 | Gc0Delta=10 | Gc1Delta=8 | Gc2Delta=2 | ThreadId=1
+2026-02-28 00:26:16.297 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=33966 | MemoryDeltaBytes=11982228 | Gc0Delta=10 | Gc1Delta=8 | Gc2Delta=2 | ThreadId=1
+2026-02-28 00:30:16.971 [INFO] [corr=startup-a8e6a54bb550415bb5c2bbc05600967f] PerfScope: MainForm.Load | ElapsedMs=31 | MemoryDeltaBytes=110960 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:30:18.784 [INFO] [corr=startup-a8e6a54bb550415bb5c2bbc05600967f] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=134 | MemoryDeltaBytes=169084 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:30:18.786 [INFO] [corr=startup-a8e6a54bb550415bb5c2bbc05600967f] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1823 | MemoryDeltaBytes=1383292 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:30:21.774 [INFO] [corr=00b75e6bd82c41f0ac17a5cdf5b4d5a1] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=1161 | MemoryDeltaBytes=-4633364 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 00:30:32.001 [INFO] [corr=e501cd14c9df42e3b70d676589be22a0] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | ElapsedMs=456 | MemoryDeltaBytes=319452 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:30:32.006 [ERROR] [corr=e501cd14c9df42e3b70d676589be22a0] Infrastructure failure at UI boundary. | Operation=OvernightCheckout.SaveProgress
+HotelManagement.Services.InfrastructureException: Lỗi cơ sở dữ liệu khi xử lý checkout. ---> MySql.Data.MySqlClient.MySqlException: Field 'LaDiaBanCu' doesn't have a default value
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   at HotelManagement.Services.CheckoutService.UpdateStayInfoRates(MySqlConnection conn, MySqlTransaction tx, Int32 bookingId, Decimal nightlyRate, Int32 nightCount, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 434
+   at HotelManagement.Services.CheckoutService.<>c__DisplayClass8_0.<SaveOvernight>b__0(MySqlConnection conn, MySqlTransaction tx, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 158
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 248
+   --- End of inner exception stack trace ---
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 284
+   at HotelManagement.Services.CheckoutService.SaveOvernight(SaveOvernightRequest request) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 149
+   at HotelManagement.Forms.OvernightCheckoutForm.<>c__DisplayClass70_0.<BtnSave_Click>b__1() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 820
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable`1.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Forms.OvernightCheckoutForm.<<BtnSave_Click>b__70_0>d.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 820
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Services.UiExceptionHandler.<RunAsync>d__1.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Services\UiExceptionHandler.cs:line 72
+2026-02-28 00:30:39.182 [INFO] [corr=568ddb0b1f09468b97faf20fbe2bfe7c] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | ElapsedMs=436 | MemoryDeltaBytes=220744 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:30:39.185 [ERROR] [corr=568ddb0b1f09468b97faf20fbe2bfe7c] Infrastructure failure at UI boundary. | Operation=OvernightCheckout.SaveProgress
+HotelManagement.Services.InfrastructureException: Lỗi cơ sở dữ liệu khi xử lý checkout. ---> MySql.Data.MySqlClient.MySqlException: Field 'LaDiaBanCu' doesn't have a default value
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   at HotelManagement.Services.CheckoutService.UpdateStayInfoRates(MySqlConnection conn, MySqlTransaction tx, Int32 bookingId, Decimal nightlyRate, Int32 nightCount, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 434
+   at HotelManagement.Services.CheckoutService.<>c__DisplayClass8_0.<SaveOvernight>b__0(MySqlConnection conn, MySqlTransaction tx, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 158
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 248
+   --- End of inner exception stack trace ---
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 284
+   at HotelManagement.Services.CheckoutService.SaveOvernight(SaveOvernightRequest request) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 149
+   at HotelManagement.Forms.OvernightCheckoutForm.<>c__DisplayClass70_0.<BtnSave_Click>b__1() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 820
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable`1.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Forms.OvernightCheckoutForm.<<BtnSave_Click>b__70_0>d.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 820
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Services.UiExceptionHandler.<RunAsync>d__1.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Services\UiExceptionHandler.cs:line 72
+2026-02-28 00:30:39.515 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=7408 | MemoryDeltaBytes=1528804 | Gc0Delta=4 | Gc1Delta=3 | Gc2Delta=1 | ThreadId=10
+2026-02-28 00:30:40.551 [INFO] [corr=startup-a8e6a54bb550415bb5c2bbc05600967f] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=163 | MemoryDeltaBytes=-757184 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:30:41.934 [INFO] [corr=311cf68f8009435cb831b69cecc5a330] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=635 | MemoryDeltaBytes=2285180 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:31:01.687 [INFO] [corr=d80270e70c4f4e34a2d2deb49d747c6d] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | ElapsedMs=439 | MemoryDeltaBytes=98260 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:31:01.687 [ERROR] [corr=d80270e70c4f4e34a2d2deb49d747c6d] Infrastructure failure at UI boundary. | Operation=OvernightCheckout.SaveProgress
+HotelManagement.Services.InfrastructureException: Lỗi cơ sở dữ liệu khi xử lý checkout. ---> MySql.Data.MySqlClient.MySqlException: Field 'LaDiaBanCu' doesn't have a default value
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   at HotelManagement.Services.CheckoutService.UpdateStayInfoRates(MySqlConnection conn, MySqlTransaction tx, Int32 bookingId, Decimal nightlyRate, Int32 nightCount, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 434
+   at HotelManagement.Services.CheckoutService.<>c__DisplayClass8_0.<SaveOvernight>b__0(MySqlConnection conn, MySqlTransaction tx, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 158
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 248
+   --- End of inner exception stack trace ---
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 284
+   at HotelManagement.Services.CheckoutService.SaveOvernight(SaveOvernightRequest request) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 149
+   at HotelManagement.Forms.OvernightCheckoutForm.<>c__DisplayClass70_0.<BtnSave_Click>b__1() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 820
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable`1.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Forms.OvernightCheckoutForm.<<BtnSave_Click>b__70_0>d.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 820
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Services.UiExceptionHandler.<RunAsync>d__1.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Services\UiExceptionHandler.cs:line 72
+2026-02-28 00:31:11.711 [INFO] [corr=startup-a8e6a54bb550415bb5c2bbc05600967f] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=159 | MemoryDeltaBytes=195544 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:31:29.713 [INFO] [corr=startup-a8e6a54bb550415bb5c2bbc05600967f] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=133 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:31:32.413 [INFO] [corr=startup-a8e6a54bb550415bb5c2bbc05600967f] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=149 | MemoryDeltaBytes=89756 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:31:52.260 [INFO] [corr=startup-a8e6a54bb550415bb5c2bbc05600967f] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=138 | MemoryDeltaBytes=122248 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:31:55.641 [INFO] [corr=startup-a8e6a54bb550415bb5c2bbc05600967f] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=142 | MemoryDeltaBytes=196192 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:31:58.662 [INFO] [corr=150e2e6e13324de9aff5551d174a310b] PerfScope: HourlyCheckout.SaveProgress | BookingId=150001 | SoftDrinkQty=1 | WaterQty=1 | ElapsedMs=879 | MemoryDeltaBytes=855312 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:31:58.985 [INFO] [corr=startup-a8e6a54bb550415bb5c2bbc05600967f] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=508 | MemoryDeltaBytes=1038352 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:32:41.884 [INFO] [corr=startup-a8e6a54bb550415bb5c2bbc05600967f] PerfScope: Program.Main.Bootstrap | ElapsedMs=146600 | MemoryDeltaBytes=12723412 | Gc0Delta=14 | Gc1Delta=8 | Gc2Delta=2 | ThreadId=1
+2026-02-28 00:32:41.884 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=146606 | MemoryDeltaBytes=12747988 | Gc0Delta=14 | Gc1Delta=8 | Gc2Delta=2 | ThreadId=1
+2026-02-28 00:38:02.062 [INFO] [corr=startup-c282cc8f91a947dbae05b787e855bb74] PerfScope: MainForm.Load | ElapsedMs=29 | MemoryDeltaBytes=119332 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:38:03.184 [INFO] [corr=startup-c282cc8f91a947dbae05b787e855bb74] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=137 | MemoryDeltaBytes=163688 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:38:03.186 [INFO] [corr=startup-c282cc8f91a947dbae05b787e855bb74] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1132 | MemoryDeltaBytes=1359540 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:38:05.004 [INFO] [corr=4391fa4d1d9243e99fecab1fbc858797] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=1068 | MemoryDeltaBytes=-988988 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:38:24.742 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=7559 | MemoryDeltaBytes=-1665584 | Gc0Delta=5 | Gc1Delta=5 | Gc2Delta=1 | ThreadId=9
+2026-02-28 00:38:38.545 [INFO] [corr=startup-c282cc8f91a947dbae05b787e855bb74] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=161 | MemoryDeltaBytes=195724 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:38:40.304 [INFO] [corr=db2591c9bff44dc898e32f5aeb3c53f0] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=1020 | MemoryDeltaBytes=-2101884 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:38:45.284 [INFO] [corr=7d54323538274743bc424ec04149bc1a] PerfScope: OvernightCheckout.Pay | BookingId=150002 | ElapsedMs=1412 | MemoryDeltaBytes=122144 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:38:45.286 [ERROR] [corr=7d54323538274743bc424ec04149bc1a] Infrastructure failure at UI boundary. | Operation=OvernightCheckout.Pay
+HotelManagement.Services.InfrastructureException: Lỗi cơ sở dữ liệu khi xử lý checkout. ---> MySql.Data.MySqlClient.MySqlException: Field 'LaDiaBanCu' doesn't have a default value
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   at HotelManagement.Services.CheckoutService.UpdateStayInfoRates(MySqlConnection conn, MySqlTransaction tx, Int32 bookingId, Decimal nightlyRate, Int32 nightCount, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 434
+   at HotelManagement.Services.CheckoutService.<>c__DisplayClass9_0.<PayOvernight>b__0(MySqlConnection conn, MySqlTransaction tx, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 200
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 248
+   --- End of inner exception stack trace ---
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 284
+   at HotelManagement.Services.CheckoutService.PayOvernight(PayOvernightRequest request) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 191
+   at HotelManagement.Forms.OvernightCheckoutForm.<>c__DisplayClass66_0.<BtnPay_Click>b__1() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 852
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable`1.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Forms.OvernightCheckoutForm.<<BtnPay_Click>b__66_0>d.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 852
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Services.UiExceptionHandler.<RunAsync>d__1.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Services\UiExceptionHandler.cs:line 72
+2026-02-28 00:38:48.133 [INFO] [corr=808cc7f5700e45b7bf016fe5b3bf0ac7] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | ElapsedMs=435 | MemoryDeltaBytes=98176 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:38:48.134 [ERROR] [corr=808cc7f5700e45b7bf016fe5b3bf0ac7] Infrastructure failure at UI boundary. | Operation=OvernightCheckout.SaveProgress
+HotelManagement.Services.InfrastructureException: Lỗi cơ sở dữ liệu khi xử lý checkout. ---> MySql.Data.MySqlClient.MySqlException: Field 'LaDiaBanCu' doesn't have a default value
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   at HotelManagement.Services.CheckoutService.UpdateStayInfoRates(MySqlConnection conn, MySqlTransaction tx, Int32 bookingId, Decimal nightlyRate, Int32 nightCount, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 434
+   at HotelManagement.Services.CheckoutService.<>c__DisplayClass8_0.<SaveOvernight>b__0(MySqlConnection conn, MySqlTransaction tx, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 158
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 248
+   --- End of inner exception stack trace ---
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 284
+   at HotelManagement.Services.CheckoutService.SaveOvernight(SaveOvernightRequest request) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 149
+   at HotelManagement.Forms.OvernightCheckoutForm.<>c__DisplayClass65_0.<BtnSave_Click>b__1() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 784
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable`1.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Forms.OvernightCheckoutForm.<<BtnSave_Click>b__65_0>d.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 784
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Services.UiExceptionHandler.<RunAsync>d__1.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Services\UiExceptionHandler.cs:line 72
+2026-02-28 00:38:50.485 [INFO] [corr=273ae5793eeb4696953c929b9a7535fc] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | ElapsedMs=440 | MemoryDeltaBytes=106112 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:38:50.485 [ERROR] [corr=273ae5793eeb4696953c929b9a7535fc] Infrastructure failure at UI boundary. | Operation=OvernightCheckout.SaveProgress
+HotelManagement.Services.InfrastructureException: Lỗi cơ sở dữ liệu khi xử lý checkout. ---> MySql.Data.MySqlClient.MySqlException: Field 'LaDiaBanCu' doesn't have a default value
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   at HotelManagement.Services.CheckoutService.UpdateStayInfoRates(MySqlConnection conn, MySqlTransaction tx, Int32 bookingId, Decimal nightlyRate, Int32 nightCount, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 434
+   at HotelManagement.Services.CheckoutService.<>c__DisplayClass8_0.<SaveOvernight>b__0(MySqlConnection conn, MySqlTransaction tx, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 158
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 248
+   --- End of inner exception stack trace ---
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 284
+   at HotelManagement.Services.CheckoutService.SaveOvernight(SaveOvernightRequest request) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 149
+   at HotelManagement.Forms.OvernightCheckoutForm.<>c__DisplayClass65_0.<BtnSave_Click>b__1() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 784
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable`1.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Forms.OvernightCheckoutForm.<<BtnSave_Click>b__65_0>d.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 784
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Services.UiExceptionHandler.<RunAsync>d__1.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Services\UiExceptionHandler.cs:line 72
+2026-02-28 00:39:01.966 [INFO] [corr=startup-c282cc8f91a947dbae05b787e855bb74] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=151 | MemoryDeltaBytes=193800 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:39:02.237 [INFO] [corr=startup-c282cc8f91a947dbae05b787e855bb74] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=133 | MemoryDeltaBytes=40920 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:39:14.018 [INFO] [corr=cdaed149ae7b410ab150db0b32ede626] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=597 | MemoryDeltaBytes=2396864 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:39:28.354 [INFO] [corr=startup-c282cc8f91a947dbae05b787e855bb74] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=156 | MemoryDeltaBytes=171000 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:39:36.043 [INFO] [corr=c2d177c1417f43c1af24b35a10505a10] PerfScope: OvernightCheckout.Pay | BookingId=150002 | ElapsedMs=1377 | MemoryDeltaBytes=171992 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:39:36.043 [ERROR] [corr=c2d177c1417f43c1af24b35a10505a10] Infrastructure failure at UI boundary. | Operation=OvernightCheckout.Pay
+HotelManagement.Services.InfrastructureException: Lỗi cơ sở dữ liệu khi xử lý checkout. ---> MySql.Data.MySqlClient.MySqlException: Field 'LaDiaBanCu' doesn't have a default value
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   at HotelManagement.Services.CheckoutService.UpdateStayInfoRates(MySqlConnection conn, MySqlTransaction tx, Int32 bookingId, Decimal nightlyRate, Int32 nightCount, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 434
+   at HotelManagement.Services.CheckoutService.<>c__DisplayClass9_0.<PayOvernight>b__0(MySqlConnection conn, MySqlTransaction tx, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 200
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 248
+   --- End of inner exception stack trace ---
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 284
+   at HotelManagement.Services.CheckoutService.PayOvernight(PayOvernightRequest request) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 191
+   at HotelManagement.Forms.OvernightCheckoutForm.<>c__DisplayClass66_0.<BtnPay_Click>b__1() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 852
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable`1.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Forms.OvernightCheckoutForm.<<BtnPay_Click>b__66_0>d.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 852
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Services.UiExceptionHandler.<RunAsync>d__1.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Services\UiExceptionHandler.cs:line 72
+2026-02-28 00:39:45.114 [INFO] [corr=startup-c282cc8f91a947dbae05b787e855bb74] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=461 | MemoryDeltaBytes=106220 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:39:45.120 [INFO] [corr=startup-c282cc8f91a947dbae05b787e855bb74] PerfScope: Program.Main.Bootstrap | ElapsedMs=106671 | MemoryDeltaBytes=11314260 | Gc0Delta=12 | Gc1Delta=9 | Gc2Delta=2 | ThreadId=1
+2026-02-28 00:39:45.120 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=106677 | MemoryDeltaBytes=11338836 | Gc0Delta=12 | Gc1Delta=9 | Gc2Delta=2 | ThreadId=1
+2026-02-28 00:44:42.975 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.Load | ElapsedMs=33 | MemoryDeltaBytes=110648 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:44:44.373 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=136 | MemoryDeltaBytes=163464 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:44:44.377 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1411 | MemoryDeltaBytes=1382476 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:44:46.013 [INFO] [corr=0e2efc8d871f4b9680477629ac2b7687] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=1132 | MemoryDeltaBytes=-975784 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:44:50.705 [INFO] [corr=6ed4d848441344daa4a3606cee4722b8] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | NightCount=1 | SoftDrinkQty=1 | WaterQty=1 | ElapsedMs=1054 | MemoryDeltaBytes=1005376 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:44:51.132 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=663 | MemoryDeltaBytes=1187496 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:44:55.168 [INFO] [corr=8abe251ece0944709fc83870038a192b] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | NightCount=1 | SoftDrinkQty=1 | WaterQty=2 | ElapsedMs=911 | MemoryDeltaBytes=859144 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:44:55.643 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=608 | MemoryDeltaBytes=1177328 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:44:58.643 [INFO] [corr=d86fb5a9fb1646a6adbec33fb06502b3] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | NightCount=1 | SoftDrinkQty=1 | WaterQty=2 | ElapsedMs=1017 | MemoryDeltaBytes=1126512 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:44:59.503 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1076 | MemoryDeltaBytes=2524572 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:45:05.586 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=7495 | MemoryDeltaBytes=441476 | Gc0Delta=4 | Gc1Delta=2 | Gc2Delta=1 | ThreadId=12
+2026-02-28 00:45:15.203 [INFO] [corr=4fb04620f1b943908e16e8ff818ed29c] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | NightCount=1 | SoftDrinkQty=1 | WaterQty=2 | ElapsedMs=944 | MemoryDeltaBytes=-40656 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:45:15.573 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=131 | MemoryDeltaBytes=194532 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:45:15.573 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=534 | MemoryDeltaBytes=1157692 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:45:26.295 [INFO] [corr=7b64e54064404fdf8e62a561dfd94a8c] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=1046 | MemoryDeltaBytes=-1780536 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:45:41.543 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=150 | MemoryDeltaBytes=155268 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:45:42.595 [INFO] [corr=e841c42a53994520ab851bd5ef2a92b6] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=661 | MemoryDeltaBytes=2316256 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:45:44.847 [INFO] [corr=46a74e42cdb14f2cbdb0c3deea9d4e3e] PerfScope: HourlyCheckout.SaveProgress | BookingId=150001 | SoftDrinkQty=1 | WaterQty=1 | ElapsedMs=809 | MemoryDeltaBytes=-4313608 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:45:45.215 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=131 | MemoryDeltaBytes=163216 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:45:45.215 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=487 | MemoryDeltaBytes=1084816 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:45:47.363 [INFO] [corr=fa456e9fb9f248fdb2d33898dabd4bc5] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | NightCount=1 | SoftDrinkQty=1 | WaterQty=2 | ElapsedMs=942 | MemoryDeltaBytes=909664 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:45:47.805 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=628 | MemoryDeltaBytes=1243832 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:46:08.737 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=144 | MemoryDeltaBytes=204696 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:46:40.908 [INFO] [corr=1a4075fa52df40d8b36f125b047d4c01] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | NightCount=2 | SoftDrinkQty=1 | WaterQty=2 | ElapsedMs=973 | MemoryDeltaBytes=-4099580 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:46:41.674 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=858 | MemoryDeltaBytes=604032 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:46:41.733 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=134 | MemoryDeltaBytes=184852 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:46:41.733 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1035 | MemoryDeltaBytes=1330280 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 00:46:47.017 [INFO] [corr=startup-a53c70f462ab4ddb8185597d014f31e4] PerfScope: Program.Main.Bootstrap | ElapsedMs=125987 | MemoryDeltaBytes=12530296 | Gc0Delta=14 | Gc1Delta=8 | Gc2Delta=2 | ThreadId=1
+2026-02-28 00:46:47.017 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=125993 | MemoryDeltaBytes=12554872 | Gc0Delta=14 | Gc1Delta=8 | Gc2Delta=2 | ThreadId=1
+2026-02-28 01:19:15.569 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.Load | ElapsedMs=38 | MemoryDeltaBytes=110604 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:19:17.070 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=128 | MemoryDeltaBytes=171140 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:19:17.071 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1513 | MemoryDeltaBytes=1384480 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:19:36.764 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=145 | MemoryDeltaBytes=140916 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:19:37.729 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=7043 | MemoryDeltaBytes=1944152 | Gc0Delta=4 | Gc1Delta=3 | Gc2Delta=1 | ThreadId=5
+2026-02-28 01:19:40.735 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=127 | MemoryDeltaBytes=72588 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:19:44.418 [INFO] [corr=dd5215e91dfa445389c8053e0d81613b] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=1084 | MemoryDeltaBytes=2121048 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:19:50.871 [INFO] [corr=ecb5216cf7e74f8094f1e668eb4e01b4] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | NightCount=1 | SoftDrinkQty=1 | WaterQty=2 | ElapsedMs=928 | MemoryDeltaBytes=858320 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:19:51.326 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=596 | MemoryDeltaBytes=1172068 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:19:57.773 [INFO] [corr=6f82e52e49eb458dadd53ef2d224fa0a] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | NightCount=1 | SoftDrinkQty=1 | WaterQty=2 | ElapsedMs=939 | MemoryDeltaBytes=-3976176 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:19:58.296 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=623 | MemoryDeltaBytes=-3608700 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:20:00.742 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=133 | MemoryDeltaBytes=72552 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:20:04.610 [INFO] [corr=3978228d642b4021b768a8b6e6d28c3b] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=646 | MemoryDeltaBytes=2219592 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:21:16.308 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=148 | MemoryDeltaBytes=237468 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:21:18.297 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=139 | MemoryDeltaBytes=40924 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:21:36.849 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=147 | MemoryDeltaBytes=98232 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:21:40.794 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=134 | MemoryDeltaBytes=73144 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:21:57.886 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=155 | MemoryDeltaBytes=101496 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:22:03.293 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=128 | MemoryDeltaBytes=57344 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:22:14.345 [INFO] [corr=startup-5d6b409d8d474ca39cb804931bc352ad] PerfScope: Program.Main.Bootstrap | ElapsedMs=182282 | MemoryDeltaBytes=10158360 | Gc0Delta=13 | Gc1Delta=8 | Gc2Delta=3 | ThreadId=1
+2026-02-28 01:22:14.345 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=182291 | MemoryDeltaBytes=10182936 | Gc0Delta=13 | Gc1Delta=8 | Gc2Delta=3 | ThreadId=1
+2026-02-28 01:27:58.978 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.Load | ElapsedMs=36 | MemoryDeltaBytes=111244 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:28:00.459 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=131 | MemoryDeltaBytes=170812 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:28:00.460 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1493 | MemoryDeltaBytes=1390704 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:28:05.096 [INFO] [corr=d7becb3206504d27be4b8dbe9c48c3a4] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=1143 | MemoryDeltaBytes=-3941340 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 01:28:09.342 [INFO] [corr=cc39bfa7c1a64529b6b1fd87acb4ab75] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | NightCount=1 | SoftDrinkQty=1 | WaterQty=2 | ElapsedMs=946 | MemoryDeltaBytes=956856 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:28:09.826 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=622 | MemoryDeltaBytes=1318332 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:28:10.021 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=766 | MemoryDeltaBytes=857724 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:28:14.665 [INFO] [corr=bc773613eb5a46dea8050dd04e1432b7] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | NightCount=1 | SoftDrinkQty=1 | WaterQty=2 | ElapsedMs=918 | MemoryDeltaBytes=-3566216 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:28:15.317 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=755 | MemoryDeltaBytes=3283100 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:28:20.136 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=146 | MemoryDeltaBytes=146864 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:28:21.509 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=7401 | MemoryDeltaBytes=-1362924 | Gc0Delta=5 | Gc1Delta=4 | Gc2Delta=1 | ThreadId=9
+2026-02-28 01:28:24.193 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=139 | MemoryDeltaBytes=56748 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:28:35.179 [INFO] [corr=536da6bc75d742f29adb3a06660dc2c8] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=722 | MemoryDeltaBytes=2096672 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:29:45.934 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=222 | MemoryDeltaBytes=237432 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:29:46.697 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=40924 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:30:09.200 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=132 | MemoryDeltaBytes=134672 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:30:09.256 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=142 | MemoryDeltaBytes=142096 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:30:31.717 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=128 | MemoryDeltaBytes=48956 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:30:33.296 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=144 | MemoryDeltaBytes=101724 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:30:54.250 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=145 | MemoryDeltaBytes=65416 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:30:57.358 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=154 | MemoryDeltaBytes=101912 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:31:16.741 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=136 | MemoryDeltaBytes=40940 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:31:21.379 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=145 | MemoryDeltaBytes=106444 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:31:39.244 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=136 | MemoryDeltaBytes=89316 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:31:45.416 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=143 | MemoryDeltaBytes=101896 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:31:48.094 [INFO] [corr=d5450ffb0c61415d9667e9a3986f06ec] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=1483 | MemoryDeltaBytes=3046240 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:31:48.271 [INFO] [corr=d5450ffb0c61415d9667e9a3986f06ec] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=1243 | MemoryDeltaBytes=2636688 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:36:21.000 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=143 | MemoryDeltaBytes=221020 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:36:22.366 [INFO] [corr=56c3549381fd4501925891a1fc08998e] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=717 | MemoryDeltaBytes=2096120 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:36:26.872 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=131 | MemoryDeltaBytes=40924 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:36:33.327 [INFO] [corr=1dc83214523f483c9a17e60bac4868fa] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=997 | MemoryDeltaBytes=2726992 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:36:41.446 [INFO] [corr=startup-889a2cd1e2cc42fdbd0c2b90fe8dc80b] PerfScope: Program.Main.Bootstrap | ElapsedMs=525406 | MemoryDeltaBytes=10316152 | Gc0Delta=14 | Gc1Delta=8 | Gc2Delta=2 | ThreadId=1
+2026-02-28 01:36:41.448 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=525415 | MemoryDeltaBytes=10332536 | Gc0Delta=14 | Gc1Delta=8 | Gc2Delta=2 | ThreadId=1
+2026-02-28 01:43:55.141 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.Load | ElapsedMs=43 | MemoryDeltaBytes=112084 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:43:56.567 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=127 | MemoryDeltaBytes=179424 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:43:56.567 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1440 | MemoryDeltaBytes=1452308 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:44:01.349 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=156 | MemoryDeltaBytes=310724 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:44:17.217 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=6959 | MemoryDeltaBytes=2223768 | Gc0Delta=4 | Gc1Delta=3 | Gc2Delta=1 | ThreadId=11
+2026-02-28 01:44:20.289 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=132 | MemoryDeltaBytes=81888 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:44:25.392 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=158 | MemoryDeltaBytes=115832 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:44:42.830 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=57328 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:44:49.388 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=149 | MemoryDeltaBytes=110056 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:45:05.365 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=125 | MemoryDeltaBytes=72664 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:45:13.394 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=156 | MemoryDeltaBytes=112920 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:45:27.857 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=124 | MemoryDeltaBytes=48912 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:45:31.894 [INFO] [corr=1413da407e494bc7a900232117827916] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=150002 | ElapsedMs=1010 | MemoryDeltaBytes=-2135236 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:45:33.736 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=153 | MemoryDeltaBytes=212624 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:45:50.357 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=72660 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:45:57.445 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=149 | MemoryDeltaBytes=110520 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:11.336 [INFO] [corr=06adc27537ca43b18ac80b9aaaa6f58c] PerfScope: OvernightCheckout.Pay | BookingId=150002 | NightCount=1 | TotalCharge=240000 | DueAmount=0 | ElapsedMs=1904 | MemoryDeltaBytes=-4556904 | Gc0Delta=2 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 01:46:11.597 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=281 | MemoryDeltaBytes=129892 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:11.724 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=211628 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:11.724 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=549 | MemoryDeltaBytes=-4122224 | Gc0Delta=2 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 01:46:13.523 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=548 | MemoryDeltaBytes=674916 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:13.636 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=660 | MemoryDeltaBytes=748580 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:18.460 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=148 | MemoryDeltaBytes=103756 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:35.702 [INFO] [corr=cec8132c676644e88fa7d27ac4d943d7] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | ElapsedMs=265 | MemoryDeltaBytes=49092 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:35.705 [WARN] [corr=cec8132c676644e88fa7d27ac4d943d7] Domain rule failed at UI boundary. | Operation=OvernightCheckout.SaveProgress | Detail=Booking đã kết thúc, không thể thao tác tiếp.
+2026-02-28 01:46:38.885 [INFO] [corr=258dbe62d9f04959b008b63cc5215cf4] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | ElapsedMs=253 | MemoryDeltaBytes=47720 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:38.885 [WARN] [corr=258dbe62d9f04959b008b63cc5215cf4] Domain rule failed at UI boundary. | Operation=OvernightCheckout.SaveProgress | Detail=Booking đã kết thúc, không thể thao tác tiếp.
+2026-02-28 01:46:40.256 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=145 | MemoryDeltaBytes=207924 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:40.408 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=65472 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:41.000 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=591 | MemoryDeltaBytes=603512 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:44.557 [INFO] [corr=ddf49ca08cd44132b25b2a9b1eb7e710] PerfScope: OvernightCheckout.SaveProgress | BookingId=150002 | ElapsedMs=243 | MemoryDeltaBytes=40960 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:44.558 [WARN] [corr=ddf49ca08cd44132b25b2a9b1eb7e710] Domain rule failed at UI boundary. | Operation=OvernightCheckout.SaveProgress | Detail=Booking đã kết thúc, không thể thao tác tiếp.
+2026-02-28 01:46:47.784 [INFO] [corr=487e26b314e54ece80bbe4f489130ca5] PerfScope: OvernightCheckout.Pay | BookingId=150002 | ElapsedMs=1791 | MemoryDeltaBytes=57320 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:46:47.785 [WARN] [corr=487e26b314e54ece80bbe4f489130ca5] Domain rule failed at UI boundary. | Operation=OvernightCheckout.Pay | Detail=Booking đã kết thúc, không thể thao tác tiếp.
+2026-02-28 01:47:00.587 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=147 | MemoryDeltaBytes=195744 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:47:02.930 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=125 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:47:05.438 [INFO] [corr=f3df9fdc88134980b8070e085a6a613b] PerfScope: OvernightCheckout.Load | RoomId=30003 | BookingId=30003 | ElapsedMs=942 | MemoryDeltaBytes=-2074996 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:47:07.189 [INFO] [corr=7ce23e7b7a2b4a0ebac48e77fa731fd8] PerfScope: OvernightCheckout.Pay | BookingId=30003 | NightCount=1 | TotalCharge=271000 | DueAmount=271000 | ElapsedMs=1488 | MemoryDeltaBytes=896732 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:47:07.576 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=411 | MemoryDeltaBytes=668600 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:47:07.705 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=613 | MemoryDeltaBytes=1565384 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:47:09.181 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=893 | MemoryDeltaBytes=710032 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:47:27.659 [INFO] [corr=64bcab546f5543968641c3024cecabf1] PerfScope: OvernightCheckout.SaveProgress | BookingId=30003 | ElapsedMs=242 | MemoryDeltaBytes=32692 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:47:27.659 [WARN] [corr=64bcab546f5543968641c3024cecabf1] Domain rule failed at UI boundary. | Operation=OvernightCheckout.SaveProgress | Detail=Booking đã kết thúc, không thể thao tác tiếp.
+2026-02-28 01:47:28.926 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=209 | MemoryDeltaBytes=208196 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:47:30.434 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=124 | MemoryDeltaBytes=89076 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:47:31.118 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=684 | MemoryDeltaBytes=-5111656 | Gc0Delta=2 | Gc1Delta=2 | Gc2Delta=1 | ThreadId=1
+2026-02-28 01:47:47.583 [INFO] [corr=e2b689fee69c45718dbc7b2bc6fb7841] PerfScope: OvernightCheckout.Pay | BookingId=150002 | ElapsedMs=1375 | MemoryDeltaBytes=55820 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 01:47:47.583 [WARN] [corr=e2b689fee69c45718dbc7b2bc6fb7841] Domain rule failed at UI boundary. | Operation=OvernightCheckout.Pay | Detail=Booking đã kết thúc, không thể thao tác tiếp.
+2026-02-28 01:59:48.300 [INFO] [corr=startup-da273f1258224f40afe19ac5d775b7b4] PerfScope: Program.Main.Bootstrap | ElapsedMs=955607 | MemoryDeltaBytes=10577904 | Gc0Delta=16 | Gc1Delta=10 | Gc2Delta=4 | ThreadId=1
+2026-02-28 01:59:48.300 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=955617 | MemoryDeltaBytes=10602480 | Gc0Delta=16 | Gc1Delta=10 | Gc2Delta=4 | ThreadId=1
+2026-02-28 02:00:02.891 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.Load | ElapsedMs=32 | MemoryDeltaBytes=111640 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:00:04.383 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=125 | MemoryDeltaBytes=179728 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:00:04.385 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1503 | MemoryDeltaBytes=1460336 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:00:09.080 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=158 | MemoryDeltaBytes=302988 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:00:16.240 [INFO] [corr=9d6cd15c2c6e4f898aeafbece20b1747] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=654 | MemoryDeltaBytes=2307392 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:00:25.434 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=7407 | MemoryDeltaBytes=2260056 | Gc0Delta=5 | Gc1Delta=5 | Gc2Delta=1 | ThreadId=10
+2026-02-28 02:00:25.568 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=132 | MemoryDeltaBytes=63196 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:00:27.061 [INFO] [corr=fc741c66a8aa4ee0a97eafac8c4d43ff] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=954 | MemoryDeltaBytes=2692672 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:00:31.406 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=146 | MemoryDeltaBytes=270152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:01:01.490 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=149 | MemoryDeltaBytes=212944 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:01:03.073 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=131 | MemoryDeltaBytes=89248 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:01:25.178 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=147 | MemoryDeltaBytes=103780 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:01:25.573 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=40924 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:01:48.107 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=127 | MemoryDeltaBytes=80400 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:01:49.181 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=148 | MemoryDeltaBytes=98236 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:02:10.616 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=127 | MemoryDeltaBytes=49044 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:02:13.178 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=151 | MemoryDeltaBytes=97840 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:03:34.972 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=149 | MemoryDeltaBytes=221088 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:03:35.611 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=48440 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:03:58.114 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=131 | MemoryDeltaBytes=106044 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:03:58.180 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=150 | MemoryDeltaBytes=146976 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:04:20.614 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=128 | MemoryDeltaBytes=114460 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:04:22.240 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=161 | MemoryDeltaBytes=106324 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:04:43.718 [INFO] [corr=b4ceb01b9c1640db854f60c016d95a01] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=1017 | MemoryDeltaBytes=-2362532 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:04:45.618 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=132 | MemoryDeltaBytes=114672 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:04:46.314 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=147 | MemoryDeltaBytes=105840 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:04:53.508 [INFO] [corr=d98a2df5eaa84f4ea9504b49d62d5daa] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=588 | MemoryDeltaBytes=2096336 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:05:00.510 [INFO] [corr=f1de1c341c3d486ba7cef4f2af3a8687] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=590 | MemoryDeltaBytes=2088232 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:05:05.630 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=146 | MemoryDeltaBytes=244600 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:05:10.342 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=156 | MemoryDeltaBytes=114220 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:05:22.356 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=155 | MemoryDeltaBytes=-5294852 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:05:28.111 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=122 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:05:34.382 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=146 | MemoryDeltaBytes=101956 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:05:43.114 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=125 | MemoryDeltaBytes=-5205704 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:05:50.613 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=179420 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:05:56.325 [INFO] [corr=f6af2edb7a4e4e8d8325e4cdac3d80c3] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=920 | MemoryDeltaBytes=-2281940 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:06:23.852 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=147 | MemoryDeltaBytes=417692 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:06:24.600 [INFO] [corr=startup-2bd05adffa9a443886de94e2d4c05fb2] PerfScope: Program.Main.Bootstrap | ElapsedMs=383816 | MemoryDeltaBytes=12177780 | Gc0Delta=21 | Gc1Delta=8 | Gc2Delta=2 | ThreadId=1
+2026-02-28 02:06:24.601 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=383823 | MemoryDeltaBytes=12202356 | Gc0Delta=21 | Gc1Delta=8 | Gc2Delta=2 | ThreadId=1
+2026-02-28 02:13:12.025 [INFO] [corr=startup-e6d464e33a4f4117adb9acbc40a33843] PerfScope: MainForm.Load | ElapsedMs=24 | MemoryDeltaBytes=112812 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:13:13.511 [INFO] [corr=startup-e6d464e33a4f4117adb9acbc40a33843] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=180068 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:13:13.511 [INFO] [corr=startup-e6d464e33a4f4117adb9acbc40a33843] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1499 | MemoryDeltaBytes=1493556 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:13:18.251 [INFO] [corr=startup-e6d464e33a4f4117adb9acbc40a33843] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=204 | MemoryDeltaBytes=311136 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:13:30.556 [INFO] [corr=85e69ace17e34456bb24a92301fc4901] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=1007 | MemoryDeltaBytes=2613288 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:13:34.770 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=7628 | MemoryDeltaBytes=-1181268 | Gc0Delta=6 | Gc1Delta=5 | Gc2Delta=2 | ThreadId=4
+2026-02-28 02:13:34.842 [INFO] [corr=startup-e6d464e33a4f4117adb9acbc40a33843] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=131 | MemoryDeltaBytes=285496 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:13:40.645 [INFO] [corr=0f91b797624745d6bc394f9d7504e65a] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=961 | MemoryDeltaBytes=-2171428 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:13:51.711 [INFO] [corr=startup-e6d464e33a4f4117adb9acbc40a33843] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=174 | MemoryDeltaBytes=220680 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:13:52.669 [INFO] [corr=e4ddbce4ec27413f9bbc6ef6d6fd8f27] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=625 | MemoryDeltaBytes=2407560 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:13:59.795 [INFO] [corr=startup-e6d464e33a4f4117adb9acbc40a33843] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=121584 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:14:01.427 [INFO] [corr=startup-e6d464e33a4f4117adb9acbc40a33843] PerfScope: Program.Main.Bootstrap | ElapsedMs=51906 | MemoryDeltaBytes=10132992 | Gc0Delta=10 | Gc1Delta=6 | Gc2Delta=2 | ThreadId=1
+2026-02-28 02:14:01.427 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=51912 | MemoryDeltaBytes=10157568 | Gc0Delta=10 | Gc1Delta=6 | Gc2Delta=2 | ThreadId=1
+2026-02-28 02:14:24.440 [INFO] [corr=startup-8ddb8a12d0bc47f4ad6753787efdabde] PerfScope: MainForm.Load | ElapsedMs=23 | MemoryDeltaBytes=121992 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:14:25.682 [INFO] [corr=startup-8ddb8a12d0bc47f4ad6753787efdabde] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=120 | MemoryDeltaBytes=184976 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:14:25.684 [INFO] [corr=startup-8ddb8a12d0bc47f4ad6753787efdabde] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1240 | MemoryDeltaBytes=1483748 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:14:30.670 [INFO] [corr=startup-8ddb8a12d0bc47f4ad6753787efdabde] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=198 | MemoryDeltaBytes=319288 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:14:42.656 [INFO] [corr=startup-8ddb8a12d0bc47f4ad6753787efdabde] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=153 | MemoryDeltaBytes=-3545348 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:14:46.101 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=6529 | MemoryDeltaBytes=885472 | Gc0Delta=4 | Gc1Delta=3 | Gc2Delta=1 | ThreadId=5
+2026-02-28 02:20:49.692 [INFO] [corr=startup-8ddb8a12d0bc47f4ad6753787efdabde] PerfScope: Program.Main.Bootstrap | ElapsedMs=386697 | MemoryDeltaBytes=11269892 | Gc0Delta=8 | Gc1Delta=6 | Gc2Delta=2 | ThreadId=1
+2026-02-28 02:20:49.693 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=386702 | MemoryDeltaBytes=11294468 | Gc0Delta=8 | Gc1Delta=6 | Gc2Delta=2 | ThreadId=1
+2026-02-28 02:20:58.614 [INFO] [corr=startup-37c7df80c5d04e349f022672629f3741] PerfScope: MainForm.Load | ElapsedMs=24 | MemoryDeltaBytes=113552 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:00.098 [INFO] [corr=startup-37c7df80c5d04e349f022672629f3741] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=121 | MemoryDeltaBytes=188256 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:00.098 [INFO] [corr=startup-37c7df80c5d04e349f022672629f3741] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1492 | MemoryDeltaBytes=1479616 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:04.057 [INFO] [corr=3c9a03c75fff4b2aaee53337ca41e572] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=1064 | MemoryDeltaBytes=-3837312 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 02:21:09.722 [INFO] [corr=0baad037287c4c31a3efd5e615f1e9a1] PerfScope: OvernightCheckout.SaveProgress | BookingId=180001 | NightCount=1 | SoftDrinkQty=1 | WaterQty=1 | ElapsedMs=906 | MemoryDeltaBytes=995348 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:10.064 [INFO] [corr=startup-37c7df80c5d04e349f022672629f3741] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=436 | MemoryDeltaBytes=1382536 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:11.418 [INFO] [corr=startup-37c7df80c5d04e349f022672629f3741] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=1760 | MemoryDeltaBytes=1103820 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:12.288 [INFO] [corr=bd809f909894401babb520473ffcf171] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=618 | MemoryDeltaBytes=2431340 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:16.438 [INFO] [corr=5f9f5f5766a446f5be4443cd3a2f8f42] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=565 | MemoryDeltaBytes=3205932 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:16.894 [INFO] [corr=startup-37c7df80c5d04e349f022672629f3741] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=154 | MemoryDeltaBytes=414844 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:20.068 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=6334 | MemoryDeltaBytes=4732420 | Gc0Delta=5 | Gc1Delta=4 | Gc2Delta=1 | ThreadId=9
+2026-02-28 02:21:24.263 [INFO] [corr=b8435095ecc64afe9f3ba2d9272708eb] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=566 | MemoryDeltaBytes=2432136 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:37.293 [INFO] [corr=startup-37c7df80c5d04e349f022672629f3741] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=157 | MemoryDeltaBytes=180112 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:38.823 [INFO] [corr=startup-37c7df80c5d04e349f022672629f3741] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=128 | MemoryDeltaBytes=88856 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:41.861 [INFO] [corr=5b493587cd26487a8826e47392779396] PerfScope: OvernightCheckout.Load | RoomId=30003 | BookingId=180002 | ElapsedMs=1015 | MemoryDeltaBytes=-2053880 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:45.177 [INFO] [corr=8c438a0da0f04044aae9e20ce4a257ec] PerfScope: OvernightCheckout.Load | RoomId=30004 | BookingId=90001 | ElapsedMs=995 | MemoryDeltaBytes=-2038844 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:47.013 [INFO] [corr=064e5fccb7644808ab535f06d6530796] PerfScope: OvernightCheckout.Pay | BookingId=90001 | NightCount=1 | TotalCharge=300000 | DueAmount=300000 | ElapsedMs=1756 | MemoryDeltaBytes=1298736 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:47.454 [INFO] [corr=startup-37c7df80c5d04e349f022672629f3741] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=690 | MemoryDeltaBytes=1494812 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:49.005 [INFO] [corr=startup-37c7df80c5d04e349f022672629f3741] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=847 | MemoryDeltaBytes=947160 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:21:52.968 [INFO] [corr=startup-37c7df80c5d04e349f022672629f3741] PerfScope: OvernightCheckout.Load | RoomId=30004 | BookingId=210001 | ElapsedMs=1002 | MemoryDeltaBytes=1055844 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 02:22:02.465 [INFO] [corr=95e047c57f0042128983c8e627191a16] PerfScope: OvernightCheckout.SaveProgress | BookingId=210001 | NightCount=2 | SoftDrinkQty=1 | WaterQty=1 | ElapsedMs=882 | MemoryDeltaBytes=-4009308 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:02.764 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=371 | MemoryDeltaBytes=563568 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:02.878 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=125 | MemoryDeltaBytes=407704 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:02.878 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=606 | MemoryDeltaBytes=-3366080 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:08.101 [INFO] [corr=dfeba942333248a1bf62a76dcd211324] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=1002 | MemoryDeltaBytes=-1835976 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:33.277 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=155 | MemoryDeltaBytes=228960 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:33.912 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=153 | MemoryDeltaBytes=81872 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:35.040 [INFO] [corr=b7d15b2380884656adb5e36ed90c5a74] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=933 | MemoryDeltaBytes=-2197612 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:38.154 [INFO] [corr=1143f5b322694b41b8886657f668ccfc] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=1018 | MemoryDeltaBytes=-1882604 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:45.577 [INFO] [corr=9fa75f46e2694b86b633b4383e8d576f] PerfScope: OvernightCheckout.SaveProgress | BookingId=180001 | NightCount=2 | SoftDrinkQty=1 | WaterQty=1 | ElapsedMs=925 | MemoryDeltaBytes=1039880 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:45.827 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=331 | MemoryDeltaBytes=-5085040 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:45.943 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=566 | MemoryDeltaBytes=-4021624 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:47.299 [INFO] [corr=d2aab3fdf6c148faa276f08b6b9f8b94] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=1006 | MemoryDeltaBytes=3059768 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:53.921 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=127 | MemoryDeltaBytes=80632 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:22:55.587 [INFO] [corr=729054e8614245fa9d31b5cd22553bb3] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=945 | MemoryDeltaBytes=-1894740 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:11.124 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=152 | MemoryDeltaBytes=229080 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:13.146 [INFO] [corr=ca426711515f465a956fd4dd8a7f2bc2] PerfScope: OvernightCheckout.Load | RoomId=30003 | BookingId=180002 | ElapsedMs=986 | MemoryDeltaBytes=2983100 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:22.027 [INFO] [corr=244a58594821487e8d52a2982a63db4e] PerfScope: OvernightCheckout.SaveProgress | BookingId=180002 | NightCount=2 | SoftDrinkQty=0 | WaterQty=0 | ElapsedMs=965 | MemoryDeltaBytes=-3956720 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:22.556 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=626 | MemoryDeltaBytes=560952 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:22.677 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=122 | MemoryDeltaBytes=301120 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:22.677 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=904 | MemoryDeltaBytes=1546448 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:24.883 [INFO] [corr=18efcbb468b04148bffe4c66490e9fd1] PerfScope: OvernightCheckout.Load | RoomId=30003 | BookingId=180002 | ElapsedMs=1028 | MemoryDeltaBytes=-1775640 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:30.262 [INFO] [corr=3fc5247470cb4b76b6fb6e94ea18dea8] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=1045 | MemoryDeltaBytes=-2635348 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:35.663 [INFO] [corr=d91e91cfd84647a982afea7669355195] PerfScope: OvernightCheckout.SaveProgress | BookingId=180001 | NightCount=2 | SoftDrinkQty=1 | WaterQty=1 | ElapsedMs=873 | MemoryDeltaBytes=991248 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:35.885 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=248 | MemoryDeltaBytes=-2897248 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 02:23:36.012 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=464 | MemoryDeltaBytes=-1834596 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 02:23:38.323 [INFO] [corr=af68231199e94ed7a9fcf63654daa0d0] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=1041 | MemoryDeltaBytes=3081100 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:45.099 [INFO] [corr=7a99c4f095c04d768141e8710cb825d2] PerfScope: OvernightCheckout.SaveProgress | BookingId=180001 | NightCount=2 | SoftDrinkQty=1 | WaterQty=1 | ElapsedMs=835 | MemoryDeltaBytes=1122188 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:45.345 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=290 | MemoryDeltaBytes=767272 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:45.472 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=127 | MemoryDeltaBytes=195428 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:45.474 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=475 | MemoryDeltaBytes=1550940 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:52.077 [INFO] [corr=6afbb444f1d4494f882d653fad6c6372] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=180001 | ElapsedMs=1001 | MemoryDeltaBytes=3080796 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:56.621 [INFO] [corr=26b2970d3feb47959f210d4c9162af49] PerfScope: OvernightCheckout.Pay | BookingId=180001 | NightCount=1 | TotalCharge=230000 | DueAmount=0 | ElapsedMs=1655 | MemoryDeltaBytes=-3913700 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:56.827 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=224 | MemoryDeltaBytes=578868 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:56.949 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=489 | MemoryDeltaBytes=-3409628 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:23:58.377 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=578 | MemoryDeltaBytes=993524 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:01.641 [INFO] [corr=99917074e3f041949b56edfa605b14a5] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=992 | MemoryDeltaBytes=-1652396 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:08.976 [INFO] [corr=8f5864d2de1640a298654e97fcf7ff37] PerfScope: OvernightCheckout.SaveProgress | BookingId=210002 | NightCount=2 | SoftDrinkQty=0 | WaterQty=0 | ElapsedMs=955 | MemoryDeltaBytes=1081164 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:09.182 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=259 | MemoryDeltaBytes=662108 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:09.314 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=132 | MemoryDeltaBytes=290344 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:09.335 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=484 | MemoryDeltaBytes=1607564 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:11.555 [INFO] [corr=5754004f74734142a027590d9c035e36] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=1002 | MemoryDeltaBytes=3092820 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:22.114 [INFO] [corr=c28751c847df4bc9a30757030b414c8a] PerfScope: OvernightCheckout.SaveProgress | BookingId=210002 | NightCount=2 | SoftDrinkQty=1 | WaterQty=1 | ElapsedMs=889 | MemoryDeltaBytes=1145016 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:22.323 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=240 | MemoryDeltaBytes=709980 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:22.442 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=454 | MemoryDeltaBytes=1583424 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:26.129 [INFO] [corr=982158ea937c4362bff118ccc514eaaf] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=1028 | MemoryDeltaBytes=-2227256 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:31.574 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=128 | MemoryDeltaBytes=57312 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:47.209 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=152 | MemoryDeltaBytes=122504 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:24:54.077 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=127 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:25:11.274 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=152 | MemoryDeltaBytes=130808 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:25:16.618 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=57344 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:25:31.952 [INFO] [corr=32fc7f0514234f5eb20640a330b22164] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=558 | MemoryDeltaBytes=2456764 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:25:36.446 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=154 | MemoryDeltaBytes=196156 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:25:36.621 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=131 | MemoryDeltaBytes=56212 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:25:42.534 [INFO] [corr=fb12005c1f114e8a9e54bfce7371989f] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=618 | MemoryDeltaBytes=-2536644 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:25:52.377 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=152 | MemoryDeltaBytes=-5074592 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:25:58.707 [INFO] [corr=fa32a17a4a754d03ba16a3661fcafbc1] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=639 | MemoryDeltaBytes=-2443432 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:26:43.861 [INFO] [corr=f5e80da9eccb47cc82c341d5c26d2996] PerfScope: Program.Main.Bootstrap | ElapsedMs=346891 | MemoryDeltaBytes=16622288 | Gc0Delta=46 | Gc1Delta=15 | Gc2Delta=4 | ThreadId=1
+2026-02-28 02:26:43.862 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=346897 | MemoryDeltaBytes=16646864 | Gc0Delta=46 | Gc1Delta=15 | Gc2Delta=4 | ThreadId=1
+2026-02-28 02:34:23.949 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.Load | ElapsedMs=26 | MemoryDeltaBytes=121720 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:34:25.239 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=289 | MemoryDeltaBytes=425640 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:34:25.353 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=160936 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:34:25.353 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1425 | MemoryDeltaBytes=1563840 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:34:31.102 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=158 | MemoryDeltaBytes=132684 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:34:37.176 [INFO] [corr=c656f7d5c4ff49aa9f441455788b5ff3] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=677 | MemoryDeltaBytes=2569244 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:34:40.237 [INFO] [corr=81d574b5c59946b3822457a319696637] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=951 | MemoryDeltaBytes=-3041904 | Gc0Delta=2 | Gc1Delta=2 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:34:44.226 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=186 | MemoryDeltaBytes=-679044 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:34:45.784 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=6715 | MemoryDeltaBytes=981268 | Gc0Delta=6 | Gc1Delta=5 | Gc2Delta=1 | ThreadId=9
+2026-02-28 02:34:47.720 [INFO] [corr=39d8f216841b4c57a751694eb606fda3] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=991 | MemoryDeltaBytes=2980840 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:34:49.095 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=125 | MemoryDeltaBytes=81892 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:34:55.836 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: RoomDetail.Load | RoomId=7 | ElapsedMs=52 | MemoryDeltaBytes=40960 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:34:59.653 [INFO] [corr=1ccbf230392f4f6392f156999584e70d] PerfScope: RoomDetail.SaveCheckin | RoomId=7 | ElapsedMs=1040 | MemoryDeltaBytes=73728 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:35:02.357 [INFO] [corr=294c0e4a1b194ecb8427a6881b4cfd16] PerfScope: RoomDetail.SaveCheckin | RoomId=7 | BookingId=240001 | BookingType=2 | ElapsedMs=1251 | MemoryDeltaBytes=828104 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:35:02.557 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=220 | MemoryDeltaBytes=517456 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:35:02.690 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=509 | MemoryDeltaBytes=1130980 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:35:11.613 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:35:26.304 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=169 | MemoryDeltaBytes=201508 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:35:34.116 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=124 | MemoryDeltaBytes=48136 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:35:44.518 [INFO] [corr=1dddcf25beb44406a5d1678f55523cb8] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=962 | MemoryDeltaBytes=2881648 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:35:58.262 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=168 | MemoryDeltaBytes=247276 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:35:59.205 [INFO] [corr=379aabdd207f41e78192b095f7f62006] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=619 | MemoryDeltaBytes=2432112 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:36:02.561 [INFO] [corr=33931d37a5734716a1fe045178cc6b92] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=881 | MemoryDeltaBytes=-1702160 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:36:03.152 [INFO] [corr=33931d37a5734716a1fe045178cc6b92] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=1027 | MemoryDeltaBytes=3054448 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:37:03.662 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=152 | MemoryDeltaBytes=427692 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:37:04.582 [INFO] [corr=73b26e716848410fa2e6ebcd96d98fb6] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=617 | MemoryDeltaBytes=-2453044 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:37:07.685 [INFO] [corr=c68f382031e5432e89756ad7e85c857d] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=940 | MemoryDeltaBytes=2865796 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:37:42.262 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=171 | MemoryDeltaBytes=247496 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:37:43.624 [INFO] [corr=f1d597fcdcd64a03bfc2f81582a60c86] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=671 | MemoryDeltaBytes=-1407088 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 02:37:46.971 [INFO] [corr=45176ca43f97493e8e974e36f869df2b] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=1019 | MemoryDeltaBytes=-1746064 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:37:52.177 [INFO] [corr=239592f6c96e4dfc9bf271a75028cc92] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=566 | MemoryDeltaBytes=-2280784 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:37:54.317 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=40904 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:38:02.854 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=153 | MemoryDeltaBytes=202532 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:38:16.856 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=127 | MemoryDeltaBytes=220124 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:38:26.978 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=150 | MemoryDeltaBytes=198380 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:38:39.379 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=130 | MemoryDeltaBytes=114656 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:38:51.074 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=162 | MemoryDeltaBytes=-5016572 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:38:57.037 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=149 | MemoryDeltaBytes=192256 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:39:01.963 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=132 | MemoryDeltaBytes=278440 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:39:21.151 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=177 | MemoryDeltaBytes=206572 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:39:24.514 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=125 | MemoryDeltaBytes=114668 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:39:45.228 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=151 | MemoryDeltaBytes=195092 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:39:47.049 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=123 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:40:09.277 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=147 | MemoryDeltaBytes=202096 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:40:09.561 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=124 | MemoryDeltaBytes=48092 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:40:32.161 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=56104 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:40:33.376 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=153 | MemoryDeltaBytes=190148 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:40:51.394 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=155 | MemoryDeltaBytes=-5013596 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:40:54.699 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=122 | MemoryDeltaBytes=114016 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:40:57.371 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=152 | MemoryDeltaBytes=196244 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:41:17.242 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=130 | MemoryDeltaBytes=40940 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:41:21.527 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=152 | MemoryDeltaBytes=206584 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:41:39.776 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=125 | MemoryDeltaBytes=48092 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:41:45.545 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=153 | MemoryDeltaBytes=206560 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:42:02.346 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:42:09.611 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=163 | MemoryDeltaBytes=201508 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:42:24.932 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=57196 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:42:33.756 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=173 | MemoryDeltaBytes=203284 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:42:47.505 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=57072 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:42:57.780 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=152 | MemoryDeltaBytes=203368 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:43:10.060 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=127 | MemoryDeltaBytes=56372 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:43:15.925 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=157 | MemoryDeltaBytes=-5009408 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:43:21.925 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=157 | MemoryDeltaBytes=203288 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:43:32.626 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=125 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:43:46.004 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=153 | MemoryDeltaBytes=206368 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:43:55.162 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=131 | MemoryDeltaBytes=56752 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:44:10.126 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=150 | MemoryDeltaBytes=254512 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:44:17.660 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=125 | MemoryDeltaBytes=48912 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:44:34.159 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=158 | MemoryDeltaBytes=203240 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:44:40.203 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=131 | MemoryDeltaBytes=131704 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:44:58.225 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=157 | MemoryDeltaBytes=203524 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:45:02.758 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=132 | MemoryDeltaBytes=40940 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:45:22.341 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=168 | MemoryDeltaBytes=203568 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:45:25.276 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=343992 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:45:46.341 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=167 | MemoryDeltaBytes=206500 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:45:47.826 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=113540 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:46:10.375 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=153 | MemoryDeltaBytes=254484 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:46:10.396 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=124 | MemoryDeltaBytes=139856 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:46:32.895 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=135 | MemoryDeltaBytes=113588 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:46:34.425 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=158 | MemoryDeltaBytes=-5012016 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:46:40.409 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=150 | MemoryDeltaBytes=230236 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:46:55.381 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=343940 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:47:04.450 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=156 | MemoryDeltaBytes=206216 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:47:17.906 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=146 | MemoryDeltaBytes=114672 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:47:28.418 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=157 | MemoryDeltaBytes=206588 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:47:40.376 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=-4864232 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:47:47.876 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=56480 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:47:52.534 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=157 | MemoryDeltaBytes=203152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:48:10.401 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:48:16.587 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=151 | MemoryDeltaBytes=193896 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:48:32.958 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=57344 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:48:40.668 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=174 | MemoryDeltaBytes=194996 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:48:55.572 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=155 | MemoryDeltaBytes=270284 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:48:58.700 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=161 | MemoryDeltaBytes=-5004116 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:49:04.698 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=160 | MemoryDeltaBytes=196252 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:49:18.058 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:49:28.758 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=163 | MemoryDeltaBytes=214468 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:49:40.602 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=128 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:49:52.858 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=192 | MemoryDeltaBytes=206576 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:50:03.137 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=124 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:50:16.894 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=162 | MemoryDeltaBytes=201480 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:50:25.719 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=135 | MemoryDeltaBytes=245700 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:50:39.943 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=160 | MemoryDeltaBytes=210792 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:50:48.640 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=127 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:50:58.040 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=183 | MemoryDeltaBytes=-4991216 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:51:03.996 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=177 | MemoryDeltaBytes=204688 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:51:11.171 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=130 | MemoryDeltaBytes=-5151268 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:51:18.686 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=131 | MemoryDeltaBytes=48128 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:51:25.656 [INFO] [corr=startup-8b05636995f44f34976e39644c2843a5] PerfScope: Program.Main.Bootstrap | ElapsedMs=1025185 | MemoryDeltaBytes=10101796 | Gc0Delta=84 | Gc1Delta=15 | Gc2Delta=3 | ThreadId=1
+2026-02-28 02:51:25.656 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=1025191 | MemoryDeltaBytes=10126372 | Gc0Delta=84 | Gc1Delta=15 | Gc2Delta=3 | ThreadId=1
+2026-02-28 02:51:40.967 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.Load | ElapsedMs=24 | MemoryDeltaBytes=130452 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:51:42.145 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=180168 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:51:42.155 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1181 | MemoryDeltaBytes=1525584 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:51:47.201 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=212 | MemoryDeltaBytes=337480 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:51:59.188 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=156 | MemoryDeltaBytes=1402292 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:52:05.033 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=8928 | MemoryDeltaBytes=-132928 | Gc0Delta=5 | Gc1Delta=5 | Gc2Delta=2 | ThreadId=5
+2026-02-28 02:52:06.107 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=128 | MemoryDeltaBytes=81896 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:52:11.245 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=157 | MemoryDeltaBytes=132544 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:52:28.709 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=134 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:52:35.935 [INFO] [corr=cfe1723276a643c1b76c13ff13b637a8] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=1088 | MemoryDeltaBytes=3059612 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:52:43.809 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=172 | MemoryDeltaBytes=263848 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:52:44.887 [INFO] [corr=e7e56cefefc24546bfc088e86df80b2f] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=650 | MemoryDeltaBytes=2399280 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:52:47.465 [INFO] [corr=21fbcedc43044d0e8fcf49adc1fb9266] PerfScope: OvernightCheckout.Load | RoomId=30003 | BookingId=180002 | ElapsedMs=1035 | MemoryDeltaBytes=2915936 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:52:51.268 [INFO] [corr=50b0b51d6e524485941966a509b343ee] PerfScope: OvernightCheckout.Load | RoomId=30004 | BookingId=210001 | ElapsedMs=1017 | MemoryDeltaBytes=-2732912 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:53:31.040 [INFO] [corr=47ebcc05383b4a3e89e692625ada178c] PerfScope: OvernightCheckout.SaveProgress | BookingId=210001 | ElapsedMs=511 | MemoryDeltaBytes=196540 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:53:31.040 [ERROR] [corr=47ebcc05383b4a3e89e692625ada178c] Infrastructure failure at UI boundary. | Operation=OvernightCheckout.SaveProgress
+HotelManagement.Services.InfrastructureException: Lỗi cơ sở dữ liệu khi xử lý checkout. ---> MySql.Data.MySqlClient.MySqlException: Field 'GiaPhong' doesn't have a default value
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   at HotelManagement.Services.CheckoutService.UpdateStayInfoGuestName(MySqlConnection conn, MySqlTransaction tx, Int32 bookingId, String guestDisplayName, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 471
+   at HotelManagement.Services.CheckoutService.<>c__DisplayClass8_0.<SaveOvernight>b__0(MySqlConnection conn, MySqlTransaction tx, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 160
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 251
+   --- End of inner exception stack trace ---
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 287
+   at HotelManagement.Services.CheckoutService.SaveOvernight(SaveOvernightRequest request) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 150
+   at HotelManagement.Forms.OvernightCheckoutForm.<>c__DisplayClass69_0.<BtnSave_Click>b__1() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 829
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable`1.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Forms.OvernightCheckoutForm.<<BtnSave_Click>b__69_0>d.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 829
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Services.UiExceptionHandler.<RunAsync>d__1.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Services\UiExceptionHandler.cs:line 72
+2026-02-28 02:53:33.666 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=151 | MemoryDeltaBytes=258712 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:53:33.811 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=130 | MemoryDeltaBytes=48092 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:53:36.290 [INFO] [corr=13a6b03994034880abdea5aab6153a1b] PerfScope: OvernightCheckout.Load | RoomId=30003 | BookingId=180002 | ElapsedMs=968 | MemoryDeltaBytes=-2318796 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:53:39.648 [INFO] [corr=c9f2a225936d4c198b7cab728c839bb8] PerfScope: OvernightCheckout.SaveProgress | BookingId=180002 | ElapsedMs=469 | MemoryDeltaBytes=113816 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:53:39.648 [ERROR] [corr=c9f2a225936d4c198b7cab728c839bb8] Infrastructure failure at UI boundary. | Operation=OvernightCheckout.SaveProgress
+HotelManagement.Services.InfrastructureException: Lỗi cơ sở dữ liệu khi xử lý checkout. ---> MySql.Data.MySqlClient.MySqlException: Field 'GiaPhong' doesn't have a default value
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   at HotelManagement.Services.CheckoutService.UpdateStayInfoGuestName(MySqlConnection conn, MySqlTransaction tx, Int32 bookingId, String guestDisplayName, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 471
+   at HotelManagement.Services.CheckoutService.<>c__DisplayClass8_0.<SaveOvernight>b__0(MySqlConnection conn, MySqlTransaction tx, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 160
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 251
+   --- End of inner exception stack trace ---
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 287
+   at HotelManagement.Services.CheckoutService.SaveOvernight(SaveOvernightRequest request) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 150
+   at HotelManagement.Forms.OvernightCheckoutForm.<>c__DisplayClass69_0.<BtnSave_Click>b__1() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 829
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable`1.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Forms.OvernightCheckoutForm.<<BtnSave_Click>b__69_0>d.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 829
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Services.UiExceptionHandler.<RunAsync>d__1.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Services\UiExceptionHandler.cs:line 72
+2026-02-28 02:53:48.185 [INFO] [corr=fae06232a94f42c0a4b644818a734575] PerfScope: OvernightCheckout.Load | RoomId=30003 | BookingId=180002 | ElapsedMs=963 | MemoryDeltaBytes=-2123812 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:53:49.345 [INFO] [corr=558fc436cabb49afbf25bb132a0c7238] PerfScope: OvernightCheckout.Pay | BookingId=180002 | ElapsedMs=1108 | MemoryDeltaBytes=311088 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:53:49.345 [ERROR] [corr=558fc436cabb49afbf25bb132a0c7238] Infrastructure failure at UI boundary. | Operation=OvernightCheckout.Pay
+HotelManagement.Services.InfrastructureException: Lỗi cơ sở dữ liệu khi xử lý checkout. ---> MySql.Data.MySqlClient.MySqlException: Field 'GiaPhong' doesn't have a default value
+   at MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   at MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   at MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   at MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   at MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   at HotelManagement.Services.CheckoutService.UpdateStayInfoGuestName(MySqlConnection conn, MySqlTransaction tx, Int32 bookingId, String guestDisplayName, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 471
+   at HotelManagement.Services.CheckoutService.<>c__DisplayClass9_0.<PayOvernight>b__0(MySqlConnection conn, MySqlTransaction tx, String actor, DateTime nowUtc) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 203
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 251
+   --- End of inner exception stack trace ---
+   at HotelManagement.Services.CheckoutService.ExecuteInTransaction(String operation, Int32 bookingId, Int32 roomId, Func`5 work) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 287
+   at HotelManagement.Services.CheckoutService.PayOvernight(PayOvernightRequest request) in E:\Project\Hotel-Management\Hotel Management\Services\CheckoutService.cs:line 193
+   at HotelManagement.Forms.OvernightCheckoutForm.<>c__DisplayClass70_0.<BtnPay_Click>b__1() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 907
+   at System.Threading.Tasks.Task`1.InnerInvoke()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable`1.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Forms.OvernightCheckoutForm.<<BtnPay_Click>b__70_0>d.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Forms\OvernightCheckoutForm.cs:line 907
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.ConfiguredTaskAwaitable.ConfiguredTaskAwaiter.GetResult()
+   at HotelManagement.Services.UiExceptionHandler.<RunAsync>d__1.MoveNext() in E:\Project\Hotel-Management\Hotel Management\Services\UiExceptionHandler.cs:line 72
+2026-02-28 02:54:17.054 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=155 | MemoryDeltaBytes=255492 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:54:18.904 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=48460 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:54:40.687 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=153 | MemoryDeltaBytes=137572 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:54:41.419 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=125 | MemoryDeltaBytes=56096 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:55:03.954 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=48328 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:55:04.768 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=180 | MemoryDeltaBytes=132764 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:55:23.578 [INFO] [corr=startup-077ebdb13edf419c8ed5b1a7b5cfd46e] PerfScope: Program.Main.Bootstrap | ElapsedMs=228288 | MemoryDeltaBytes=13135804 | Gc0Delta=16 | Gc1Delta=8 | Gc2Delta=2 | ThreadId=1
+2026-02-28 02:55:23.578 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=228294 | MemoryDeltaBytes=13160380 | Gc0Delta=16 | Gc1Delta=8 | Gc2Delta=2 | ThreadId=1
+2026-02-28 02:57:21.753 [INFO] [corr=startup-2484ddcd07d94f8aa4d20ba30374658a] PerfScope: MainForm.Load | ElapsedMs=36 | MemoryDeltaBytes=122164 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:57:23.479 [INFO] [corr=startup-2484ddcd07d94f8aa4d20ba30374658a] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=127 | MemoryDeltaBytes=179076 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:57:23.479 [INFO] [corr=startup-2484ddcd07d94f8aa4d20ba30374658a] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1735 | MemoryDeltaBytes=1487836 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:57:27.101 [INFO] [corr=67097f068a4645318ff0f5f0182cec4d] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=1137 | MemoryDeltaBytes=-4615196 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 02:57:32.777 [INFO] [corr=startup-2484ddcd07d94f8aa4d20ba30374658a] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=164 | MemoryDeltaBytes=230972 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:57:37.935 [INFO] [corr=startup-2484ddcd07d94f8aa4d20ba30374658a] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=152 | MemoryDeltaBytes=2185392 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:57:43.274 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=6398 | MemoryDeltaBytes=1347656 | Gc0Delta=5 | Gc1Delta=5 | Gc2Delta=1 | ThreadId=5
+2026-02-28 02:57:49.451 [INFO] [corr=startup-2484ddcd07d94f8aa4d20ba30374658a] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=48952 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:57:56.042 [INFO] [corr=startup-2484ddcd07d94f8aa4d20ba30374658a] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=155 | MemoryDeltaBytes=124388 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:58:11.984 [INFO] [corr=startup-2484ddcd07d94f8aa4d20ba30374658a] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=134 | MemoryDeltaBytes=80640 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 02:58:12.280 [INFO] [corr=startup-2484ddcd07d94f8aa4d20ba30374658a] PerfScope: Program.Main.Bootstrap | ElapsedMs=52553 | MemoryDeltaBytes=11547584 | Gc0Delta=8 | Gc1Delta=7 | Gc2Delta=2 | ThreadId=1
+2026-02-28 02:58:12.280 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=52559 | MemoryDeltaBytes=11563968 | Gc0Delta=8 | Gc1Delta=7 | Gc2Delta=2 | ThreadId=1
+2026-02-28 03:16:35.996 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: Program.EnsureStatisticsSchema | ElapsedMs=8792 | MemoryDeltaBytes=1085440 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:16:36.372 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: MainForm.Load | ElapsedMs=25 | MemoryDeltaBytes=154860 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:16:37.703 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=325 | MemoryDeltaBytes=501796 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:16:37.827 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=127 | MemoryDeltaBytes=180040 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:16:37.835 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1467 | MemoryDeltaBytes=1846624 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:16:43.570 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=175 | MemoryDeltaBytes=187860 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:16:45.975 [INFO] [corr=8c5fa35541d44aa7805cde06201d223c] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=1101 | MemoryDeltaBytes=2964180 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:16:53.898 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=177 | MemoryDeltaBytes=-4534268 | Gc0Delta=2 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 03:16:55.527 [INFO] [corr=1ad304c17414441bbf907b45afee2d06] PerfScope: OvernightCheckout.Load | RoomId=30003 | BookingId=180002 | ElapsedMs=1001 | MemoryDeltaBytes=-261860 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:16:57.993 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=6513 | MemoryDeltaBytes=337160 | Gc0Delta=6 | Gc1Delta=4 | Gc2Delta=1 | ThreadId=8
+2026-02-28 03:17:00.446 [INFO] [corr=40a504a8f7614488b82ef9613e88f25a] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=1030 | MemoryDeltaBytes=2842088 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:01.842 [INFO] [corr=acc6cb91444d4080808d565e854f1eb0] PerfScope: OvernightCheckout.Pay | BookingId=210002 | ElapsedMs=1125 | MemoryDeltaBytes=16384 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:06.006 [INFO] [corr=499cc7294335479da5926575bc0df6ca] PerfScope: OvernightCheckout.LoadExtras | BookingId=210002 | SoftDrinkQty=1 | WaterQty=1 | ElapsedMs=126 | MemoryDeltaBytes=40840 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:06.116 [INFO] [corr=499cc7294335479da5926575bc0df6ca] PerfScope: OvernightCheckout.SaveProgress | BookingId=210002 | NightCount=2 | SoftDrinkQty=1 | WaterQty=1 | ElapsedMs=1090 | MemoryDeltaBytes=-4058464 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:06.551 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=124 | MemoryDeltaBytes=221004 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:06.551 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=543 | MemoryDeltaBytes=-3316312 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:06.806 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=757 | MemoryDeltaBytes=-3812404 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:11.270 [INFO] [corr=03570214addd4a7594e360aefe266b0e] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=210002 | ElapsedMs=962 | MemoryDeltaBytes=-1834504 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:13.264 [INFO] [corr=e0a54c801519429aabca630d10ab7a6e] PerfScope: OvernightCheckout.Pay | BookingId=210002 | NightCount=2 | TotalCharge=500000 | DueAmount=0 | ElapsedMs=1949 | MemoryDeltaBytes=1055496 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:13.533 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=283 | MemoryDeltaBytes=687948 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:13.659 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=550 | MemoryDeltaBytes=1652260 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:15.613 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1005 | MemoryDeltaBytes=835372 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:19.152 [INFO] [corr=startup-7c925027ff044bbcb9671d24a0e79905] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=270001 | ElapsedMs=978 | MemoryDeltaBytes=-2002784 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:25.927 [INFO] [corr=43b51bc8e7b64210af420a32328a689d] PerfScope: OvernightCheckout.SaveProgress | BookingId=270001 | ElapsedMs=1088 | MemoryDeltaBytes=16384 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:29.956 [INFO] [corr=7095075b3ded4f678e08949af00dccab] PerfScope: OvernightCheckout.LoadExtras | BookingId=270001 | SoftDrinkQty=0 | WaterQty=0 | ElapsedMs=131 | MemoryDeltaBytes=40480 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:30.106 [INFO] [corr=7095075b3ded4f678e08949af00dccab] PerfScope: OvernightCheckout.SaveProgress | BookingId=270001 | NightCount=1 | SoftDrinkQty=0 | WaterQty=0 | ElapsedMs=1118 | MemoryDeltaBytes=1120232 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:30.392 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=323 | MemoryDeltaBytes=-3865996 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 03:17:30.521 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=195384 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:30.521 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=563 | MemoryDeltaBytes=-2936056 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 03:17:35.722 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=187 | MemoryDeltaBytes=197032 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:38.899 [INFO] [corr=86cb9e89e53e4cda84c1a0e23d35e224] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=270001 | ElapsedMs=1003 | MemoryDeltaBytes=2759540 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:54.084 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=133 | MemoryDeltaBytes=49024 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:56.170 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.LoadAuditLog | FromDate=2026-01-29 | ToDate=2026-02-28 | Page=1 | PageRows=50 | TotalRows=343 | ElapsedMs=187 | MemoryDeltaBytes=421508 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:56.197 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.LoadExplorerData | FromDate=2026-01-29 | ToDate=2026-02-28 | Page=1 | PageSize=20 | SortBy=checkin_desc | DbRows=20 | TotalRows=39 | ElapsedMs=215 | MemoryDeltaBytes=625788 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:56.503 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.LoadDataAlerts | FromDate=2026-01-29 | ToDate=2026-02-28 | AlertRows=6 | ElapsedMs=310 | MemoryDeltaBytes=516060 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:56.821 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.LoadBookingStats | FromDate=2026-01-29 | ToDate=2026-02-28 | BookingType=-1 | ForceReload=True | BookingRows=39 | ElapsedMs=848 | MemoryDeltaBytes=1459788 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:56.823 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckBookingStatisticsChanges | ElapsedMs=361 | MemoryDeltaBytes=448812 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:57.220 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.LoadKpiDashboard | FromDate=2026-01-29 | ToDate=2026-02-28 | BookingType=-1 | RevenueTrendRows=15 | TopChannelRows=1 | ElapsedMs=408 | MemoryDeltaBytes=322108 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:17:59.843 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=171 | MemoryDeltaBytes=197592 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:18:03.961 [INFO] [corr=fec4a506b85d42cda6f54800b4339364] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=270001 | ElapsedMs=1015 | MemoryDeltaBytes=2774600 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:18:19.253 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=125 | MemoryDeltaBytes=160100 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:18:24.919 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=183 | MemoryDeltaBytes=189208 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:18:41.615 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=128 | MemoryDeltaBytes=40936 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:18:48.968 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=177 | MemoryDeltaBytes=192720 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:19:04.142 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=128 | MemoryDeltaBytes=48904 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:19:13.000 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=192 | MemoryDeltaBytes=-4896924 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:19:18.967 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=188 | MemoryDeltaBytes=196072 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:19:26.685 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=130 | MemoryDeltaBytes=48904 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:19:43.021 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=182 | MemoryDeltaBytes=176204 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:19:49.205 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=40944 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:20:07.165 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=196 | MemoryDeltaBytes=192952 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:20:11.788 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=133 | MemoryDeltaBytes=57136 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:20:31.205 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=206 | MemoryDeltaBytes=186864 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:20:34.315 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=48912 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:20:43.285 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=258 | MemoryDeltaBytes=188116 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:20:55.246 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=178 | MemoryDeltaBytes=184916 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:20:56.836 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=131 | MemoryDeltaBytes=49132 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:21:12.111 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=378 | MemoryDeltaBytes=-5120260 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:21:19.305 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=187 | MemoryDeltaBytes=216692 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:21:19.364 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=134 | MemoryDeltaBytes=80672 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:21:41.914 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=40940 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:21:43.370 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=174 | MemoryDeltaBytes=184220 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:22:05.151 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=132 | MemoryDeltaBytes=48956 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:22:06.713 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=174 | MemoryDeltaBytes=197656 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:22:12.627 [INFO] [corr=64523a2647db426cb749ad24451f67cf] PerfScope: Program.Main.Bootstrap | ElapsedMs=347717 | MemoryDeltaBytes=10649444 | Gc0Delta=20 | Gc1Delta=9 | Gc2Delta=3 | ThreadId=1
+2026-02-28 03:22:12.627 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=347722 | MemoryDeltaBytes=10674020 | Gc0Delta=20 | Gc1Delta=9 | Gc2Delta=3 | ThreadId=1
+2026-02-28 03:22:27.902 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: Program.EnsureStatisticsSchema | ElapsedMs=6998 | MemoryDeltaBytes=1097728 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:22:28.235 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.Load | ElapsedMs=25 | MemoryDeltaBytes=154556 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:22:29.576 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=130 | MemoryDeltaBytes=195812 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:22:29.585 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1356 | MemoryDeltaBytes=1734556 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:22:34.451 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=223 | MemoryDeltaBytes=393232 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:22:36.975 [INFO] [corr=5a10ecccb7ac4b68bf94e823d47c1c42] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=270001 | ElapsedMs=1028 | MemoryDeltaBytes=2872464 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:22:48.325 [INFO] [corr=ef69275041b347e9b7df5df85b5e22d7] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=632 | MemoryDeltaBytes=3135504 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:22:50.074 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=6741 | MemoryDeltaBytes=181988 | Gc0Delta=6 | Gc1Delta=6 | Gc2Delta=1 | ThreadId=12
+2026-02-28 03:22:51.122 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:22:58.082 [INFO] [corr=24a707a0747a4a48845bd2e645361199] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=150001 | ElapsedMs=618 | MemoryDeltaBytes=2456528 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:00.369 [INFO] [corr=37e2c71b2c9047fabef48e2dbd76f6f6] PerfScope: HourlyCheckout.Pay | BookingId=150001 | TotalCharge=190000 | DueAmount=190000 | ElapsedMs=1587 | MemoryDeltaBytes=-3721548 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:00.841 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=579 | MemoryDeltaBytes=1681316 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:01.286 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=928 | MemoryDeltaBytes=1404540 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:02.713 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=794 | MemoryDeltaBytes=735308 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:05.791 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.LoadExplorerData | FromDate=2026-01-29 | ToDate=2026-02-28 | Page=1 | PageSize=20 | SortBy=checkin_desc | DbRows=20 | TotalRows=39 | ElapsedMs=219 | MemoryDeltaBytes=520432 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:05.841 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.LoadAuditLog | FromDate=2026-01-29 | ToDate=2026-02-28 | Page=1 | PageRows=50 | TotalRows=345 | ElapsedMs=264 | MemoryDeltaBytes=618308 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:06.230 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.LoadBookingStats | FromDate=2026-01-29 | ToDate=2026-02-28 | BookingType=-1 | ForceReload=True | BookingRows=39 | ElapsedMs=662 | MemoryDeltaBytes=1042948 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:06.230 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.LoadDataAlerts | FromDate=2026-01-29 | ToDate=2026-02-28 | AlertRows=6 | ElapsedMs=385 | MemoryDeltaBytes=336164 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:06.661 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.LoadKpiDashboard | FromDate=2026-01-29 | ToDate=2026-02-28 | BookingType=-1 | RevenueTrendRows=15 | TopChannelRows=1 | ElapsedMs=436 | MemoryDeltaBytes=252732 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:07.527 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=203 | MemoryDeltaBytes=172356 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:08.180 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.LoadBookingStats | FromDate=2026-01-29 | ToDate=2026-02-28 | BookingType=-1 | ForceReload=False | SkippedByFingerprint=True | ElapsedMs=251 | MemoryDeltaBytes=277956 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:11.763 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=135 | MemoryDeltaBytes=170788 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:11.763 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=807 | MemoryDeltaBytes=882040 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:12.790 [INFO] [corr=1ae14cbfc6e84e269cc4dcd7737d516a] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=270002 | ElapsedMs=603 | MemoryDeltaBytes=-2820432 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:16.185 [INFO] [corr=93fc5b16fdc44fa0a05e7d740548d34e] PerfScope: HourlyCheckout.Pay | BookingId=270002 | TotalCharge=60000 | DueAmount=60000 | ElapsedMs=2403 | MemoryDeltaBytes=1148684 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:16.793 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=816 | MemoryDeltaBytes=-989456 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 03:23:18.711 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1032 | MemoryDeltaBytes=842056 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:29.703 [INFO] [corr=f96643af64ea434a9b3d4f9bf2124f8c] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=542 | MemoryDeltaBytes=-2145200 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:29.703 [INFO] [corr=f96643af64ea434a9b3d4f9bf2124f8c] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1211 | MemoryDeltaBytes=-1415320 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:29.924 [INFO] [corr=f96643af64ea434a9b3d4f9bf2124f8c] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=270003 | ElapsedMs=622 | MemoryDeltaBytes=-2494640 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:23:38.142 [INFO] [corr=startup-adee99762bbb48888c4c7e221aa6b490] PerfScope: Program.Main.Bootstrap | ElapsedMs=79468 | MemoryDeltaBytes=12426784 | Gc0Delta=14 | Gc1Delta=11 | Gc2Delta=3 | ThreadId=1
+2026-02-28 03:23:38.142 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=79474 | MemoryDeltaBytes=12451360 | Gc0Delta=14 | Gc1Delta=11 | Gc2Delta=3 | ThreadId=1
+2026-02-28 03:27:19.174 [INFO] [corr=startup-5220342d1eb84b67b2a758274da935d1] PerfScope: Program.EnsureStatisticsSchema | ElapsedMs=7766 | MemoryDeltaBytes=1093632 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:27:19.538 [INFO] [corr=startup-5220342d1eb84b67b2a758274da935d1] PerfScope: MainForm.Load | ElapsedMs=28 | MemoryDeltaBytes=162496 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:27:20.854 [INFO] [corr=startup-5220342d1eb84b67b2a758274da935d1] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=195992 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:27:20.854 [INFO] [corr=startup-5220342d1eb84b67b2a758274da935d1] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1334 | MemoryDeltaBytes=1742700 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:27:25.768 [INFO] [corr=startup-5220342d1eb84b67b2a758274da935d1] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=229 | MemoryDeltaBytes=384348 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:27:29.442 [INFO] [corr=669f35d426c44889915fde6bd33ac1c3] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=270001 | ElapsedMs=1076 | MemoryDeltaBytes=3018792 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:27:35.912 [INFO] [corr=025d5e3cb5684084999db370e3982bfd] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=270003 | ElapsedMs=571 | MemoryDeltaBytes=1483664 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:27:41.437 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=6781 | MemoryDeltaBytes=-207380 | Gc0Delta=6 | Gc1Delta=5 | Gc2Delta=1 | ThreadId=4
+2026-02-28 03:28:32.216 [INFO] [corr=startup-5220342d1eb84b67b2a758274da935d1] PerfScope: Program.Main.Bootstrap | ElapsedMs=82227 | MemoryDeltaBytes=13914304 | Gc0Delta=9 | Gc1Delta=7 | Gc2Delta=2 | ThreadId=1
+2026-02-28 03:28:32.216 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=82233 | MemoryDeltaBytes=13938880 | Gc0Delta=9 | Gc1Delta=7 | Gc2Delta=2 | ThreadId=1
+2026-02-28 03:31:00.492 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: Program.EnsureStatisticsSchema | ElapsedMs=7089 | MemoryDeltaBytes=1097504 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:00.898 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: MainForm.Load | ElapsedMs=24 | MemoryDeltaBytes=161760 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:02.388 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=479 | MemoryDeltaBytes=669300 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:03.185 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=794 | MemoryDeltaBytes=211792 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:03.185 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=2293 | MemoryDeltaBytes=1932084 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:03.528 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=133 | MemoryDeltaBytes=57236 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:05.929 [INFO] [corr=313011c7c27a4ef88860d2d11f94e95e] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=270001 | ElapsedMs=1129 | MemoryDeltaBytes=2946232 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:10.523 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=220 | MemoryDeltaBytes=287840 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:11.620 [INFO] [corr=58284530b60f47bbaf892ea0b8223ea9] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=688 | MemoryDeltaBytes=-2108756 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:11.833 [INFO] [corr=58284530b60f47bbaf892ea0b8223ea9] PerfScope: HourlyCheckout.Load | RoomId=30001 | BookingId=270003 | ElapsedMs=631 | MemoryDeltaBytes=-2453000 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:15.821 [INFO] [corr=38362a26334049dabcb9e35f4fd42de3] PerfScope: OvernightCheckout.Load | RoomId=30002 | BookingId=270001 | ElapsedMs=1025 | MemoryDeltaBytes=-3451596 | Gc0Delta=2 | Gc1Delta=2 | Gc2Delta=1 | ThreadId=1
+2026-02-28 03:31:17.201 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=197 | MemoryDeltaBytes=-1835560 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:19.773 [INFO] [corr=8ce38febb5f9411790cfef0d6a62d074] PerfScope: OvernightCheckout.Load | RoomId=30004 | BookingId=210001 | ElapsedMs=983 | MemoryDeltaBytes=-3408572 | Gc0Delta=2 | Gc1Delta=2 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:22.793 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=6774 | MemoryDeltaBytes=6924600 | Gc0Delta=4 | Gc1Delta=4 | Gc2Delta=0 | ThreadId=9
+2026-02-28 03:31:31.914 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=186 | MemoryDeltaBytes=304332 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:33.567 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=134 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:55.289 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=201 | MemoryDeltaBytes=184360 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:31:56.087 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=132 | MemoryDeltaBytes=48860 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:32:07.432 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=321 | MemoryDeltaBytes=230132 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:32:07.462 [INFO] [corr=startup-cb491c25642f4f9c95ccc3d410e81726] PerfScope: Program.Main.Bootstrap | ElapsedMs=77113 | MemoryDeltaBytes=10589364 | Gc0Delta=12 | Gc1Delta=9 | Gc2Delta=2 | ThreadId=1
+2026-02-28 03:32:07.469 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=77119 | MemoryDeltaBytes=10613940 | Gc0Delta=12 | Gc1Delta=9 | Gc2Delta=2 | ThreadId=1
+2026-02-28 03:34:22.941 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: Program.EnsureStatisticsSchema | ElapsedMs=6773 | MemoryDeltaBytes=1097504 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:34:23.295 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: MainForm.Load | ElapsedMs=25 | MemoryDeltaBytes=168900 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:34:24.642 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=130 | MemoryDeltaBytes=203828 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:34:24.642 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1358 | MemoryDeltaBytes=1729236 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:34:28.391 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: MainForm.LoadExplorerData | FromDate=2026-01-29 | ToDate=2026-02-28 | Page=1 | PageSize=20 | SortBy=checkin_desc | DbRows=20 | TotalRows=41 | ElapsedMs=209 | MemoryDeltaBytes=-6621916 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 03:34:28.502 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: MainForm.LoadAuditLog | FromDate=2026-01-29 | ToDate=2026-02-28 | Page=1 | PageRows=50 | TotalRows=353 | ElapsedMs=315 | MemoryDeltaBytes=-6335744 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 03:34:28.541 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: MainForm.CheckBookingStatisticsChanges | ElapsedMs=240 | MemoryDeltaBytes=699260 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:34:28.801 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: MainForm.LoadDataAlerts | FromDate=2026-01-29 | ToDate=2026-02-28 | AlertRows=6 | ElapsedMs=298 | MemoryDeltaBytes=314516 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:34:28.946 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: MainForm.LoadBookingStats | FromDate=2026-01-29 | ToDate=2026-02-28 | BookingType=-1 | ForceReload=True | BookingRows=41 | ElapsedMs=763 | MemoryDeltaBytes=-5595908 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 03:34:29.372 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: MainForm.LoadKpiDashboard | FromDate=2026-01-29 | ToDate=2026-02-28 | BookingType=-1 | RevenueTrendRows=15 | TopChannelRows=1 | ElapsedMs=425 | MemoryDeltaBytes=298308 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:34:31.841 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=182 | MemoryDeltaBytes=312376 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:34:46.836 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=8434 | MemoryDeltaBytes=1632704 | Gc0Delta=5 | Gc1Delta=4 | Gc2Delta=1 | ThreadId=5
+2026-02-28 03:34:48.459 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=81312 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:34:51.714 [INFO] [corr=startup-3d11675c36934ed5b9adbaa51f88721a] PerfScope: Program.Main.Bootstrap | ElapsedMs=36713 | MemoryDeltaBytes=11388724 | Gc0Delta=8 | Gc1Delta=6 | Gc2Delta=2 | ThreadId=1
+2026-02-28 03:34:51.714 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=36719 | MemoryDeltaBytes=11405108 | Gc0Delta=8 | Gc1Delta=6 | Gc2Delta=2 | ThreadId=1
+2026-02-28 03:37:34.340 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: Program.EnsureStatisticsSchema | ElapsedMs=6658 | MemoryDeltaBytes=1097504 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:37:34.718 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.Load | ElapsedMs=24 | MemoryDeltaBytes=154996 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:37:36.252 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=527 | MemoryDeltaBytes=547580 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:37:36.371 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=187916 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:37:36.371 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1671 | MemoryDeltaBytes=1861936 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:37:40.622 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.LoadAuditLog | FromDate=2026-01-29 | ToDate=2026-02-28 | Page=1 | PageRows=50 | TotalRows=353 | ElapsedMs=176 | MemoryDeltaBytes=413816 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:37:40.735 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.LoadExplorerData | FromDate=2026-01-29 | ToDate=2026-02-28 | Page=1 | PageSize=20 | SortBy=checkin_desc | DbRows=20 | TotalRows=41 | ElapsedMs=294 | MemoryDeltaBytes=641844 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:37:41.039 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.LoadDataAlerts | FromDate=2026-01-29 | ToDate=2026-02-28 | AlertRows=6 | ElapsedMs=296 | MemoryDeltaBytes=585072 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:37:41.237 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.LoadBookingStats | FromDate=2026-01-29 | ToDate=2026-02-28 | BookingType=-1 | ForceReload=True | BookingRows=41 | ElapsedMs=811 | MemoryDeltaBytes=-5565296 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 03:37:41.652 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.LoadKpiDashboard | FromDate=2026-01-29 | ToDate=2026-02-28 | BookingType=-1 | RevenueTrendRows=15 | TopChannelRows=1 | ElapsedMs=408 | MemoryDeltaBytes=300872 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:37:42.496 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.CheckBookingStatisticsChanges | ElapsedMs=252 | MemoryDeltaBytes=98244 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:37:43.039 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=171 | MemoryDeltaBytes=320616 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:37:56.230 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=6401 | MemoryDeltaBytes=2205280 | Gc0Delta=5 | Gc1Delta=4 | Gc2Delta=1 | ThreadId=5
+2026-02-28 03:37:59.885 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=80688 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:38:06.980 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=188 | MemoryDeltaBytes=177348 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:38:13.268 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=466 | MemoryDeltaBytes=184268 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:38:22.443 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=126 | MemoryDeltaBytes=48912 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:38:26.068 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.LoadExplorerData | FromDate=2026-01-29 | ToDate=2026-02-28 | Page=1 | PageSize=20 | SortBy=checkin_desc | DbRows=20 | TotalRows=41 | ElapsedMs=234 | MemoryDeltaBytes=557660 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:38:26.068 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.LoadAuditLog | FromDate=2026-01-29 | ToDate=2026-02-28 | Page=1 | PageRows=50 | TotalRows=353 | ElapsedMs=235 | MemoryDeltaBytes=631388 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:38:26.096 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.LoadBookingStats | FromDate=2026-01-29 | ToDate=2026-02-28 | BookingType=-1 | ForceReload=False | SkippedByFingerprint=True | ElapsedMs=255 | MemoryDeltaBytes=770460 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:38:26.368 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.LoadDataAlerts | FromDate=2026-01-29 | ToDate=2026-02-28 | AlertRows=6 | ElapsedMs=290 | MemoryDeltaBytes=-4613248 | Gc0Delta=1 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:38:27.565 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.CheckBookingStatisticsChanges | ElapsedMs=232 | MemoryDeltaBytes=98304 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:38:57.568 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.CheckBookingStatisticsChanges | ElapsedMs=240 | MemoryDeltaBytes=98140 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:39:17.692 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.CheckBookingStatisticsChanges | ElapsedMs=323 | MemoryDeltaBytes=89884 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:39:47.617 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.CheckBookingStatisticsChanges | ElapsedMs=239 | MemoryDeltaBytes=89960 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:40:07.682 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.CheckBookingStatisticsChanges | ElapsedMs=241 | MemoryDeltaBytes=89836 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:40:27.705 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: MainForm.CheckBookingStatisticsChanges | ElapsedMs=265 | MemoryDeltaBytes=89676 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:40:38.017 [INFO] [corr=startup-716babb93bd94c02a81c51a596610d38] PerfScope: Program.Main.Bootstrap | ElapsedMs=191492 | MemoryDeltaBytes=11269184 | Gc0Delta=9 | Gc1Delta=6 | Gc2Delta=2 | ThreadId=1
+2026-02-28 03:40:38.018 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=191499 | MemoryDeltaBytes=11293760 | Gc0Delta=9 | Gc1Delta=6 | Gc2Delta=2 | ThreadId=1
+2026-02-28 03:40:56.778 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: Program.EnsureStatisticsSchema | ElapsedMs=6895 | MemoryDeltaBytes=1097504 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:41:06.460 [WARN] [corr=startup-4892414053ba448fbba20c650c614a1c] One-time startup booking reset executed. | StampPath=E:\Project\Hotel-Management\Hotel Management\bin\Debug\startup-booking-reset.stamp
+2026-02-28 03:41:06.829 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: MainForm.Load | ElapsedMs=25 | MemoryDeltaBytes=175180 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:41:08.390 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=554 | MemoryDeltaBytes=404856 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:41:08.512 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=133 | MemoryDeltaBytes=155052 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:41:08.527 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1701 | MemoryDeltaBytes=1370824 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:41:14.114 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: MainForm.LoadAuditLog | FromDate=2026-02-28 | ToDate=2026-02-28 | Page=1 | PageRows=0 | TotalRows=0 | ElapsedMs=173 | MemoryDeltaBytes=-6210652 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:41:14.156 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: MainForm.LoadExplorerData | FromDate=2026-02-28 | ToDate=2026-02-28 | Page=1 | PageSize=20 | SortBy=checkin_desc | DbRows=0 | TotalRows=0 | ElapsedMs=217 | MemoryDeltaBytes=-6124108 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 03:41:14.471 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: MainForm.LoadDataAlerts | FromDate=2026-02-28 | ToDate=2026-02-28 | AlertRows=0 | ElapsedMs=308 | MemoryDeltaBytes=372472 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:41:14.675 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: MainForm.LoadBookingStats | FromDate=2026-02-28 | ToDate=2026-02-28 | BookingType=-1 | ForceReload=True | BookingRows=0 | ElapsedMs=739 | MemoryDeltaBytes=-6329280 | Gc0Delta=2 | Gc1Delta=2 | Gc2Delta=1 | ThreadId=1
+2026-02-28 03:41:14.675 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: MainForm.CheckBookingStatisticsChanges | ElapsedMs=330 | MemoryDeltaBytes=-491184 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:41:15.088 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: MainForm.LoadKpiDashboard | FromDate=2026-02-28 | ToDate=2026-02-28 | BookingType=-1 | RevenueTrendRows=0 | TopChannelRows=0 | ElapsedMs=405 | MemoryDeltaBytes=243916 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:41:18.037 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=181 | MemoryDeltaBytes=253908 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:41:21.937 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=0 | MemoryDeltaBytes=32768 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=5
+2026-02-28 03:41:25.170 [INFO] [corr=startup-4892414053ba448fbba20c650c614a1c] PerfScope: Program.Main.Bootstrap | ElapsedMs=37624 | MemoryDeltaBytes=11068208 | Gc0Delta=8 | Gc1Delta=7 | Gc2Delta=2 | ThreadId=1
+2026-02-28 03:41:25.170 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=37630 | MemoryDeltaBytes=11092784 | Gc0Delta=8 | Gc1Delta=7 | Gc2Delta=2 | ThreadId=1
+2026-02-28 03:44:47.659 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: Program.EnsureStatisticsSchema | ElapsedMs=6913 | MemoryDeltaBytes=1097504 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:44:48.518 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: MainForm.Load | ElapsedMs=31 | MemoryDeltaBytes=162740 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:44:49.909 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=380 | MemoryDeltaBytes=482392 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:44:50.056 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=146 | MemoryDeltaBytes=154284 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:44:50.056 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1547 | MemoryDeltaBytes=1712196 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:44:55.723 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=175 | MemoryDeltaBytes=147184 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:44:58.145 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: MainForm.LoadAuditLog | FromDate=2026-02-28 | ToDate=2026-02-28 | Page=1 | PageRows=0 | TotalRows=0 | ElapsedMs=167 | MemoryDeltaBytes=323768 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:44:58.245 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: MainForm.LoadExplorerData | FromDate=2026-02-28 | ToDate=2026-02-28 | Page=1 | PageSize=20 | SortBy=checkin_desc | DbRows=0 | TotalRows=0 | ElapsedMs=272 | MemoryDeltaBytes=445416 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:44:58.521 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: MainForm.LoadDataAlerts | FromDate=2026-02-28 | ToDate=2026-02-28 | AlertRows=0 | ElapsedMs=286 | MemoryDeltaBytes=307456 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:44:58.724 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: MainForm.LoadBookingStats | FromDate=2026-02-28 | ToDate=2026-02-28 | BookingType=-1 | ForceReload=True | BookingRows=0 | ElapsedMs=758 | MemoryDeltaBytes=1103172 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:44:58.815 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: MainForm.CheckBookingStatisticsChanges | ElapsedMs=270 | MemoryDeltaBytes=390988 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:44:59.137 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: MainForm.LoadKpiDashboard | FromDate=2026-02-28 | ToDate=2026-02-28 | BookingType=-1 | RevenueTrendRows=0 | TopChannelRows=0 | ElapsedMs=411 | MemoryDeltaBytes=244184 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:45:10.149 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=6543 | MemoryDeltaBytes=1653688 | Gc0Delta=5 | Gc1Delta=4 | Gc2Delta=1 | ThreadId=8
+2026-02-28 03:45:13.705 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=129 | MemoryDeltaBytes=49152 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 03:45:14.251 [INFO] [corr=startup-6673ea5654954865b84d821e3846ea91] PerfScope: Program.Main.Bootstrap | ElapsedMs=34778 | MemoryDeltaBytes=9973512 | Gc0Delta=8 | Gc1Delta=6 | Gc2Delta=2 | ThreadId=1
+2026-02-28 03:45:14.251 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=34784 | MemoryDeltaBytes=9998088 | Gc0Delta=8 | Gc1Delta=6 | Gc2Delta=2 | ThreadId=1
+2026-02-28 15:52:47.304 [INFO] [corr=startup-fd91c71001124e4aa02623ebe50e8d72] PerfScope: Program.EnsureStatisticsSchema | ElapsedMs=7534 | MemoryDeltaBytes=1097728 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 15:52:48.450 [INFO] [corr=startup-fd91c71001124e4aa02623ebe50e8d72] PerfScope: MainForm.Load | ElapsedMs=35 | MemoryDeltaBytes=152892 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 15:52:50.035 [INFO] [corr=startup-fd91c71001124e4aa02623ebe50e8d72] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=123 | MemoryDeltaBytes=153748 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 15:52:50.035 [INFO] [corr=startup-fd91c71001124e4aa02623ebe50e8d72] PerfScope: MainForm.LoadRoomTiles | RoomCount=11 | FloorCount=3 | ElapsedMs=1593 | MemoryDeltaBytes=1542012 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 15:52:54.785 [INFO] [corr=startup-fd91c71001124e4aa02623ebe50e8d72] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=294 | MemoryDeltaBytes=343840 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 15:53:00.729 [INFO] [corr=startup-fd91c71001124e4aa02623ebe50e8d72] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=231 | MemoryDeltaBytes=-7026240 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=1 | ThreadId=1
+2026-02-28 15:53:06.689 [INFO] [corr=startup-fd91c71001124e4aa02623ebe50e8d72] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=174 | MemoryDeltaBytes=466168 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 15:53:10.900 [INFO] [corr=-] PerfScope: Program.Main.DatabaseInitialize | ElapsedMs=7347 | MemoryDeltaBytes=3323904 | Gc0Delta=4 | Gc1Delta=3 | Gc2Delta=1 | ThreadId=5
+2026-02-28 15:53:13.622 [INFO] [corr=startup-fd91c71001124e4aa02623ebe50e8d72] PerfScope: MainForm.CheckRoomMapChanges | ElapsedMs=122 | MemoryDeltaBytes=89336 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 15:53:17.923 [INFO] [corr=-] PerfScope: Program.EnsureStatisticsSchema | ElapsedMs=7023 | MemoryDeltaBytes=240716 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=5
+2026-02-28 15:53:18.420 [INFO] [corr=-] PerfScope: Program.EnsurePerformanceIndexes | ElapsedMs=494 | MemoryDeltaBytes=81920 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=5
+2026-02-28 15:53:18.427 [INFO] [corr=-] PerfScope: Program.StartupMaintenance.Background | ElapsedMs=7521 | MemoryDeltaBytes=355404 | Gc0Delta=1 | Gc1Delta=1 | Gc2Delta=0 | ThreadId=5
+2026-02-28 15:53:30.737 [INFO] [corr=startup-fd91c71001124e4aa02623ebe50e8d72] PerfScope: MainForm.RefreshRoomBillingSnapshots | ElapsedMs=173 | MemoryDeltaBytes=145636 | Gc0Delta=0 | Gc1Delta=0 | Gc2Delta=0 | ThreadId=1
+2026-02-28 15:53:32.173 [INFO] [corr=startup-fd91c71001124e4aa02623ebe50e8d72] PerfScope: Program.Main.Bootstrap | ElapsedMs=55140 | MemoryDeltaBytes=9980012 | Gc0Delta=8 | Gc1Delta=6 | Gc2Delta=2 | ThreadId=1
+2026-02-28 15:53:32.175 [INFO] [corr=-] PerfScope: Program.Main.TotalStartup | ElapsedMs=55192 | MemoryDeltaBytes=10004588 | Gc0Delta=8 | Gc1Delta=6 | Gc2Delta=2 | ThreadId=1

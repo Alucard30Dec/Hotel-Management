@@ -47,8 +47,6 @@ namespace HotelManagement.Forms
         
         private Label lblQuocTich;
         private ComboBox cboQuocTich;
-        private Label lblGhiChuKhach;
-        private TextBox txtGhiChuKhach;
 
         private Label lblNoiCuTru;
         private RadioButton rdoThuongTru;
@@ -124,8 +122,6 @@ namespace HotelManagement.Forms
             
             this.lblQuocTich = new Label { Text = "Quốc tịch *" };
             this.cboQuocTich = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
-            this.lblGhiChuKhach = new Label { Text = "Ghi chú" };
-            this.txtGhiChuKhach = new TextBox();
 
             this.lblNoiCuTru = new Label { Text = "Nơi cư trú *" };
             this.rdoThuongTru = new RadioButton { Text = "Thường trú" };
@@ -151,7 +147,7 @@ namespace HotelManagement.Forms
 
             this.lstKhach = new ListBox();
             this.btnDong = new Button { Text = "Đóng" };
-            this.btnNhanPhong = new Button { Text = "Nhận phòng" };
+            this.btnNhanPhong = new Button { Text = "Lưu" };
 
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(1100, 700);

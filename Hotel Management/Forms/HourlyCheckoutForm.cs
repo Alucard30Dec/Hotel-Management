@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HotelManagement.Data;
 using HotelManagement.Models;
+using HotelManagement.Services;
 
 namespace HotelManagement.Forms
 {
@@ -26,17 +26,15 @@ namespace HotelManagement.Forms
 
         // ===== Data =====
         private readonly Room _room;
-        private readonly RoomDAL _roomDal = new RoomDAL();
-
-        private const decimal GIA_GIO_DON_DAU = 70000m;
-        private const decimal GIA_GIO_DON_SAU = 20000m;
-        private const decimal GIA_GIO_DOI_DAU = 120000m;
-        private const decimal GIA_GIO_DOI_SAU = 30000m;
-        private const decimal GIA_NUOC_NGOT = 20000m;
-        private const decimal GIA_NUOC_SUOI = 10000m;
+        private readonly BookingDAL _bookingDal = new BookingDAL();
+        private readonly PricingService _pricingService = PricingService.Instance;
+        private readonly CheckoutService _checkoutService = new CheckoutService();
+        private int _bookingId;
+        private PricingService.PricingConfig _pricing = PricingService.GetDefaultConfig();
 
         private int _savedSoftDrinkCount;
         private int _savedWaterBottleCount;
+        private decimal _savedDrinkCharge;
         private decimal _savedCollectedAmount;
 
         private int _pendingSoftDrinkCount;
@@ -49,6 +47,7 @@ namespace HotelManagement.Forms
 
         private Label lblStartTime;
         private Label lblStayHours;
+        private Label lblRateFrameInline;
 
         private Label lblSavedDrink;
         private Label lblSavedWater;
@@ -59,6 +58,8 @@ namespace HotelManagement.Forms
 
         private Label lblRoomChargeValue;
         private Label lblDrinkChargeValue;
+        private Label lblLateFeeValue;
+        private Label lblSurchargeReasonValue;
         private Label lblTotalChargeValue;
         private Label lblCollectedValue;
         private Label lblDueValue;
@@ -81,34 +82,92 @@ namespace HotelManagement.Forms
         public HourlyCheckoutForm(Room room)
         {
             _room = room ?? throw new ArgumentNullException(nameof(room));
+            _pricing = _pricingService.GetCurrentPricing();
             InitializeUi();
             Load += HourlyCheckoutForm_Load;
             Disposed += HourlyCheckoutForm_Disposed;
         }
 
-        private void HourlyCheckoutForm_Load(object sender, EventArgs e)
+        private async void HourlyCheckoutForm_Load(object sender, EventArgs e)
         {
-            _savedSoftDrinkCount = GetIntTag(_room.GhiChu, "NN", 0);
-            _savedWaterBottleCount = GetIntTag(_room.GhiChu, "NS", 0);
-            _savedCollectedAmount = GetDecimalTag(_room.GhiChu, "DT", 0m);
+            bool initialized = false;
+            await UiExceptionHandler.RunAsync(this, "HourlyCheckout.Load", async () =>
+            {
+                using (var perf = PerformanceTracker.Measure("HourlyCheckout.Load", new System.Collections.Generic.Dictionary<string, object>
+                {
+                    ["RoomId"] = _room.PhongID
+                }))
+                {
+                    var loadData = await Task.Run(() => LoadHourlyCheckoutData()).ConfigureAwait(true);
+                    _bookingId = loadData.BookingId;
+                    ReloadPricingSettings();
+                    _pricingService.PricingChanged += PricingService_PricingChanged;
+                    ApplySavedExtras(loadData.Extras);
+                    _savedCollectedAmount = loadData.PaidAmount;
 
-            _pendingSoftDrinkCount = 0;
-            _pendingWaterBottleCount = 0;
+                    _pendingSoftDrinkCount = 0;
+                    _pendingWaterBottleCount = 0;
 
-            lblTitleRoom.Text = "Tính tiền phòng theo giờ - Phòng " + _room.MaPhong;
-            lblChipRoom.Text = "  Phòng " + _room.MaPhong + "  ";
-            lblCheckin.Text = "Check-in: " + (_room.ThoiGianBatDau ?? DateTime.Now).ToString("dd/MM/yyyy HH:mm");
+                    lblTitleRoom.Text = "Tính tiền phòng theo giờ - Phòng " + _room.MaPhong;
+                    lblChipRoom.Text = "  Phòng " + _room.MaPhong + "  ";
+                    lblCheckin.Text = "Check-in: " + (_room.ThoiGianBatDau ?? DateTime.Now).ToString("dd/MM/yyyy HH:mm");
 
-            RefreshTotals();
-            EnsureStayTimer();
+                    RefreshTotals();
+                    EnsureStayTimer();
+                    initialized = true;
+                    perf.AddContext("BookingId", _bookingId);
+                }
+            }).ConfigureAwait(true);
+
+            if (!initialized)
+                BackRequested?.Invoke(this, EventArgs.Empty);
         }
 
         private void HourlyCheckoutForm_Disposed(object sender, EventArgs e)
         {
+            _pricingService.PricingChanged -= PricingService_PricingChanged;
             if (_stayTimer == null) return;
             _stayTimer.Stop();
             _stayTimer.Dispose();
             _stayTimer = null;
+        }
+
+        private sealed class HourlyCheckoutLoadData
+        {
+            public int BookingId { get; set; }
+            public List<BookingDAL.BookingExtraRecord> Extras { get; set; }
+            public decimal PaidAmount { get; set; }
+        }
+
+        private HourlyCheckoutLoadData LoadHourlyCheckoutData()
+        {
+            int bookingId = _bookingDal.EnsureBookingForRoom(_room, 1);
+            var extras = _bookingDal.GetBookingExtras(bookingId);
+            decimal paidAmount = _bookingDal.GetPaidAmountByBooking(bookingId);
+            return new HourlyCheckoutLoadData
+            {
+                BookingId = bookingId,
+                Extras = extras,
+                PaidAmount = paidAmount
+            };
+        }
+
+        private void PricingService_PricingChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(ReloadPricingSettings));
+                return;
+            }
+
+            ReloadPricingSettings();
+        }
+
+        private void ReloadPricingSettings()
+        {
+            _pricing = _pricingService.GetCurrentPricing();
+            RefreshTotals();
         }
 
         private void EnsureStayTimer()
@@ -444,6 +503,8 @@ namespace HotelManagement.Forms
             body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
             body.Controls.Add(CreateCardTitle("Thông tin lưu trú", null), 0, 0);
 
@@ -479,10 +540,6 @@ namespace HotelManagement.Forms
             stayGrid.Controls.Add(lblStayLabel, 0, 0);
             stayGrid.Controls.Add(lblStayHours, 1, 0);
 
-            string roomRateText = _room.LoaiPhongID == 1
-                ? "Giờ đầu 70.000đ - giờ sau 20.000đ"
-                : "Giờ đầu 120.000đ - giờ sau 30.000đ";
-
             var lblRateLabel = new Label
             {
                 Text = "Khung giá:",
@@ -491,19 +548,20 @@ namespace HotelManagement.Forms
                 Font = new Font("Segoe UI", 9.5F),
                 ForeColor = _textSecondary
             };
-            var lblRateValue = new Label
+            lblRateFrameInline = new Label
             {
-                Text = roomRateText,
-                AutoSize = false,
+                Text = string.Empty,
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0, 0, 0, 0),
-                Font = new Font("Segoe UI", 9.5F),
+                TextAlign = ContentAlignment.MiddleRight,
+                AutoSize = false,
+                AutoEllipsis = true,
                 ForeColor = _textPrimary,
-                TextAlign = ContentAlignment.MiddleRight
+                Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold)
             };
 
             stayGrid.Controls.Add(lblRateLabel, 0, 1);
-            stayGrid.Controls.Add(lblRateValue, 1, 1);
+            stayGrid.Controls.Add(lblRateFrameInline, 1, 1);
 
             body.Controls.Add(stayGrid, 0, 1);
             body.Controls.Add(CreateDivider(0, 8), 0, 2);
@@ -533,45 +591,23 @@ namespace HotelManagement.Forms
             drinkRows.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             drinkRows.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
-            drinkRows.Controls.Add(CreateDrinkRow("Nước ngọt", "20.000đ",
+            drinkRows.Controls.Add(CreateDrinkRow("Nước ngọt", ToMoneyCompact(_pricing.DrinkSoftPrice),
                 () => _pendingSoftDrinkCount,
                 v => { _pendingSoftDrinkCount = v; RefreshTotals(); },
                 out lblPendingDrink), 0, 0);
             drinkRows.Controls.Add(CreateDivider(0, 4), 0, 1);
 
-            drinkRows.Controls.Add(CreateDrinkRow("Nước suối", "10.000đ",
+            drinkRows.Controls.Add(CreateDrinkRow("Nước suối", ToMoneyCompact(_pricing.DrinkWaterPrice),
                 () => _pendingWaterBottleCount,
                 v => { _pendingWaterBottleCount = v; RefreshTotals(); },
                 out lblPendingWater), 0, 2);
             drinkRows.Controls.Add(CreateDivider(0, 4), 0, 3);
 
-            lblDrinkSubtotal = new Label
-            {
-                Text = "",
-                AutoSize = true,
-                ForeColor = _textPrimary,
-                Font = new Font("Segoe UI Semibold", 12.5F, FontStyle.Bold),
-                Dock = DockStyle.Top,
-                TextAlign = ContentAlignment.MiddleRight,
-                Margin = new Padding(0, 4, 0, 0)
-            };
-            drinkRows.Controls.Add(lblDrinkSubtotal, 0, 4);
+            // Hide drink subtotal line as requested.
+            lblDrinkSubtotal = null;
 
             body.Controls.Add(drinkRows, 0, 4);
-
-            body.Controls.Add(CreateDivider(0, 8), 0, 5);
-
-            var hint = new Label
-            {
-                Text = "Mẹo: Bấm nút để gọi thêm nước, bấm Thanh toán để kết thúc phòng.",
-                AutoSize = true,
-                ForeColor = _textSecondary,
-                Font = new Font("Segoe UI", 9F),
-                Margin = new Padding(0, 6, 0, 0)
-            };
-            body.Controls.Add(hint, 0, 6);
-
-            body.Controls.Add(new Panel { Height = 2, Dock = DockStyle.Top, Margin = new Padding(0) }, 0, 7);
+            body.Controls.Add(new Panel { Height = 2, Dock = DockStyle.Top, Margin = new Padding(0) }, 0, 5);
             card.Controls.Add(body);
             return card;
         }
@@ -606,7 +642,7 @@ namespace HotelManagement.Forms
 
             // Row 0
             rows.Controls.Add(CreateDrinkNameLabel("Nước ngọt"), 0, 0);
-            rows.Controls.Add(CreateDrinkPriceLabel("20.000đ"), 1, 0);
+            rows.Controls.Add(CreateDrinkPriceLabel(ToMoneyCompact(_pricing.DrinkSoftPrice)), 1, 0);
 
             lblSavedDrink = new Label
             {
@@ -643,7 +679,7 @@ namespace HotelManagement.Forms
 
             // Row 1
             rows.Controls.Add(CreateDrinkNameLabel("Nước suối"), 0, 1);
-            rows.Controls.Add(CreateDrinkPriceLabel("10.000đ"), 1, 1);
+            rows.Controls.Add(CreateDrinkPriceLabel(ToMoneyCompact(_pricing.DrinkWaterPrice)), 1, 1);
 
             lblSavedWater = new Label
             {
@@ -681,28 +717,8 @@ namespace HotelManagement.Forms
             body.Controls.Add(rows, 0, 1);
 
             // Subtotal
-            lblDrinkSubtotal = new Label
-            {
-                Text = "",
-                AutoSize = true,
-                ForeColor = _textPrimary,
-                Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold),
-                Dock = DockStyle.Top,
-                TextAlign = ContentAlignment.MiddleRight,
-                Margin = new Padding(0, 10, 0, 0)
-            };
-            body.Controls.Add(lblDrinkSubtotal, 0, 2);
-
-            // Hint
-            var hint = new Label
-            {
-                Text = "Mẹo: Bấm +/- để gọi thêm nước, bấm Thanh toán để kết thúc phòng.",
-                AutoSize = true,
-                ForeColor = _textSecondary,
-                Font = new Font("Segoe UI", 9.6F),
-                Margin = new Padding(0, 12, 0, 0)
-            };
-            body.Controls.Add(hint, 0, 3);
+            // Hide drink subtotal line as requested.
+            lblDrinkSubtotal = null;
 
             card.Controls.Add(body);
             return card;
@@ -720,9 +736,11 @@ namespace HotelManagement.Forms
                 Dock = DockStyle.Fill,
                 AutoSize = true,
                 ColumnCount = 1,
-                RowCount = 7
+                RowCount = 9
             };
             body.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
@@ -802,11 +820,22 @@ namespace HotelManagement.Forms
             grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42F));
 
             AddSummaryRow(grid, 0, "Tiền phòng:", out lblRoomChargeValue);
-            AddSummaryRow(grid, 1, "Tiền nước:", out lblDrinkChargeValue);
+            AddSummaryRow(grid, 1, "Nước:", out lblDrinkChargeValue);
+            AddSummaryRow(grid, 2, "Phụ thu:", out lblLateFeeValue);
             body.Controls.Add(grid, 0, 2);
 
+            lblSurchargeReasonValue = new Label
+            {
+                Text = "",
+                AutoSize = true,
+                ForeColor = _textSecondary,
+                Font = new Font("Segoe UI", 8.8F),
+                Margin = new Padding(0, 2, 0, 0)
+            };
+            body.Controls.Add(lblSurchargeReasonValue, 0, 3);
+
             var sep = CreateDivider(0, 10);
-            body.Controls.Add(sep, 0, 3);
+            body.Controls.Add(sep, 0, 4);
 
             var totalRow = new TableLayoutPanel
             {
@@ -838,7 +867,38 @@ namespace HotelManagement.Forms
             };
             totalRow.Controls.Add(totalLabel, 0, 0);
             totalRow.Controls.Add(lblTotalChargeValue, 1, 0);
-            body.Controls.Add(totalRow, 0, 4);
+            body.Controls.Add(totalRow, 0, 5);
+
+            var collectedRow = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                AutoSize = true,
+                ColumnCount = 2,
+                Margin = new Padding(0, 4, 0, 0)
+            };
+            collectedRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 58F));
+            collectedRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42F));
+            var collectedLabel = new Label
+            {
+                Text = "Đã thu:",
+                AutoSize = true,
+                ForeColor = _textSecondary,
+                Font = new Font("Segoe UI", 9.5F),
+                Margin = new Padding(0)
+            };
+            lblCollectedValue = new Label
+            {
+                Text = "",
+                AutoSize = true,
+                ForeColor = _textPrimary,
+                Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleRight,
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0)
+            };
+            collectedRow.Controls.Add(collectedLabel, 0, 0);
+            collectedRow.Controls.Add(lblCollectedValue, 1, 0);
+            body.Controls.Add(collectedRow, 0, 6);
 
             var spacer = new Panel
             {
@@ -854,7 +914,7 @@ namespace HotelManagement.Forms
                     e.Graphics.DrawLine(pen, 0, 0, spacer.Width, 0);
                 }
             };
-            body.Controls.Add(spacer, 0, 5);
+            body.Controls.Add(spacer, 0, 7);
 
             var actionWrap = new Panel
             {
@@ -892,9 +952,7 @@ namespace HotelManagement.Forms
             actionRow.Controls.Add(btnSave, 1, 0);
             actionRow.Controls.Add(btnPay, 2, 0);
             actionWrap.Controls.Add(actionRow);
-            body.Controls.Add(actionWrap, 0, 6);
-
-            lblCollectedValue = new Label();
+            body.Controls.Add(actionWrap, 0, 8);
 
             card.Controls.Add(body);
             return card;
@@ -903,58 +961,141 @@ namespace HotelManagement.Forms
         // =========================
         // Actions
         // =========================
-        private void BtnSave_Click(object sender, EventArgs e)
+        private async void BtnSave_Click(object sender, EventArgs e)
         {
-            if (_pendingSoftDrinkCount > 0 || _pendingWaterBottleCount > 0)
+            if (btnSave != null) btnSave.Enabled = false;
+            if (btnPay != null) btnPay.Enabled = false;
+            UseWaitCursor = true;
+            try
             {
-                _savedSoftDrinkCount += _pendingSoftDrinkCount;
-                _savedWaterBottleCount += _pendingWaterBottleCount;
+                await UiExceptionHandler.RunAsync(this, "HourlyCheckout.SaveProgress", async () =>
+                {
+                    using (var perf = PerformanceTracker.Measure("HourlyCheckout.SaveProgress", new System.Collections.Generic.Dictionary<string, object>
+                    {
+                        ["BookingId"] = _bookingId
+                    }))
+                    {
+                        if (_bookingId <= 0)
+                            throw new DomainException("Phiên đặt phòng chưa được khởi tạo. Vui lòng tải lại màn hình.");
 
-                _pendingSoftDrinkCount = 0;
-                _pendingWaterBottleCount = 0;
+                        if (_pendingSoftDrinkCount > 0 || _pendingWaterBottleCount > 0)
+                        {
+                            _savedSoftDrinkCount += _pendingSoftDrinkCount;
+                            _savedWaterBottleCount += _pendingWaterBottleCount;
 
-                string newGhiChu = ApplyBillingTags(_room.GhiChu, _savedSoftDrinkCount, _savedWaterBottleCount, _savedCollectedAmount);
-                _roomDal.UpdateTrangThaiFull(_room.PhongID, _room.TrangThai, newGhiChu, _room.ThoiGianBatDau, _room.KieuThue, _room.TenKhachHienThi);
-                _room.GhiChu = newGhiChu;
+                            _pendingSoftDrinkCount = 0;
+                            _pendingWaterBottleCount = 0;
+                        }
 
-                Saved?.Invoke(this, EventArgs.Empty);
-                RefreshTotals();
+                        DateTime startTime = _room.ThoiGianBatDau ?? DateTime.Now;
+                        var request = new CheckoutService.SaveHourlyRequest
+                        {
+                            BookingId = _bookingId,
+                            RoomId = _room.PhongID,
+                            StartTime = startTime,
+                            GuestDisplayName = _room.TenKhachHienThi,
+                            SoftDrinkQty = _savedSoftDrinkCount,
+                            WaterBottleQty = _savedWaterBottleCount,
+                            SoftDrinkUnitPrice = _pricing.DrinkSoftPrice,
+                            WaterBottleUnitPrice = _pricing.DrinkWaterPrice
+                        };
+                        await Task.Run(() => _checkoutService.SaveHourly(request)).ConfigureAwait(true);
+                        LoadExtrasFromDatabase();
+
+                        _room.TrangThai = 1;
+                        _room.KieuThue = 3;
+                        if (!_room.ThoiGianBatDau.HasValue) _room.ThoiGianBatDau = startTime;
+
+                        Saved?.Invoke(this, EventArgs.Empty);
+                        RefreshTotals();
+                        BackRequested?.Invoke(this, EventArgs.Empty);
+                        perf.AddContext("SoftDrinkQty", _savedSoftDrinkCount);
+                        perf.AddContext("WaterQty", _savedWaterBottleCount);
+                    }
+                }).ConfigureAwait(true);
             }
-
-            BackRequested?.Invoke(this, EventArgs.Empty);
+            finally
+            {
+                UseWaitCursor = false;
+                if (btnSave != null) btnSave.Enabled = true;
+                if (btnPay != null) btnPay.Enabled = true;
+            }
         }
 
-        private void BtnPay_Click(object sender, EventArgs e)
+        private async void BtnPay_Click(object sender, EventArgs e)
         {
-            DateTime start = _room.ThoiGianBatDau ?? DateTime.Now;
-            if (start > DateTime.Now) start = DateTime.Now;
+            if (btnSave != null) btnSave.Enabled = false;
+            if (btnPay != null) btnPay.Enabled = false;
+            UseWaitCursor = true;
+            try
+            {
+                await UiExceptionHandler.RunAsync(this, "HourlyCheckout.Pay", async () =>
+                {
+                    using (var perf = PerformanceTracker.Measure("HourlyCheckout.Pay", new System.Collections.Generic.Dictionary<string, object>
+                    {
+                        ["BookingId"] = _bookingId
+                    }))
+                    {
+                        if (_bookingId <= 0)
+                            throw new DomainException("Phiên đặt phòng chưa được khởi tạo. Vui lòng tải lại màn hình.");
 
-            int stayedHours = Math.Max(1, (int)Math.Ceiling((DateTime.Now - start).TotalHours));
+                        DateTime start = _room.ThoiGianBatDau ?? DateTime.Now;
+                        if (start > DateTime.Now) start = DateTime.Now;
+                        DateTime now = DateTime.Now;
 
-            int finalDrink = _savedSoftDrinkCount + _pendingSoftDrinkCount;
-            int finalWater = _savedWaterBottleCount + _pendingWaterBottleCount;
+                        _savedCollectedAmount = await Task.Run(() => _bookingDal.GetPaidAmountByBooking(_bookingId)).ConfigureAwait(true);
 
-            decimal totalCharge = CalculateRoomCharge(stayedHours) + finalDrink * GIA_NUOC_NGOT + finalWater * GIA_NUOC_SUOI;
-            decimal dueAmount = Math.Max(0m, totalCharge - _savedCollectedAmount);
+                        int finalDrink = _savedSoftDrinkCount + _pendingSoftDrinkCount;
+                        int finalWater = _savedWaterBottleCount + _pendingWaterBottleCount;
 
-            string message = "Xác nhận thanh toán phòng " + _room.MaPhong +
-                             "\nTổng tiền: " + ToMoney(totalCharge) +
-                             "\nCần thu: " + ToMoney(dueAmount);
+                        decimal roomCharge = _pricingService.CalculateHourlyCharge(start, now, _room.LoaiPhongID);
+                        decimal totalCharge = roomCharge + finalDrink * _pricing.DrinkSoftPrice + finalWater * _pricing.DrinkWaterPrice;
+                        decimal dueAmount = Math.Max(0m, totalCharge - _savedCollectedAmount);
 
-            var confirm = MessageBox.Show(message, "Xác nhận thanh toán", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (confirm != DialogResult.Yes) return;
+                        string message = "Xác nhận thanh toán phòng " + _room.MaPhong +
+                                         "\nTổng tiền: " + ToMoney(totalCharge) +
+                                         "\nCần thu: " + ToMoney(dueAmount);
 
-            string paidGhiChu = ApplyBillingTags(_room.GhiChu, finalDrink, finalWater, totalCharge);
-            _roomDal.UpdateTrangThaiFull(_room.PhongID, 2, paidGhiChu, null, null, null);
+                        var confirm = MessageBox.Show(message, "Xác nhận thanh toán", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (confirm != DialogResult.Yes) return;
 
-            _room.GhiChu = paidGhiChu;
-            _room.TrangThai = 2;
-            _room.ThoiGianBatDau = null;
-            _room.KieuThue = null;
-            _room.TenKhachHienThi = null;
+                        var request = new CheckoutService.PayHourlyRequest
+                        {
+                            BookingId = _bookingId,
+                            RoomId = _room.PhongID,
+                            PaidAt = now,
+                            SoftDrinkQty = finalDrink,
+                            WaterBottleQty = finalWater,
+                            SoftDrinkUnitPrice = _pricing.DrinkSoftPrice,
+                            WaterBottleUnitPrice = _pricing.DrinkWaterPrice,
+                            DueAmount = dueAmount
+                        };
+                        var result = await Task.Run(() => _checkoutService.PayHourly(request)).ConfigureAwait(true);
 
-            PaymentCompleted?.Invoke(this, EventArgs.Empty);
-            BackRequested?.Invoke(this, EventArgs.Empty);
+                        _savedSoftDrinkCount = finalDrink;
+                        _savedWaterBottleCount = finalWater;
+                        _pendingSoftDrinkCount = 0;
+                        _pendingWaterBottleCount = 0;
+                        _savedCollectedAmount = result.PaidAmountAfterOperation;
+
+                        _room.TrangThai = 2;
+                        _room.ThoiGianBatDau = null;
+                        _room.KieuThue = null;
+                        _room.TenKhachHienThi = null;
+
+                        PaymentCompleted?.Invoke(this, EventArgs.Empty);
+                        BackRequested?.Invoke(this, EventArgs.Empty);
+                        perf.AddContext("TotalCharge", totalCharge);
+                        perf.AddContext("DueAmount", dueAmount);
+                    }
+                }).ConfigureAwait(true);
+            }
+            finally
+            {
+                UseWaitCursor = false;
+                if (btnSave != null) btnSave.Enabled = true;
+                if (btnPay != null) btnPay.Enabled = true;
+            }
         }
 
         private void HandleCancelRequest()
@@ -979,6 +1120,38 @@ namespace HotelManagement.Forms
         // =========================
         // Totals / Refresh
         // =========================
+        private void LoadExtrasFromDatabase()
+        {
+            using (var perf = PerformanceTracker.Measure("HourlyCheckout.LoadExtras", new System.Collections.Generic.Dictionary<string, object>
+            {
+                ["BookingId"] = _bookingId
+            }))
+            {
+                var extras = _bookingDal.GetBookingExtras(_bookingId);
+                ApplySavedExtras(extras);
+
+                perf.AddContext("SoftDrinkQty", _savedSoftDrinkCount);
+                perf.AddContext("WaterQty", _savedWaterBottleCount);
+            }
+        }
+
+        private void ApplySavedExtras(IEnumerable<BookingDAL.BookingExtraRecord> extras)
+        {
+            _savedSoftDrinkCount = 0;
+            _savedWaterBottleCount = 0;
+            _savedDrinkCharge = 0m;
+            if (extras == null) return;
+
+            foreach (var line in extras)
+            {
+                if (line == null || string.IsNullOrWhiteSpace(line.ItemCode)) continue;
+                string code = line.ItemCode.Trim().ToUpperInvariant();
+                if (code == "NN") _savedSoftDrinkCount = Math.Max(0, line.Qty);
+                else if (code == "NS") _savedWaterBottleCount = Math.Max(0, line.Qty);
+                _savedDrinkCharge += Math.Max(0m, line.Amount);
+            }
+        }
+
         private void RefreshTotals()
         {
             DateTime start = _room.ThoiGianBatDau ?? DateTime.Now;
@@ -987,7 +1160,6 @@ namespace HotelManagement.Forms
             TimeSpan elapsed = DateTime.Now - start;
             if (elapsed < TimeSpan.Zero) elapsed = TimeSpan.Zero;
 
-            int stayedHours = Math.Max(1, (int)Math.Ceiling(elapsed.TotalHours));
             if (lblStartTime != null) lblStartTime.Text = start.ToString("dd/MM/yyyy HH:mm");
             if (lblStayHours != null) lblStayHours.Text = ToDurationText(elapsed);
 
@@ -997,31 +1169,35 @@ namespace HotelManagement.Forms
             if (lblPendingDrink != null) lblPendingDrink.Text = (_savedSoftDrinkCount + _pendingSoftDrinkCount).ToString();
             if (lblPendingWater != null) lblPendingWater.Text = (_savedWaterBottleCount + _pendingWaterBottleCount).ToString();
 
-            decimal roomCharge = CalculateRoomCharge(stayedHours);
-            decimal drinkCharge = (_savedSoftDrinkCount + _pendingSoftDrinkCount) * GIA_NUOC_NGOT
-                                + (_savedWaterBottleCount + _pendingWaterBottleCount) * GIA_NUOC_SUOI;
-            decimal total = roomCharge + drinkCharge;
+            decimal hour1 = _room.LoaiPhongID == 2 ? _pricing.HourlyDoubleHour1 : _pricing.HourlySingleHour1;
+            decimal nextHour = _room.LoaiPhongID == 2 ? _pricing.HourlyDoubleNextHour : _pricing.HourlySingleNextHour;
+            if (lblRateFrameInline != null)
+                lblRateFrameInline.Text = "Giờ đầu " + ToMoneyCompact(hour1) + " | Giờ sau " + ToMoneyCompact(nextHour);
+
+            decimal roomCharge = _pricingService.CalculateHourlyCharge(start, DateTime.Now, _room.LoaiPhongID);
+            decimal pendingDrinkCharge = _pendingSoftDrinkCount * _pricing.DrinkSoftPrice
+                                       + _pendingWaterBottleCount * _pricing.DrinkWaterPrice;
+            decimal drinkCharge = _savedDrinkCharge + pendingDrinkCharge;
+            decimal lateFeeCharge = 0m;
+            decimal total = roomCharge + drinkCharge + lateFeeCharge;
             decimal due = Math.Max(0m, total - _savedCollectedAmount);
 
             if (lblRoomChargeValue != null) lblRoomChargeValue.Text = ToMoneyCompact(roomCharge);
             if (lblDrinkChargeValue != null) lblDrinkChargeValue.Text = ToMoneyCompact(drinkCharge);
+            if (lblLateFeeValue != null) lblLateFeeValue.Text = ToMoneyCompact(lateFeeCharge);
             if (lblTotalChargeValue != null) lblTotalChargeValue.Text = ToMoneyCompact(total);
             if (lblCollectedValue != null) lblCollectedValue.Text = ToMoneyCompact(_savedCollectedAmount);
             if (lblDueValue != null) lblDueValue.Text = ToMoney(due);
-
-            decimal pendingSubtotal = _pendingSoftDrinkCount * GIA_NUOC_NGOT + _pendingWaterBottleCount * GIA_NUOC_SUOI;
-            if (lblDrinkSubtotal != null) lblDrinkSubtotal.Text = pendingSubtotal > 0 ? ("= " + ToMoneyCompact(pendingSubtotal)) : "= 0đ";
+            if (lblSurchargeReasonValue != null)
+                lblSurchargeReasonValue.Text = BuildLateFeeReasonText(lateFeeCharge);
 
             if (btnPay != null) btnPay.Text = "Thanh toán " + ToMoneyCompact(due);
         }
 
-        private decimal CalculateRoomCharge(int stayedHours)
+        private static string BuildLateFeeReasonText(decimal lateFeeAmount)
         {
-            decimal first = _room.LoaiPhongID == 1 ? GIA_GIO_DON_DAU : GIA_GIO_DOI_DAU;
-            decimal next = _room.LoaiPhongID == 1 ? GIA_GIO_DON_SAU : GIA_GIO_DOI_SAU;
-
-            if (stayedHours <= 1) return first;
-            return first + (stayedHours - 1) * next;
+            if (lateFeeAmount <= 0m) return string.Empty;
+            return "Lý do phụ thu: Trả trễ (+" + ToMoneyCompact(lateFeeAmount) + ")";
         }
 
         // =========================
@@ -1393,73 +1569,6 @@ namespace HotelManagement.Forms
             path.AddArc(bounds.X, bounds.Bottom - d, d, d, 90, 90);
             path.CloseFigure();
             return path;
-        }
-
-        // =========================
-        // Billing tags
-        // =========================
-        private static string ApplyBillingTags(string original, int drinkCount, int waterCount, decimal collectedAmount)
-        {
-            string text = original ?? string.Empty;
-            text = UpsertTag(text, "NN", drinkCount.ToString());
-            text = UpsertTag(text, "NS", waterCount.ToString());
-            text = UpsertTag(text, "DT", ((int)Math.Round(collectedAmount, MidpointRounding.AwayFromZero)).ToString());
-            return text;
-        }
-
-        private static int GetIntTag(string text, string key, int defaultValue)
-        {
-            if (string.IsNullOrWhiteSpace(text)) return defaultValue;
-            Match m = Regex.Match(text, @"\b" + Regex.Escape(key) + @"\s*=\s*(\d+)", RegexOptions.IgnoreCase);
-            if (m.Success && int.TryParse(m.Groups[1].Value, out int value))
-                return value;
-            return defaultValue;
-        }
-
-        private static decimal GetDecimalTag(string text, string key, decimal defaultValue)
-        {
-            if (string.IsNullOrWhiteSpace(text)) return defaultValue;
-            Match m = Regex.Match(text, @"\b" + Regex.Escape(key) + @"\s*=\s*(\d+)", RegexOptions.IgnoreCase);
-            if (m.Success && decimal.TryParse(m.Groups[1].Value, out decimal value))
-                return value;
-            return defaultValue;
-        }
-
-        private static string UpsertTag(string input, string key, string value)
-        {
-            var segments = (input ?? string.Empty)
-                .Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => s.Trim())
-                .Where(s => s.Length > 0)
-                .ToList();
-
-            var updated = new List<string>();
-            bool replaced = false;
-
-            foreach (string segment in segments)
-            {
-                int idx = segment.IndexOf('=');
-                if (idx > 0)
-                {
-                    string tagKey = segment.Substring(0, idx).Trim();
-                    if (tagKey.Equals(key, StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (!replaced)
-                        {
-                            updated.Add(key + "=" + value);
-                            replaced = true;
-                        }
-                        continue;
-                    }
-                }
-
-                updated.Add(segment);
-            }
-
-            if (!replaced)
-                updated.Add(key + "=" + value);
-
-            return string.Join(" | ", updated);
         }
 
         private static string ToMoney(decimal amount)

@@ -33,7 +33,6 @@ E:\Project\Hotel-Management\Hotel Management\bin\Debug\System.Diagnostics.Diagno
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\System.IO.Pipelines.dll
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\System.Memory.dll
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\System.Numerics.Vectors.dll
-E:\Project\Hotel-Management\Hotel Management\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\System.Threading.Tasks.Extensions.dll
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\ZstdSharp.dll
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\Google.Protobuf.pdb
@@ -51,7 +50,6 @@ E:\Project\Hotel-Management\Hotel Management\bin\Debug\System.Diagnostics.Diagno
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\System.IO.Pipelines.xml
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\System.Memory.xml
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\System.Numerics.Vectors.xml
-E:\Project\Hotel-Management\Hotel Management\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\System.Threading.Tasks.Extensions.xml
 E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel Ma.07462F3B.Up2Date
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\EntityFramework.dll
@@ -70,3 +68,6 @@ E:\Project\Hotel-Management\Hotel Management\bin\Debug\Zstandard.Net.dll
 E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel_Management.Migrations.init.resources
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\diaban.json
 E:\Project\Hotel-Management\Hotel Management\bin\Debug\Address\dvhc_optimized.json
+E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel_Management.Migrations.TenMigrationMoi.resources
+E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel_Management.Migrations.UpdateRoomLayoutByFloor.resources
+E:\Project\Hotel-Management\Hotel Management\obj\Debug\Hotel_Management.Migrations.RemoveRoomGhiChu.resources

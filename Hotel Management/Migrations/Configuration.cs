@@ -10,7 +10,10 @@
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            // Allow EF6 to apply additive schema changes at startup
+            // (new tables/columns) when code model moves ahead of explicit migrations.
+            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = false;
         }
 
         protected override void Seed(HotelManagement.Data.HotelDbContext context)
@@ -18,7 +21,8 @@
             SeedUsers(context);
             SeedRooms(context);
             SeedSampleCustomers(context);
-            SeedSampleBookingsAndInvoices(context);
+            // Booking sample data should be created manually from UI seed tools when needed.
+            // Keep default Code First startup clean.
         }
 
         private static void SeedUsers(HotelManagement.Data.HotelDbContext context)
@@ -34,31 +38,42 @@
 
         private static void SeedRooms(HotelManagement.Data.HotelDbContext context)
         {
-            var roomsToAdd = new List<Room>();
-
-            for (int i = 1; i <= 5; i++)
+            var targetRooms = new[]
             {
-                string ma = "10" + i;
-                if (!context.Rooms.Any(r => r.MaPhong == ma))
-                    roomsToAdd.Add(new Room { MaPhong = ma, LoaiPhongID = 1, Tang = 1, TrangThai = 0, GhiChu = "" });
+                new Room { MaPhong = "01",  LoaiPhongID = 1, Tang = 0 },
+                new Room { MaPhong = "02",  LoaiPhongID = 1, Tang = 0 },
+                new Room { MaPhong = "03",  LoaiPhongID = 1, Tang = 0 },
+                new Room { MaPhong = "04",  LoaiPhongID = 2, Tang = 0 },
+                new Room { MaPhong = "101", LoaiPhongID = 1, Tang = 1 },
+                new Room { MaPhong = "102", LoaiPhongID = 1, Tang = 1 },
+                new Room { MaPhong = "103", LoaiPhongID = 1, Tang = 1 },
+                new Room { MaPhong = "104", LoaiPhongID = 1, Tang = 1 },
+                new Room { MaPhong = "105", LoaiPhongID = 1, Tang = 1 },
+                new Room { MaPhong = "201", LoaiPhongID = 2, Tang = 2 },
+                new Room { MaPhong = "202", LoaiPhongID = 1, Tang = 2 }
+            };
+
+            var existing = context.Rooms.ToList();
+
+            foreach (var target in targetRooms)
+            {
+                var room = existing.FirstOrDefault(r => string.Equals(r.MaPhong, target.MaPhong, StringComparison.OrdinalIgnoreCase));
+                if (room == null)
+                {
+                    context.Rooms.Add(new Room
+                    {
+                        MaPhong = target.MaPhong,
+                        LoaiPhongID = target.LoaiPhongID,
+                        Tang = target.Tang,
+                        TrangThai = 0
+                    });
+                    continue;
+                }
+
+                room.LoaiPhongID = target.LoaiPhongID;
+                room.Tang = target.Tang;
             }
 
-            for (int i = 1; i <= 5; i++)
-            {
-                string ma = "20" + i;
-                if (!context.Rooms.Any(r => r.MaPhong == ma))
-                    roomsToAdd.Add(new Room { MaPhong = ma, LoaiPhongID = 2, Tang = 2, TrangThai = 0, GhiChu = "" });
-            }
-
-            for (int i = 1; i <= 5; i++)
-            {
-                string ma = "30" + i;
-                if (!context.Rooms.Any(r => r.MaPhong == ma))
-                    roomsToAdd.Add(new Room { MaPhong = ma, LoaiPhongID = 2, Tang = 3, TrangThai = 0, GhiChu = "" });
-            }
-
-            if (roomsToAdd.Count == 0) return;
-            context.Rooms.AddRange(roomsToAdd);
             context.SaveChanges();
         }
 
@@ -66,16 +81,16 @@
         {
             var samples = new[]
             {
-                new Customer { HoTen = "Nguyen Van An", CCCD = "990000000001", DienThoai = "0900000001", DiaChi = "Quan 1, TP.HCM" },
-                new Customer { HoTen = "Tran Thi Bich", CCCD = "990000000002", DienThoai = "0900000002", DiaChi = "Quan 3, TP.HCM" },
-                new Customer { HoTen = "Le Minh Chau", CCCD = "990000000003", DienThoai = "0900000003", DiaChi = "Hai Chau, Da Nang" },
-                new Customer { HoTen = "Pham Quoc Dung", CCCD = "990000000004", DienThoai = "0900000004", DiaChi = "Ninh Kieu, Can Tho" },
-                new Customer { HoTen = "Doan Thi Ha", CCCD = "990000000005", DienThoai = "0900000005", DiaChi = "Ba Dinh, Ha Noi" },
-                new Customer { HoTen = "Vo Thanh Huy", CCCD = "990000000006", DienThoai = "0900000006", DiaChi = "Go Vap, TP.HCM" },
-                new Customer { HoTen = "Bui Ngoc Kha", CCCD = "990000000007", DienThoai = "0900000007", DiaChi = "Bien Hoa, Dong Nai" },
-                new Customer { HoTen = "Dang Gia Linh", CCCD = "990000000008", DienThoai = "0900000008", DiaChi = "Da Lat, Lam Dong" },
-                new Customer { HoTen = "Hoang Anh Minh", CCCD = "990000000009", DienThoai = "0900000009", DiaChi = "Thu Duc, TP.HCM" },
-                new Customer { HoTen = "Nguyen Thu Nhi", CCCD = "990000000010", DienThoai = "0900000010", DiaChi = "Quy Nhon, Binh Dinh" }
+                new Customer { HoTen = "Khách mẫu 01", CCCD = "990000000001", DienThoai = "", DiaChi = "" },
+                new Customer { HoTen = "Khách mẫu 02", CCCD = "990000000002", DienThoai = "", DiaChi = "" },
+                new Customer { HoTen = "Khách mẫu 03", CCCD = "990000000003", DienThoai = "", DiaChi = "" },
+                new Customer { HoTen = "Khách mẫu 04", CCCD = "990000000004", DienThoai = "", DiaChi = "" },
+                new Customer { HoTen = "Khách mẫu 05", CCCD = "990000000005", DienThoai = "", DiaChi = "" },
+                new Customer { HoTen = "Khách mẫu 06", CCCD = "990000000006", DienThoai = "", DiaChi = "" },
+                new Customer { HoTen = "Khách mẫu 07", CCCD = "990000000007", DienThoai = "", DiaChi = "" },
+                new Customer { HoTen = "Khách mẫu 08", CCCD = "990000000008", DienThoai = "", DiaChi = "" },
+                new Customer { HoTen = "Khách mẫu 09", CCCD = "990000000009", DienThoai = "", DiaChi = "" },
+                new Customer { HoTen = "Khách mẫu 10", CCCD = "990000000010", DienThoai = "", DiaChi = "" }
             };
 
             foreach (var sample in samples)
@@ -167,8 +182,8 @@
                         ? Math.Max(1, (int)Math.Ceiling((checkoutReal.Value - checkin).TotalHours))
                         : Math.Max(1, (int)Math.Ceiling((DateTime.Now - checkin).TotalHours));
 
-                    decimal firstHour = room.LoaiPhongID == 1 ? 70000m : 120000m;
-                    decimal nextHour = room.LoaiPhongID == 1 ? 20000m : 30000m;
+                    decimal firstHour = room.LoaiPhongID == 1 ? 60000m : 60000m;
+                    decimal nextHour = room.LoaiPhongID == 1 ? 20000m : 20000m;
                     decimal roomCharge = stayedHours <= 1 ? firstHour : firstHour + (stayedHours - 1) * nextHour;
                     decimal drinkCharge = random.Next(0, 4) * 10000m;
                     decimal total = roomCharge + drinkCharge;

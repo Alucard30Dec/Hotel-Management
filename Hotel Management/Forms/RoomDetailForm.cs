@@ -5,8 +5,10 @@ using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HotelManagement.Data;
 using HotelManagement.Models;
@@ -17,9 +19,10 @@ namespace HotelManagement.Forms
     public partial class RoomDetailForm : Form
     {
         private readonly Room _room;
-        private readonly RoomDAL _roomDal = new RoomDAL();
         private readonly BookingDAL _bookingDal = new BookingDAL();
         private readonly bool _isEditMode;
+        private readonly bool _deferCheckinCommit;
+        private readonly bool _isHourlyMode;
         private readonly string _maXaCu;
         private readonly GeoDataLoader _geoDataLoader;
 
@@ -27,6 +30,9 @@ namespace HotelManagement.Forms
         public event EventHandler Saved;
 
         private bool _layoutApplied = false;
+        private Panel _staySectionHeader;
+        private Panel _staySectionBody;
+        private BookingDAL.StayInfoRecord _loadedStayInfo;
         private readonly AutoCompleteStringCollection _priceSuggestionSource = new AutoCompleteStringCollection();
         private Timer _nhanPhongTimer;
         private bool _isGiaPhongFormatting;
@@ -36,21 +42,44 @@ namespace HotelManagement.Forms
         private Tinh _legacyTinh;
         private Huyen _legacyHuyen;
         private Xa _legacyXa;
-        private Panel _huyenCellPanel;
+        private Panel _diaBanOldHeaderPanel;
+        private Panel _diaBanNewHeaderPanel;
+        private Panel _diaBanOldTinhCellPanel;
+        private Panel _diaBanOldHuyenCellPanel;
+        private Panel _diaBanOldXaCellPanel;
+        private Panel _diaBanNewTinhCellPanel;
+        private Panel _diaBanNewXaCellPanel;
+        private Panel _diaBanNewDiaChiCellPanel;
+        private Label _diaBanOldHeaderLabel;
+        private Label _diaBanNewHeaderLabel;
+        private Label _lblTinhThanhCu;
+        private Label _lblHuyenCu;
+        private Label _lblPhuongXaCu;
+        private ComboBox _cboTinhThanhCu;
+        private ComboBox _cboHuyenCu;
+        private ComboBox _cboPhuongXaCu;
         private readonly Dictionary<ComboBox, List<object>> _comboOptionCache = new Dictionary<ComboBox, List<object>>();
         private readonly Dictionary<ComboBox, object> _comboBestMatchCache = new Dictionary<ComboBox, object>();
+        private readonly Dictionary<ComboBox, Timer> _comboFilterDebounceTimers = new Dictionary<ComboBox, Timer>();
+        private IReadOnlyDictionary<string, GeoDataLoader.OldNewGeoMapping> _oldToNewXaMap =
+            new Dictionary<string, GeoDataLoader.OldNewGeoMapping>(StringComparer.OrdinalIgnoreCase);
+        private bool _isLegacyGeoBound;
         private const int SuggestMaxVisibleItems = 10;
+        private const int ComboFilterDebounceMs = 120;
+        private const string GuestStorageSeparator = " - ";
 
         // Colors
         private readonly Color clrHeaderBg = Color.FromArgb(227, 242, 253); 
         private readonly Color clrHeaderText = Color.FromArgb(25, 118, 210); 
         private readonly Color clrPrimary = Color.FromArgb(33, 150, 243);    
 
-        public RoomDetailForm(Room room, bool isEditMode = false, string maXaCu = null, string diaBanJsonPath = @"Address\dvhc_optimized.json")
+        public RoomDetailForm(Room room, bool isEditMode = false, string maXaCu = null, string diaBanJsonPath = @"Address\dvhc_optimized.json", bool deferCheckinCommit = false)
         {
             if (room == null) throw new ArgumentNullException(nameof(room));
             _room = room;
             _isEditMode = isEditMode;
+            _deferCheckinCommit = deferCheckinCommit;
+            _isHourlyMode = room.KieuThue.HasValue && room.KieuThue.Value == 3;
             _maXaCu = string.IsNullOrWhiteSpace(maXaCu) ? null : maXaCu.Trim();
             var finalDiaBanPath = string.IsNullOrWhiteSpace(diaBanJsonPath) ? @"Address\dvhc_optimized.json" : diaBanJsonPath;
             _geoDataLoader = new GeoDataLoader(finalDiaBanPath);
@@ -68,14 +97,8 @@ namespace HotelManagement.Forms
             btnNhanPhong.Click -= btnNhanPhong_Click;
             btnNhanPhong.Click += btnNhanPhong_Click;
 
-            btnThemKhach.Click -= btnThemKhach_Click;
-            btnThemKhach.Click += btnThemKhach_Click;
-
             btnLamMoi.Click -= btnLamMoi_Click;
             btnLamMoi.Click += btnLamMoi_Click;
-
-            btnQuetMa.Click -= btnQuetMa_Click;
-            btnQuetMa.Click += btnQuetMa_Click;
 
             txtGiaPhong.KeyPress -= txtGiaPhong_KeyPress;
             txtGiaPhong.KeyPress += txtGiaPhong_KeyPress;
@@ -138,49 +161,37 @@ namespace HotelManagement.Forms
             rdoDiaBanCu.CheckedChanged += DiaBanLoai_CheckedChanged;
         }
 
-        private void RoomDetailForm_Load(object sender, EventArgs e)
+        private async void RoomDetailForm_Load(object sender, EventArgs e)
         {
-            lblTitle.Text = "Nhận phòng nhanh";
-            lblRoomText.Text = $"{_room.MaPhong} • {(_room.LoaiPhongID == 1 ? "Phòng Đơn" : _room.LoaiPhongID == 2 ? "Phòng Đôi" : "Phòng")}, Tầng {_room.Tang}";
-            
-            InitCombos();
+            await Task.Yield();
+            using (var perf = PerformanceTracker.Measure("RoomDetail.Load", new Dictionary<string, object>
+            {
+                ["RoomId"] = _room.PhongID
+            }))
+            {
+                lblTitle.Text = "Nhận phòng nhanh";
+                btnNhanPhong.Text = "Lưu";
+                lblRoomText.Text = $"{_room.MaPhong} • {(_room.LoaiPhongID == 1 ? "Phòng Đơn" : _room.LoaiPhongID == 2 ? "Phòng Đôi" : "Phòng")}, Tầng {_room.Tang}";
 
-            try
-            {
-                LoadGeoDataAndBindInitial();
-            }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show("Không tìm thấy file địa bàn.\n\n" + ex.Message, "Thiếu dữ liệu địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            catch (JsonException ex)
-            {
-                MessageBox.Show("Không thể đọc dữ liệu địa bàn.\n\n" + ex.Message, "Lỗi dữ liệu địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Không thể tải dữ liệu địa bàn.\n\n" + ex.Message, "Lỗi địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                InitCombos();
 
-            try
-            {
-                BindRoomInfo();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Không thể tải thông tin phòng.\n\n" + ex.Message, "Lỗi dữ liệu phòng", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                try
+                {
+                    BindRoomInfo();
+                }
+                catch (Exception ex)
+                {
+                    ShowFriendlyError("RoomDetail.BindRoomInfo", "Không thể tải thông tin phòng. Vui lòng thử lại.", ex, "Lỗi dữ liệu phòng");
+                    return;
+                }
 
-            SetNhanPhongNow();
-            StartNhanPhongClock();
-            LoadStateFromGhiChu(_room.GhiChu);
+                SetNhanPhongNow();
+                StartNhanPhongClock();
+                BeginInvoke(new Action(LoadStayInfoState));
 
-            if (!string.IsNullOrWhiteSpace(_room.TenKhachHienThi) && string.IsNullOrWhiteSpace(txtHoTen.Text))
-                txtHoTen.Text = _room.TenKhachHienThi;
+                if (!string.IsNullOrWhiteSpace(_room.TenKhachHienThi) && string.IsNullOrWhiteSpace(txtHoTen.Text))
+                    txtHoTen.Text = _room.TenKhachHienThi;
+            }
         }
 
         private void ApplyResponsiveLayout()
@@ -264,15 +275,17 @@ namespace HotelManagement.Forms
             innerContent.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
 
             // Section 1: Luu Tru (Using IconHelper)
-            var pnlLuuTruHeader = CreateSectionHeader("Thông tin lưu trú", IconHelper.CreateHomeIcon()); 
-            var pnlLuuTruBody = new Panel { Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(5) };
-            BuildLuuTruLayout(pnlLuuTruBody);
+            _staySectionHeader = CreateSectionHeader("Thông tin lưu trú", IconHelper.CreateHomeIcon());
+            _staySectionBody = new Panel { Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(5) };
+            BuildLuuTruLayout(_staySectionBody);
+            _staySectionHeader.Visible = !_isHourlyMode;
+            _staySectionBody.Visible = !_isHourlyMode;
 
             // Section 2: Thong tin khach + danh sach khach (layout theo 2 cot)
             var pnlKhachSection = BuildKhachSectionLayout();
 
-            innerContent.Controls.Add(pnlLuuTruHeader, 0, 0);
-            innerContent.Controls.Add(pnlLuuTruBody, 0, 1);
+            innerContent.Controls.Add(_staySectionHeader, 0, 0);
+            innerContent.Controls.Add(_staySectionBody, 0, 1);
             innerContent.Controls.Add(pnlKhachSection, 0, 2);
             contentPanel.Controls.Add(innerContent);
 
@@ -343,16 +356,6 @@ namespace HotelManagement.Forms
                 Margin = new Padding(0, 10, 0, 0)
             };
 
-            var split = new TableLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                AutoSize = true,
-                ColumnCount = 2,
-                RowCount = 1
-            };
-            split.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 76f));
-            split.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 24f));
-
             var left = new Panel { Dock = DockStyle.Fill, AutoSize = true };
             var leftHeader = new Panel
             {
@@ -382,7 +385,7 @@ namespace HotelManagement.Forms
             };
             var khachLabel = new Label
             {
-                Text = "Thông tin khách",
+                Text = "Tên khách hàng",
                 Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 ForeColor = clrHeaderText,
                 AutoSize = true,
@@ -391,24 +394,12 @@ namespace HotelManagement.Forms
             headerTitle.Controls.Add(khachIcon);
             headerTitle.Controls.Add(khachLabel);
 
-            StyleButton(btnThemKhach, true);
             StyleButton(btnLamMoi, false);
-            StyleButton(btnQuetMa, true);
-            btnThemKhach.Text = "Thêm khách";
             btnLamMoi.Text = "Làm mới";
-            btnQuetMa.Text = "Quét mã (F1)";
-            btnThemKhach.Width = 104;
             btnLamMoi.Width = 94;
-            btnQuetMa.Width = 114;
-            btnThemKhach.Height = 30;
             btnLamMoi.Height = 30;
-            btnQuetMa.Height = 30;
-            btnThemKhach.Dock = DockStyle.None;
             btnLamMoi.Dock = DockStyle.None;
-            btnQuetMa.Dock = DockStyle.None;
-            btnThemKhach.Margin = new Padding(0, 0, 8, 0);
             btnLamMoi.Margin = new Padding(0, 0, 8, 0);
-            btnQuetMa.Margin = new Padding(0);
 
             var buttonFlow = new FlowLayoutPanel
             {
@@ -419,9 +410,7 @@ namespace HotelManagement.Forms
                 Margin = new Padding(0),
                 Padding = new Padding(0)
             };
-            buttonFlow.Controls.Add(btnThemKhach);
             buttonFlow.Controls.Add(btnLamMoi);
-            buttonFlow.Controls.Add(btnQuetMa);
 
             leftHeaderTable.Controls.Add(headerTitle, 0, 0);
             leftHeaderTable.Controls.Add(buttonFlow, 1, 0);
@@ -432,21 +421,7 @@ namespace HotelManagement.Forms
             left.Controls.Add(leftBody);
             left.Controls.Add(leftHeader);
 
-            var right = new Panel { Dock = DockStyle.Fill, AutoSize = true, Padding = new Padding(12, 0, 0, 0) };
-            var rightHeader = CreateSectionHeader("Danh sách khách", IconHelper.CreateListIcon());
-            rightHeader.Margin = new Padding(0);
-            rightHeader.Dock = DockStyle.Top;
-            var rightBody = new Panel { Dock = DockStyle.Top, Height = 420, Padding = new Padding(0, 5, 0, 0) };
-            lstKhach.Dock = DockStyle.Fill;
-            lstKhach.BorderStyle = BorderStyle.FixedSingle;
-            lstKhach.Font = new Font("Segoe UI", 10F);
-            rightBody.Controls.Add(lstKhach);
-            right.Controls.Add(rightBody);
-            right.Controls.Add(rightHeader);
-
-            split.Controls.Add(left, 0, 0);
-            split.Controls.Add(right, 1, 0);
-            section.Controls.Add(split);
+            section.Controls.Add(left);
             return section;
         }
 
@@ -468,7 +443,6 @@ namespace HotelManagement.Forms
 
             AddCell(tbl, lblLoaiPhong, cboLoaiPhong, 0, 1);
             AddCell(tbl, lblPhong, cboPhong, 1, 1);
-            AddCell(tbl, lblGiaPhong, txtGiaPhong, 2, 1, 2);
             container.Controls.Add(tbl);
         }
 
@@ -478,63 +452,56 @@ namespace HotelManagement.Forms
             {
                 Dock = DockStyle.Top,
                 AutoSize = true,
-                ColumnCount = 3,
+                ColumnCount = 1,
                 Padding = new Padding(0),
                 Margin = new Padding(0)
             };
-            for(int i=0; i<3; i++) tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33f));
+            tbl.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
 
             AddCell(tbl, lblHoTen, txtHoTen, 0, 0);
-            AddCell(tbl, lblGioiTinh, cboGioiTinh, 1, 0);
-            AddCell(tbl, lblNgaySinh, dtpNgaySinh, 2, 0);
-
-            AddCell(tbl, lblLoaiGiayTo, cboLoaiGiayTo, 0, 1);
-            
-            var pnlGiayTo = new Panel { Dock = DockStyle.Top, Height = 30, BorderStyle = BorderStyle.FixedSingle };
-            var btnSearchGT = new Button 
-            { 
-                Dock = DockStyle.Right, 
-                Width = 30, 
-                Image = IconHelper.CreateSearchIcon(),
-                FlatStyle = FlatStyle.Flat, 
-                BackColor = Color.White, 
-                Cursor = Cursors.Hand 
-            };
-            btnSearchGT.FlatAppearance.BorderSize = 0;
-            btnSearchGT.Click += btnQuetMa_Click;
-            txtSoGiayTo.BorderStyle = BorderStyle.None;
-            txtSoGiayTo.Dock = DockStyle.Fill;
-            var pnlTxtWrapper = new Panel { Dock = DockStyle.Fill, Padding = new Padding(3,5,0,0), BackColor = Color.White };
-            pnlTxtWrapper.Controls.Add(txtSoGiayTo);
-            pnlGiayTo.Controls.Add(pnlTxtWrapper);
-            pnlGiayTo.Controls.Add(btnSearchGT);
-
-            var pCellGT = CreateCellPanel(lblSoGiayTo, pnlGiayTo);
-            tbl.Controls.Add(pCellGT, 1, 1);
-
-            AddCell(tbl, lblQuocTich, cboQuocTich, 2, 1);
-
-            var pnlCuTru = CreateRadioPanel(rdoThuongTru, rdoTamTru, rdoNoiKhac);
-            AddCell(tbl, lblNoiCuTru, pnlCuTru, 0, 2, 3);
-
-            var pnlDiaBan = CreateRadioPanel(rdoDiaBanMoi, rdoDiaBanCu);
-            AddCell(tbl, lblLoaiDiaBan, pnlDiaBan, 0, 3, 3);
-
-            var diaBanHeader = CreateInlineHeader("Địa bàn mới");
-            tbl.Controls.Add(diaBanHeader, 0, 4);
-            tbl.SetColumnSpan(diaBanHeader, 3);
-
-            AddCell(tbl, lblTinhThanh, cboTinhThanh, 0, 5);
-            _huyenCellPanel = CreateCellPanel(lblHuyen, cboHuyen);
-            tbl.Controls.Add(_huyenCellPanel, 1, 5);
-            AddCell(tbl, lblPhuongXa, cboPhuongXa, 2, 5);
-
-            AddCell(tbl, lblDiaChiChiTiet, txtDiaChiChiTiet, 0, 6, 3);
 
             container.Controls.Add(tbl);
         }
 
-        private Panel CreateInlineHeader(string title)
+        private void EnsureDiaBanCuControls()
+        {
+            if (_cboTinhThanhCu != null) return;
+
+            _lblTinhThanhCu = new Label { Text = "Tỉnh/Thành phố Cũ *" };
+            _lblHuyenCu = new Label { Text = "Quận/Huyện Cũ *" };
+            _lblPhuongXaCu = new Label { Text = "Phường/Xã Cũ *" };
+
+            _cboTinhThanhCu = new ComboBox();
+            _cboHuyenCu = new ComboBox();
+            _cboPhuongXaCu = new ComboBox();
+
+            ConfigureTypeAheadCombo(_cboTinhThanhCu);
+            ConfigureTypeAheadCombo(_cboHuyenCu);
+            ConfigureTypeAheadCombo(_cboPhuongXaCu);
+
+            _cboTinhThanhCu.SelectedIndexChanged += cboTinhCu_SelectedIndexChanged;
+            _cboTinhThanhCu.SelectionChangeCommitted += cboTinhCu_SelectionChangeCommitted;
+            _cboTinhThanhCu.Leave += cboTinhCu_Leave;
+            _cboTinhThanhCu.KeyDown += cboTinhCu_KeyDown;
+            _cboTinhThanhCu.TextUpdate += cboGeo_TextUpdate;
+            _cboTinhThanhCu.DropDown += cboGeo_DropDown;
+
+            _cboHuyenCu.SelectedIndexChanged += cboHuyenCu_SelectedIndexChanged;
+            _cboHuyenCu.SelectionChangeCommitted += cboHuyenCu_SelectionChangeCommitted;
+            _cboHuyenCu.Leave += cboHuyenCu_Leave;
+            _cboHuyenCu.KeyDown += cboHuyenCu_KeyDown;
+            _cboHuyenCu.TextUpdate += cboGeo_TextUpdate;
+            _cboHuyenCu.DropDown += cboGeo_DropDown;
+
+            _cboPhuongXaCu.Leave += cboPhuongXaCu_Leave;
+            _cboPhuongXaCu.KeyDown += cboPhuongXaCu_KeyDown;
+            _cboPhuongXaCu.SelectedIndexChanged += cboPhuongXaCu_SelectedIndexChanged;
+            _cboPhuongXaCu.SelectionChangeCommitted += cboPhuongXaCu_SelectionChangeCommitted;
+            _cboPhuongXaCu.TextUpdate += cboGeo_TextUpdate;
+            _cboPhuongXaCu.DropDown += cboGeo_DropDown;
+        }
+
+        private Panel CreateInlineHeader(string title, out Label headerLabel)
         {
             var p = new Panel
             {
@@ -552,6 +519,7 @@ namespace HotelManagement.Forms
                 Location = new Point(10, 5)
             };
             p.Controls.Add(lbl);
+            headerLabel = lbl;
             return p;
         }
 
@@ -630,32 +598,8 @@ namespace HotelManagement.Forms
             cboLyDoLuuTru.Items.AddRange(new object[] { "-- Chọn --", "Du lịch", "Công tác", "Thăm thân", "Mục đích khác" });
             int defaultLyDoIndex = cboLyDoLuuTru.FindStringExact("Mục đích khác");
             cboLyDoLuuTru.SelectedIndex = defaultLyDoIndex >= 0 ? defaultLyDoIndex : 0;
-            cboGioiTinh.Items.Clear();
-            cboGioiTinh.Items.AddRange(new object[] { "Nam", "Nữ", "Khác" });
-            cboGioiTinh.SelectedIndex = -1;
-            cboGioiTinh.Text = string.Empty;
-            ConfigureTypeAheadCombo(cboGioiTinh);
-            CacheComboItems(cboGioiTinh);
-            cboLoaiGiayTo.Items.Clear();
-            cboLoaiGiayTo.Items.AddRange(new object[] { "Thẻ CCCD", "CMND", "Hộ chiếu" });
-            cboLoaiGiayTo.SelectedIndex = 0;
-            cboQuocTich.Items.Clear();
-            cboQuocTich.Items.AddRange(new object[] { "VNM - Việt Nam","USA - United States","KOR - Korea","JPN - Japan","CHN - China", "OTHER" });
-            cboQuocTich.SelectedIndex = 0;
-            InitAddressCombosUiOnly();
-            _isGeoBinding = true;
-            try
-            {
-                rdoThuongTru.Checked = true;
-                rdoDiaBanMoi.Checked = true;
-            }
-            finally
-            {
-                _isGeoBinding = false;
-            }
-            UpdateDiaBanUiState();
-            if (dtpNgaySinh.Value.Year < 1900) dtpNgaySinh.Value = new DateTime(1990, 1, 1);
             dtpNhanPhong.Enabled = false;
+            SetTextBoxCueBanner(txtHoTen, "Nhập tên khách");
         }
 
         private void InitAddressCombosUiOnly()
@@ -673,6 +617,24 @@ namespace HotelManagement.Forms
             comboBox.AutoCompleteSource = AutoCompleteSource.None;
             comboBox.IntegralHeight = false;
             comboBox.MaxDropDownItems = SuggestMaxVisibleItems;
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, string lParam);
+
+        private const int CB_SETCUEBANNER = 0x1703;
+        private const int EM_SETCUEBANNER = 0x1501;
+
+        private static void SetComboCueBanner(ComboBox comboBox, string text)
+        {
+            if (comboBox == null || !comboBox.IsHandleCreated) return;
+            SendMessage(comboBox.Handle, CB_SETCUEBANNER, IntPtr.Zero, text ?? string.Empty);
+        }
+
+        private static void SetTextBoxCueBanner(TextBox textBox, string text)
+        {
+            if (textBox == null || !textBox.IsHandleCreated) return;
+            SendMessage(textBox.Handle, EM_SETCUEBANNER, new IntPtr(1), text ?? string.Empty);
         }
 
         private void CacheComboItems(ComboBox comboBox)
@@ -841,45 +803,68 @@ namespace HotelManagement.Forms
             return int.MaxValue;
         }
 
+        private async Task LoadGeoDataAndBindInitialAsync()
+        {
+            var geoTinhs = await Task.Run(() => _geoDataLoader.Load().ToList()).ConfigureAwait(true);
+            var oldToNewMap = await Task.Run(() => _geoDataLoader.LoadOldToNewCommuneMap()).ConfigureAwait(true);
+            ApplyGeoDataAndBindInitial(geoTinhs, oldToNewMap);
+        }
+
         private void LoadGeoDataAndBindInitial()
         {
-            _geoTinhs = _geoDataLoader.Load().ToList();
+            var geoTinhs = _geoDataLoader.Load().ToList();
+            var oldToNewMap = _geoDataLoader.LoadOldToNewCommuneMap();
+            ApplyGeoDataAndBindInitial(geoTinhs, oldToNewMap);
+        }
+
+        private void ApplyGeoDataAndBindInitial(
+            List<Tinh> geoTinhs,
+            IReadOnlyDictionary<string, GeoDataLoader.OldNewGeoMapping> oldToNewMap)
+        {
+            _geoTinhs = geoTinhs ?? new List<Tinh>();
+            _oldToNewXaMap = oldToNewMap
+                ?? new Dictionary<string, GeoDataLoader.OldNewGeoMapping>(StringComparer.OrdinalIgnoreCase);
             _legacyTinh = null;
             _legacyHuyen = null;
             _legacyXa = null;
+            _isLegacyGeoBound = false;
 
             string legacyMaXa = _maXaCu;
-            if (_isEditMode && string.IsNullOrWhiteSpace(legacyMaXa))
-                legacyMaXa = GetStringTag(_room?.GhiChu, "DBMAXA", "");
 
             if (_isEditMode && !string.IsNullOrWhiteSpace(legacyMaXa))
-            {
                 TryFindXaPath(legacyMaXa, out _legacyTinh, out _legacyHuyen, out _legacyXa);
-            }
 
-            BindTinhCombo();
-            if (_isEditMode && _legacyTinh != null)
-            {
-                SelectTinhByMa(_legacyTinh.MaTinh);
-                SelectHuyenByMa(_legacyHuyen?.MaHuyen);
-                SelectXaByMa(_legacyXa?.MaXa);
-            }
+            BindAllGeoCombos();
         }
 
         private void ReloadGeoDataKeepingSelection()
         {
             string selectedMaTinh = GetSelectedTinh()?.MaTinh;
-            string selectedMaHuyen = GetSelectedHuyen()?.MaHuyen;
             string selectedMaXa = GetSelectedXa()?.MaXa;
+            string selectedMaTinhCu = GetSelectedTinhCu()?.MaTinh;
+            string selectedMaHuyenCu = GetSelectedHuyenCu()?.MaHuyen;
+            string selectedMaXaCu = GetSelectedXaCu()?.MaXa;
 
             LoadGeoDataAndBindInitial();
 
             if (!string.IsNullOrWhiteSpace(selectedMaTinh))
                 SelectTinhByMa(selectedMaTinh);
-            if (!string.IsNullOrWhiteSpace(selectedMaHuyen))
-                SelectHuyenByMa(selectedMaHuyen);
             if (!string.IsNullOrWhiteSpace(selectedMaXa))
                 SelectXaByMa(selectedMaXa);
+            bool hasLegacySelection =
+                !string.IsNullOrWhiteSpace(selectedMaTinhCu) ||
+                !string.IsNullOrWhiteSpace(selectedMaHuyenCu) ||
+                !string.IsNullOrWhiteSpace(selectedMaXaCu);
+            if (hasLegacySelection)
+            {
+                EnsureLegacyGeoBound();
+                if (!string.IsNullOrWhiteSpace(selectedMaTinhCu))
+                    SelectTinhCuByMa(selectedMaTinhCu);
+                if (!string.IsNullOrWhiteSpace(selectedMaHuyenCu))
+                    SelectHuyenCuByMa(selectedMaHuyenCu);
+                if (!string.IsNullOrWhiteSpace(selectedMaXaCu))
+                    SelectXaCuByMa(selectedMaXaCu);
+            }
         }
 
         private void cboTinh_SelectedIndexChanged(object sender, EventArgs e)
@@ -887,14 +872,11 @@ namespace HotelManagement.Forms
             if (_isGeoBinding || _isComboFiltering) return;
             try
             {
-                if (rdoDiaBanMoi.Checked)
-                    BindXaComboBySelectedTinhForNewMode(false);
-                else
-                    BindHuyenComboBySelectedTinh(false);
+                BindXaComboBySelectedTinhForNewMode(false);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Không thể tải danh sách địa bàn theo tỉnh.\n\n" + ex.Message, "Lỗi địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowFriendlyError("RoomDetail.BindXaByTinh", "Không thể tải danh sách địa bàn theo tỉnh. Vui lòng thử lại.", ex, "Lỗi địa bàn");
             }
         }
 
@@ -921,13 +903,15 @@ namespace HotelManagement.Forms
             if (_isGeoBinding || _isComboFiltering) return;
             var combo = sender as ComboBox;
             if (combo == null) return;
-            FilterComboByContains(combo);
+            DebounceFilterCombo(combo);
         }
 
         private void cboGeo_DropDown(object sender, EventArgs e)
         {
             var combo = sender as ComboBox;
             if (combo == null || _isComboFiltering) return;
+            if (_comboFilterDebounceTimers.TryGetValue(combo, out var debounceTimer))
+                debounceTimer.Stop();
 
             if (string.IsNullOrWhiteSpace(combo.Text))
                 RestoreComboItems(combo, preserveText: true);
@@ -935,36 +919,43 @@ namespace HotelManagement.Forms
                 FilterComboByContains(combo);
         }
 
+        private void DebounceFilterCombo(ComboBox combo)
+        {
+            if (combo == null) return;
+            if (!_comboFilterDebounceTimers.TryGetValue(combo, out var timer))
+            {
+                timer = new Timer { Interval = ComboFilterDebounceMs };
+                timer.Tick += (s, e) =>
+                {
+                    timer.Stop();
+                    if (!IsDisposed && !Disposing)
+                        FilterComboByContains(combo);
+                };
+                _comboFilterDebounceTimers[combo] = timer;
+            }
+
+            timer.Stop();
+            timer.Start();
+        }
+
         private void cboHuyen_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_isGeoBinding || _isComboFiltering) return;
-            if (rdoDiaBanMoi.Checked) return;
-            try
-            {
-                BindXaComboBySelectedHuyen(false);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Không thể tải danh sách phường/xã.\n\n" + ex.Message, "Lỗi địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            // Không dùng trong bố cục hiện tại.
         }
 
         private void cboHuyen_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            cboHuyen_SelectedIndexChanged(sender, e);
+            // Không dùng trong bố cục hiện tại.
         }
 
         private void cboHuyen_Leave(object sender, EventArgs e)
         {
-            ApplyTypedHuyenSelection();
+            // Không dùng trong bố cục hiện tại.
         }
 
         private void cboHuyen_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.Enter) return;
-            e.Handled = true;
-            e.SuppressKeyPress = true;
-            ApplyTypedHuyenSelection();
+            // Không dùng trong bố cục hiện tại.
         }
 
         private void cboXa_SelectedIndexChanged(object sender, EventArgs e)
@@ -1015,17 +1006,26 @@ namespace HotelManagement.Forms
 
         private void UpdateDiaBanUiState()
         {
-            lblPhuongXa.Text = rdoDiaBanCu.Checked
-                ? "Xã/Phường (cũ) *"
-                : "Xã/Phường/Đặc khu *";
-
             bool isDiaBanMoi = rdoDiaBanMoi.Checked;
-            cboHuyen.Enabled = !isDiaBanMoi;
-            if (_huyenCellPanel != null)
-            {
-                _huyenCellPanel.Visible = !isDiaBanMoi;
-                _huyenCellPanel.Enabled = !isDiaBanMoi;
-            }
+
+            if (_diaBanOldHeaderPanel != null) _diaBanOldHeaderPanel.Visible = !isDiaBanMoi;
+            if (_diaBanOldTinhCellPanel != null) _diaBanOldTinhCellPanel.Visible = !isDiaBanMoi;
+            if (_diaBanOldHuyenCellPanel != null) _diaBanOldHuyenCellPanel.Visible = !isDiaBanMoi;
+            if (_diaBanOldXaCellPanel != null) _diaBanOldXaCellPanel.Visible = !isDiaBanMoi;
+
+            if (_diaBanNewHeaderPanel != null) _diaBanNewHeaderPanel.Visible = true;
+            if (_diaBanNewTinhCellPanel != null) _diaBanNewTinhCellPanel.Visible = true;
+            if (_diaBanNewXaCellPanel != null) _diaBanNewXaCellPanel.Visible = true;
+            if (_diaBanNewDiaChiCellPanel != null) _diaBanNewDiaChiCellPanel.Visible = true;
+
+            if (_diaBanNewHeaderLabel != null) _diaBanNewHeaderLabel.Text = "Địa bàn mới";
+
+            SetComboCueBanner(_cboTinhThanhCu, "Chọn Tỉnh/Thành phố Cũ");
+            SetComboCueBanner(_cboHuyenCu, "Chọn Quận/Huyện Cũ");
+            SetComboCueBanner(_cboPhuongXaCu, "Chọn Phường/Xã Cũ");
+            SetComboCueBanner(cboTinhThanh, "Chọn Tỉnh/Thành");
+            SetComboCueBanner(cboPhuongXa, "Chọn Phường/Xã/Đặc khu");
+            SetTextBoxCueBanner(txtDiaChiChiTiet, "Số nhà, ngách, hẻm, đường...");
         }
 
         private void DiaBanLoai_CheckedChanged(object sender, EventArgs e)
@@ -1034,39 +1034,45 @@ namespace HotelManagement.Forms
             UpdateDiaBanUiState();
             try
             {
-                ReloadGeoDataKeepingSelection();
+                if (rdoDiaBanCu.Checked)
+                    EnsureLegacyGeoBound();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Không thể cập nhật danh sách địa bàn.\n\n" + ex.Message, "Lỗi địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowFriendlyError("RoomDetail.BindAllGeoCombos", "Không thể cập nhật danh sách địa bàn. Vui lòng thử lại.", ex, "Lỗi địa bàn");
             }
+        }
+
+        private void BindAllGeoCombos()
+        {
+            BindTinhCombo();
+            if (rdoDiaBanCu.Checked || _isEditMode)
+                EnsureLegacyGeoBound();
+        }
+
+        private void EnsureLegacyGeoBound()
+        {
+            if (_isLegacyGeoBound) return;
+            BindTinhCuCombo();
+            _isLegacyGeoBound = true;
         }
 
         private void BindTinhCombo()
         {
             _isGeoBinding = true;
+            cboTinhThanh.BeginUpdate();
             try
             {
                 string selectedMaTinh = GetSelectedTinh()?.MaTinh;
                 cboTinhThanh.Items.Clear();
 
                 var items = _geoTinhs
-                    .Where(x => MatchDiaBanType(x.IsActive))
+                    .Where(x => x != null && x.IsActive)
                     .OrderBy(x => x.TenTinh)
                     .ToList();
-                if (rdoDiaBanCu.Checked && items.Count == 0)
-                {
-                    items = _geoTinhs
-                        .Where(x => x != null)
-                        .OrderBy(x => x.TenTinh)
-                        .ToList();
-                }
 
-                if (_isEditMode && _legacyTinh != null && !_legacyTinh.IsActive && !items.Any(x => x.MaTinh == _legacyTinh.MaTinh))
-                    items.Add(_legacyTinh);
-
-                foreach (var tinh in items.OrderBy(x => x.TenTinh))
-                    cboTinhThanh.Items.Add(new GeoComboItem<Tinh>(tinh, BuildDisplayName(tinh.TenTinh, tinh.IsActive)));
+                foreach (var tinh in items)
+                    cboTinhThanh.Items.Add(new GeoComboItem<Tinh>(tinh, BuildDisplayName(tinh.TenTinh, true)));
 
                 if (!TrySelectComboByKey<Tinh>(cboTinhThanh, selectedMaTinh, t => t.MaTinh))
                 {
@@ -1075,14 +1081,142 @@ namespace HotelManagement.Forms
                 }
 
                 CacheComboItems(cboTinhThanh);
-
-                if (rdoDiaBanMoi.Checked)
-                    BindXaComboBySelectedTinhForNewMode();
-                else
-                    BindHuyenComboBySelectedTinh();
+                BindXaComboBySelectedTinhForNewMode();
             }
             finally
             {
+                cboTinhThanh.EndUpdate();
+                _isGeoBinding = false;
+            }
+        }
+
+        private void BindTinhCuCombo()
+        {
+            EnsureDiaBanCuControls();
+            _isGeoBinding = true;
+            _cboTinhThanhCu.BeginUpdate();
+            try
+            {
+                string selectedMaTinh = GetSelectedTinhCu()?.MaTinh;
+                _cboTinhThanhCu.Items.Clear();
+
+                var items = _geoTinhs
+                    .Where(x => x != null && !x.IsActive)
+                    .OrderBy(x => x.TenTinh)
+                    .ToList();
+
+                if (_isEditMode && _legacyTinh != null && !_legacyTinh.IsActive &&
+                    !items.Any(x => string.Equals(x.MaTinh, _legacyTinh.MaTinh, StringComparison.OrdinalIgnoreCase)))
+                {
+                    items.Add(_legacyTinh);
+                }
+
+                foreach (var tinh in items.OrderBy(x => x.TenTinh))
+                    _cboTinhThanhCu.Items.Add(new GeoComboItem<Tinh>(tinh, BuildDisplayName(tinh.TenTinh, false)));
+
+                if (!TrySelectComboByKey<Tinh>(_cboTinhThanhCu, selectedMaTinh, t => t.MaTinh))
+                {
+                    _cboTinhThanhCu.SelectedIndex = -1;
+                    _cboTinhThanhCu.Text = string.Empty;
+                }
+
+                CacheComboItems(_cboTinhThanhCu);
+                BindHuyenCuComboBySelectedTinh();
+            }
+            finally
+            {
+                _cboTinhThanhCu.EndUpdate();
+                _isGeoBinding = false;
+            }
+        }
+
+        private void BindHuyenCuComboBySelectedTinh(bool autoSelectFirst = false)
+        {
+            EnsureDiaBanCuControls();
+            _isGeoBinding = true;
+            _cboHuyenCu.BeginUpdate();
+            try
+            {
+                string selectedMaHuyen = GetSelectedHuyenCu()?.MaHuyen;
+                var tinh = GetSelectedTinhCu();
+                _cboHuyenCu.Items.Clear();
+
+                if (tinh != null)
+                {
+                    var huyens = (tinh.Huyens ?? new List<Huyen>())
+                        .Where(x => x != null && !x.IsActive)
+                        .OrderBy(x => x.TenHuyen)
+                        .ToList();
+
+                    if (_isEditMode && _legacyHuyen != null && !_legacyHuyen.IsActive &&
+                        string.Equals(_legacyTinh?.MaTinh, tinh.MaTinh, StringComparison.OrdinalIgnoreCase) &&
+                        !huyens.Any(x => string.Equals(x.MaHuyen, _legacyHuyen.MaHuyen, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        huyens.Add(_legacyHuyen);
+                    }
+
+                    foreach (var huyen in huyens.OrderBy(x => x.TenHuyen))
+                        _cboHuyenCu.Items.Add(new GeoComboItem<Huyen>(huyen, BuildDisplayName(huyen.TenHuyen, false)));
+                }
+
+                if (!TrySelectComboByKey<Huyen>(_cboHuyenCu, selectedMaHuyen, x => x.MaHuyen))
+                {
+                    _cboHuyenCu.SelectedIndex = autoSelectFirst && _cboHuyenCu.Items.Count > 0 ? 0 : -1;
+                    if (_cboHuyenCu.SelectedIndex < 0)
+                        _cboHuyenCu.Text = string.Empty;
+                }
+
+                CacheComboItems(_cboHuyenCu);
+                BindXaCuComboBySelectedHuyen(autoSelectFirst);
+            }
+            finally
+            {
+                _cboHuyenCu.EndUpdate();
+                _isGeoBinding = false;
+            }
+        }
+
+        private void BindXaCuComboBySelectedHuyen(bool autoSelectFirst = false)
+        {
+            EnsureDiaBanCuControls();
+            _isGeoBinding = true;
+            _cboPhuongXaCu.BeginUpdate();
+            try
+            {
+                string selectedMaXa = GetSelectedXaCu()?.MaXa;
+                var huyen = GetSelectedHuyenCu();
+                _cboPhuongXaCu.Items.Clear();
+
+                if (huyen != null)
+                {
+                    var xas = (huyen.Xas ?? new List<Xa>())
+                        .Where(x => x != null && !x.IsActive)
+                        .OrderBy(x => x.TenXa)
+                        .ToList();
+
+                    if (_isEditMode && _legacyXa != null && !_legacyXa.IsActive &&
+                        string.Equals(_legacyHuyen?.MaHuyen, huyen.MaHuyen, StringComparison.OrdinalIgnoreCase) &&
+                        !xas.Any(x => string.Equals(x.MaXa, _legacyXa.MaXa, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        xas.Add(_legacyXa);
+                    }
+
+                    foreach (var xa in xas.OrderBy(x => x.TenXa))
+                        _cboPhuongXaCu.Items.Add(new GeoComboItem<Xa>(xa, BuildDisplayName(xa.TenXa, false)));
+                }
+
+                if (!TrySelectComboByKey<Xa>(_cboPhuongXaCu, selectedMaXa, x => x.MaXa))
+                {
+                    _cboPhuongXaCu.SelectedIndex = autoSelectFirst && _cboPhuongXaCu.Items.Count > 0 ? 0 : -1;
+                    if (_cboPhuongXaCu.SelectedIndex < 0)
+                        _cboPhuongXaCu.Text = string.Empty;
+                }
+
+                CacheComboItems(_cboPhuongXaCu);
+            }
+            finally
+            {
+                _cboPhuongXaCu.EndUpdate();
                 _isGeoBinding = false;
             }
         }
@@ -1090,47 +1224,26 @@ namespace HotelManagement.Forms
         private void BindXaComboBySelectedTinhForNewMode(bool autoSelectFirstXa = false)
         {
             _isGeoBinding = true;
+            cboPhuongXa.BeginUpdate();
             try
             {
                 string selectedMaXa = GetSelectedXa()?.MaXa;
                 var tinh = GetSelectedTinh();
-
-                cboHuyen.Items.Clear();
-                cboHuyen.SelectedIndex = -1;
-                cboHuyen.Text = string.Empty;
-                CacheComboItems(cboHuyen);
-
                 cboPhuongXa.Items.Clear();
 
                 if (tinh != null)
                 {
-                    var xas = tinh.Huyens
-                        .SelectMany(h => h != null ? h.Xas : Enumerable.Empty<Xa>())
-                        .Where(x => x != null && MatchDiaBanType(x.IsActive))
+                    var xas = (tinh.Huyens ?? new List<Huyen>())
+                        .Where(h => h != null)
+                        .SelectMany(h => h.Xas ?? new List<Xa>())
+                        .Where(x => x != null && x.IsActive)
                         .GroupBy(x => x.MaXa ?? string.Empty, StringComparer.OrdinalIgnoreCase)
                         .Select(g => g.First())
                         .OrderBy(x => x.TenXa)
                         .ToList();
-                    if (xas.Count == 0)
-                    {
-                        xas = tinh.Huyens
-                            .SelectMany(h => h != null ? h.Xas : Enumerable.Empty<Xa>())
-                            .Where(x => x != null)
-                            .GroupBy(x => x.MaXa ?? string.Empty, StringComparer.OrdinalIgnoreCase)
-                            .Select(g => g.First())
-                            .OrderBy(x => x.TenXa)
-                            .ToList();
-                    }
 
-                    if (_isEditMode && _legacyXa != null && !_legacyXa.IsActive &&
-                        string.Equals(_legacyTinh?.MaTinh, tinh.MaTinh, StringComparison.OrdinalIgnoreCase) &&
-                        !xas.Any(x => string.Equals(x.MaXa, _legacyXa.MaXa, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        xas.Add(_legacyXa);
-                    }
-
-                    foreach (var xa in xas.OrderBy(x => x.TenXa))
-                        cboPhuongXa.Items.Add(new GeoComboItem<Xa>(xa, BuildDisplayName(xa.TenXa, xa.IsActive)));
+                    foreach (var xa in xas)
+                        cboPhuongXa.Items.Add(new GeoComboItem<Xa>(xa, BuildDisplayName(xa.TenXa, true)));
                 }
 
                 if (!TrySelectComboByKey<Xa>(cboPhuongXa, selectedMaXa, x => x.MaXa))
@@ -1144,110 +1257,19 @@ namespace HotelManagement.Forms
             }
             finally
             {
+                cboPhuongXa.EndUpdate();
                 _isGeoBinding = false;
             }
         }
 
         private void BindHuyenComboBySelectedTinh(bool autoSelectFirstHuyen = false)
         {
-            _isGeoBinding = true;
-            try
-            {
-                string selectedMaHuyen = GetSelectedHuyen()?.MaHuyen;
-                var tinh = GetSelectedTinh();
-
-                cboHuyen.Items.Clear();
-
-                if (tinh != null)
-                {
-                    var huyens = tinh.Huyens
-                        .Where(x => x != null && MatchDiaBanType(x.IsActive))
-                        .OrderBy(x => x.TenHuyen)
-                        .ToList();
-                    if (rdoDiaBanCu.Checked && huyens.Count == 0)
-                    {
-                        huyens = tinh.Huyens
-                            .Where(x => x != null)
-                            .OrderBy(x => x.TenHuyen)
-                            .ToList();
-                    }
-
-                    if (_isEditMode && _legacyHuyen != null && !_legacyHuyen.IsActive &&
-                        string.Equals(_legacyTinh?.MaTinh, tinh.MaTinh, StringComparison.OrdinalIgnoreCase) &&
-                        !huyens.Any(x => x.MaHuyen == _legacyHuyen.MaHuyen))
-                    {
-                        huyens.Add(_legacyHuyen);
-                    }
-
-                    foreach (var huyen in huyens.OrderBy(x => x.TenHuyen))
-                        cboHuyen.Items.Add(new GeoComboItem<Huyen>(huyen, BuildDisplayName(huyen.TenHuyen, huyen.IsActive)));
-                }
-
-                if (!TrySelectComboByKey<Huyen>(cboHuyen, selectedMaHuyen, x => x.MaHuyen))
-                {
-                    cboHuyen.SelectedIndex = autoSelectFirstHuyen && cboHuyen.Items.Count > 0 ? 0 : -1;
-                    if (cboHuyen.SelectedIndex < 0)
-                        cboHuyen.Text = string.Empty;
-                }
-
-                CacheComboItems(cboHuyen);
-
-                BindXaComboBySelectedHuyen(autoSelectFirstHuyen);
-            }
-            finally
-            {
-                _isGeoBinding = false;
-            }
+            // Không sử dụng trong bố cục hiện tại (địa bàn mới không có cấp quận/huyện).
         }
 
         private void BindXaComboBySelectedHuyen(bool autoSelectFirstXa = false)
         {
-            _isGeoBinding = true;
-            try
-            {
-                string selectedMaXa = GetSelectedXa()?.MaXa;
-                var huyen = GetSelectedHuyen();
-
-                cboPhuongXa.Items.Clear();
-
-                if (huyen != null)
-                {
-                    var xas = huyen.Xas
-                        .Where(x => x != null && MatchDiaBanType(x.IsActive))
-                        .OrderBy(x => x.TenXa)
-                        .ToList();
-                    if (xas.Count == 0)
-                    {
-                        xas = huyen.Xas
-                            .Where(x => x != null)
-                            .OrderBy(x => x.TenXa)
-                            .ToList();
-                    }
-
-                    if (_isEditMode && _legacyXa != null && !_legacyXa.IsActive &&
-                        string.Equals(_legacyHuyen?.MaHuyen, huyen.MaHuyen, StringComparison.OrdinalIgnoreCase) &&
-                        !xas.Any(x => x.MaXa == _legacyXa.MaXa))
-                    {
-                        xas.Add(_legacyXa);
-                    }
-
-                    foreach (var xa in xas.OrderBy(x => x.TenXa))
-                        cboPhuongXa.Items.Add(new GeoComboItem<Xa>(xa, BuildDisplayName(xa.TenXa, xa.IsActive)));
-                }
-
-                if (!TrySelectComboByKey<Xa>(cboPhuongXa, selectedMaXa, x => x.MaXa))
-                {
-                    cboPhuongXa.SelectedIndex = autoSelectFirstXa && cboPhuongXa.Items.Count > 0 ? 0 : -1;
-                    if (cboPhuongXa.SelectedIndex < 0)
-                        cboPhuongXa.Text = string.Empty;
-                }
-
-                CacheComboItems(cboPhuongXa);
-            }
-            finally
-            {
-                _isGeoBinding = false;
-            }
+            // Không sử dụng trong bố cục hiện tại.
         }
 
         private bool TryFindXaPath(string maXa, out Tinh tinh, out Huyen huyen, out Xa xa)
@@ -1281,8 +1303,7 @@ namespace HotelManagement.Forms
 
         private void SelectHuyenByMa(string maHuyen)
         {
-            if (string.IsNullOrWhiteSpace(maHuyen)) return;
-            TrySelectComboByKey<Huyen>(cboHuyen, maHuyen, x => x.MaHuyen);
+            // Không còn sử dụng trong bố cục hiện tại.
         }
 
         private void SelectXaByMa(string maXa)
@@ -1316,11 +1337,6 @@ namespace HotelManagement.Forms
             return name;
         }
 
-        private bool MatchDiaBanType(bool isActive)
-        {
-            return rdoDiaBanCu.Checked ? !isActive : isActive;
-        }
-
         private void ApplyTypedTinhSelection()
         {
             TrySelectComboByTextContains(cboTinhThanh, cboTinhThanh.Text);
@@ -1328,8 +1344,7 @@ namespace HotelManagement.Forms
 
         private void ApplyTypedHuyenSelection()
         {
-            if (rdoDiaBanMoi.Checked) return;
-            TrySelectComboByTextContains(cboHuyen, cboHuyen.Text);
+            // Không còn sử dụng trong bố cục hiện tại.
         }
 
         private void ApplyTypedXaSelection()
@@ -1340,13 +1355,19 @@ namespace HotelManagement.Forms
         private void ApplyTypedGeoSelections()
         {
             string tinhText = cboTinhThanh.Text;
-            string huyenText = cboHuyen.Text;
             string xaText = cboPhuongXa.Text;
+            string tinhCuText = _cboTinhThanhCu?.Text ?? string.Empty;
+            string huyenCuText = _cboHuyenCu?.Text ?? string.Empty;
+            string xaCuText = _cboPhuongXaCu?.Text ?? string.Empty;
 
             TrySelectComboByTextContains(cboTinhThanh, tinhText);
-            if (!rdoDiaBanMoi.Checked)
-                TrySelectComboByTextContains(cboHuyen, huyenText);
             TrySelectComboByTextContains(cboPhuongXa, xaText);
+            if (!rdoDiaBanMoi.Checked)
+            {
+                TrySelectComboByTextContains(_cboTinhThanhCu, tinhCuText);
+                TrySelectComboByTextContains(_cboHuyenCu, huyenCuText);
+                TrySelectComboByTextContains(_cboPhuongXaCu, xaCuText);
+            }
         }
 
         private bool TrySelectComboByTextContains(ComboBox comboBox, string input)
@@ -1401,13 +1422,30 @@ namespace HotelManagement.Forms
 
         private Huyen GetSelectedHuyen()
         {
-            var item = cboHuyen.SelectedItem as GeoComboItem<Huyen>;
-            return item?.Value;
+            return null;
         }
 
         private Xa GetSelectedXa()
         {
             var item = cboPhuongXa.SelectedItem as GeoComboItem<Xa>;
+            return item?.Value;
+        }
+
+        private Tinh GetSelectedTinhCu()
+        {
+            var item = _cboTinhThanhCu?.SelectedItem as GeoComboItem<Tinh>;
+            return item?.Value;
+        }
+
+        private Huyen GetSelectedHuyenCu()
+        {
+            var item = _cboHuyenCu?.SelectedItem as GeoComboItem<Huyen>;
+            return item?.Value;
+        }
+
+        private Xa GetSelectedXaCu()
+        {
+            var item = _cboPhuongXaCu?.SelectedItem as GeoComboItem<Xa>;
             return item?.Value;
         }
 
@@ -1428,6 +1466,33 @@ namespace HotelManagement.Forms
             }
         }
 
+        private sealed class GuestListEntry
+        {
+            public string HoTen { get; set; }
+            public string SoGiayTo { get; set; }
+            public string GioiTinh { get; set; }
+            public DateTime? NgaySinh { get; set; }
+            public string LoaiGiayTo { get; set; }
+            public string QuocTich { get; set; }
+            public string NoiCuTru { get; set; }
+            public bool? LaDiaBanCu { get; set; }
+            public string MaTinhMoi { get; set; }
+            public string MaXaMoi { get; set; }
+            public string MaTinhCu { get; set; }
+            public string MaHuyenCu { get; set; }
+            public string MaXaCu { get; set; }
+            public string DiaChiChiTiet { get; set; }
+
+            public override string ToString()
+            {
+                string name = (HoTen ?? string.Empty).Trim();
+                string paper = (SoGiayTo ?? string.Empty).Trim();
+                if (name.Length == 0) return string.Empty;
+                if (paper.Length == 0) return name;
+                return name + GuestStorageSeparator + paper;
+            }
+        }
+
         private void BindRoomInfo()
         {
             cboLoaiPhong.Items.Clear();
@@ -1438,8 +1503,26 @@ namespace HotelManagement.Forms
             cboPhong.Items.Add("Phòng " + _room.MaPhong);
             cboPhong.SelectedIndex = 0;
             cboPhong.Enabled = false;
-            decimal gia = _bookingDal.GetDonGiaNgayByPhong(_room.PhongID);
-            if (gia <= 0) gia = (_room.LoaiPhongID == 1) ? 250000m : 350000m;
+            decimal gia = _loadedStayInfo != null ? _loadedStayInfo.GiaPhong : 0m;
+            bool shouldQueryRoomRate =
+                _deferCheckinCommit ||
+                (_room != null
+                    && _room.TrangThai == 1
+                    && _room.KieuThue.HasValue
+                    && _room.KieuThue.Value == 1);
+
+            if (gia <= 0 && shouldQueryRoomRate)
+            {
+                try
+                {
+                    gia = _bookingDal.GetDonGiaNgayByPhong(_room.PhongID);
+                }
+                catch
+                {
+                    gia = 0m;
+                }
+            }
+            if (gia <= 0) gia = PricingService.Instance.GetDefaultNightlyRate(_room.LoaiPhongID);
             txtGiaPhong.Text = gia.ToString("N0");
             ConfigureGiaPhongSuggestions(gia);
         }
@@ -1527,34 +1610,37 @@ namespace HotelManagement.Forms
             return 0;
         }
 
+        private void ShowFriendlyError(string source, string message, Exception ex, string title = "Lỗi")
+        {
+            AppLogger.Error(ex, "Room detail operation failed.", new Dictionary<string, object>
+            {
+                ["Source"] = source,
+                ["RoomId"] = _room == null ? 0 : _room.PhongID
+            });
+            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         private void RoomDetailForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             StopNhanPhongClock();
+            foreach (var timer in _comboFilterDebounceTimers.Values)
+            {
+                timer.Stop();
+                timer.Dispose();
+            }
+            _comboFilterDebounceTimers.Clear();
         }
 
         private void btnDong_Click(object sender, EventArgs e) { BackRequested?.Invoke(this, EventArgs.Empty); }
 
         private void RoomDetailForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.F1) return;
-            e.Handled = true;
-            e.SuppressKeyPress = true;
-            btnQuetMa_Click(sender, EventArgs.Empty);
+            // F1 scan flow was removed in simplified guest-name-only check-in.
         }
 
         private void btnQuetMa_Click(object sender, EventArgs e)
         {
-            using (var scanForm = new FrmCccdScan())
-            {
-                if (scanForm.ShowDialog(this) != DialogResult.OK || scanForm.ResultInfo == null)
-                    return;
-
-                ApplyCccdInfoToCheckinForm(scanForm.ResultInfo);
-            }
-
-            txtHoTen.Focus();
-            txtHoTen.SelectAll();
-            MessageBox.Show("Đã áp dụng dữ liệu CCCD lên phiếu nhận phòng.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Removed: no customer-detail scan input in guest-name-only flow.
         }
 
         private void ApplyCccdInfoToCheckinForm(CccdInfo info)
@@ -1599,150 +1685,243 @@ namespace HotelManagement.Forms
                 txtDiaChiChiTiet.Text = string.Empty;
         }
 
-        private void btnNhanPhong_Click(object sender, EventArgs e)
+        private async void btnNhanPhong_Click(object sender, EventArgs e)
         {
-            if (!ValidateForm()) return;
-            string tenChinh = GetPrimaryGuestName();
-            var checkinNow = DateTime.Now;
-            dtpNhanPhong.Value = checkinNow;
-            _room.TrangThai = 1; 
-            _room.KieuThue = (_room.KieuThue.HasValue && _room.KieuThue.Value > 0) ? _room.KieuThue : 1;
-            _room.ThoiGianBatDau = checkinNow;
-            _room.TenKhachHienThi = tenChinh;
-            string ghiChu = BuildGhiChuForSave();
-            _roomDal.UpdateTrangThaiFull(_room.PhongID, _room.TrangThai, ghiChu, _room.ThoiGianBatDau, _room.KieuThue, _room.TenKhachHienThi);
-            _room.GhiChu = ghiChu;
-            Saved?.Invoke(this, EventArgs.Empty);
-            BackRequested?.Invoke(this, EventArgs.Empty);
+            if (btnNhanPhong != null) btnNhanPhong.Enabled = false;
+            UseWaitCursor = true;
+            try
+            {
+                await UiExceptionHandler.RunAsync(this, "RoomDetail.SaveCheckin", async () =>
+                {
+                    using (var perf = PerformanceTracker.Measure("RoomDetail.SaveCheckin", new Dictionary<string, object>
+                    {
+                        ["RoomId"] = _room.PhongID
+                    }))
+                    {
+                        if (!ValidateForm()) return;
+
+                        string tenChinh = GetPrimaryGuestName();
+                        int bookingType = _isHourlyMode ? (int)BookingType.Hourly : (int)BookingType.Overnight;
+                        int? existingBookingId = await Task.Run(() =>
+                            _bookingDal.GetCurrentBookingByRoom(_room.PhongID)?.DatPhongID).ConfigureAwait(true);
+                        var checkinNow = _deferCheckinCommit
+                            ? (_room.ThoiGianBatDau ?? DateTime.Now)
+                            : DateTime.Now;
+                        dtpNhanPhong.Value = checkinNow;
+                        int rentalType = (_room.KieuThue.HasValue && _room.KieuThue.Value > 0)
+                            ? _room.KieuThue.Value
+                            : (_isHourlyMode ? (int)RentalType.Hourly : (int)RentalType.Overnight);
+                        BookingDAL.StayInfoRecord stayInfo = null;
+
+                        if (!_isHourlyMode)
+                        {
+                            stayInfo = BuildStayInfoForSave(existingBookingId.GetValueOrDefault());
+                        }
+
+                        var request = new BookingDAL.SaveCheckinRequest
+                        {
+                            RoomId = _room.PhongID,
+                            BookingType = bookingType,
+                            CheckinAt = checkinNow,
+                            GuestDisplayName = tenChinh,
+                            CommitRoomState = !_deferCheckinCommit,
+                            RentalType = rentalType,
+                            StayInfo = stayInfo
+                        };
+                        int bookingId = await Task.Run(() => _bookingDal.SaveCheckinAtomic(request)).ConfigureAwait(true);
+
+                        _room.TrangThai = (int)RoomStatus.CoKhach;
+                        _room.KieuThue = rentalType;
+                        _room.ThoiGianBatDau = checkinNow;
+                        _room.TenKhachHienThi = tenChinh;
+
+                        if (stayInfo != null)
+                        {
+                            stayInfo.DatPhongID = bookingId;
+                            _loadedStayInfo = stayInfo;
+                        }
+
+                        Saved?.Invoke(this, EventArgs.Empty);
+                        BackRequested?.Invoke(this, EventArgs.Empty);
+                        perf.AddContext("BookingId", bookingId);
+                        perf.AddContext("BookingType", bookingType);
+                    }
+                }).ConfigureAwait(true);
+            }
+            finally
+            {
+                UseWaitCursor = false;
+                if (btnNhanPhong != null) btnNhanPhong.Enabled = true;
+            }
         }
 
         private bool ValidateForm()
         {
-            TrySelectComboByTextContains(cboGioiTinh, cboGioiTinh.Text);
-            ApplyTypedGeoSelections();
+            if (string.IsNullOrWhiteSpace(GetPrimaryGuestName()))
+            {
+                MessageBox.Show("Vui lòng nhập Họ tên.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtHoTen.Focus();
+                return false;
+            }
 
-            if (cboLyDoLuuTru.SelectedIndex <= 0) { MessageBox.Show("Vui lòng chọn Lý do lưu trú.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning); cboLyDoLuuTru.Focus(); return false; }
-            if (string.IsNullOrWhiteSpace(GetPrimaryGuestName())) { MessageBox.Show("Vui lòng nhập Họ tên.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning); txtHoTen.Focus(); return false; }
-
-            if (GetSelectedTinh() == null)
-            {
-                MessageBox.Show("Vui lòng chọn Tỉnh/Thành phố.", "Thiếu thông tin địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cboTinhThanh.Focus();
-                return false;
-            }
-            if (rdoDiaBanCu.Checked && GetSelectedHuyen() == null)
-            {
-                MessageBox.Show("Vui lòng chọn Quận/Huyện.", "Thiếu thông tin địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cboHuyen.Focus();
-                return false;
-            }
-            if (GetSelectedXa() == null)
-            {
-                MessageBox.Show(rdoDiaBanMoi.Checked
-                        ? "Vui lòng chọn Xã/Phường/Đặc khu."
-                        : "Vui lòng chọn Xã/Phường.",
-                    "Thiếu thông tin địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cboPhuongXa.Focus();
-                return false;
-            }
-            if (string.IsNullOrWhiteSpace(txtDiaChiChiTiet.Text))
-            {
-                MessageBox.Show("Vui lòng nhập địa chỉ chi tiết.", "Thiếu thông tin địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtDiaChiChiTiet.Focus();
-                return false;
-            }
             return true;
         }
 
         private string GetPrimaryGuestName()
         {
-            if (lstKhach.Items.Count > 0)
-            {
-                string item = lstKhach.Items[0]?.ToString() ?? "";
-                if (!string.IsNullOrWhiteSpace(item))
-                {
-                    int idx = item.IndexOf(" - ", StringComparison.Ordinal);
-                    return idx > 0 ? item.Substring(0, idx).Trim() : item.Trim();
-                }
-            }
             return (txtHoTen.Text ?? "").Trim();
         }
 
         private void btnThemKhach_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtHoTen.Text)) return;
-            string display = $"{txtHoTen.Text.Trim()} - {txtSoGiayTo.Text.Trim()}";
-            lstKhach.Items.Add(display);
             txtHoTen.SelectAll();
             txtHoTen.Focus();
         }
 
+        private void lstKhach_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Removed guest list UI.
+        }
+
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
-            txtHoTen.Text = "";
-            cboGioiTinh.SelectedIndex = -1;
-            cboGioiTinh.Text = string.Empty;
-            dtpNgaySinh.Value = new DateTime(1990, 1, 1);
-            txtSoGiayTo.Text = "";
+            txtHoTen.Clear();
+            txtHoTen.Focus();
+        }
+
+        private BookingDAL.StayInfoRecord BuildStayInfoForSave(int bookingId)
+        {
+            var existing = ResolveExistingStayInfoForSave(bookingId);
+            decimal giaPhong = ParseMoneyToDecimal(txtGiaPhong.Text);
+            if (giaPhong <= 0m && existing != null && existing.GiaPhong > 0m)
+                giaPhong = existing.GiaPhong;
+            if (giaPhong <= 0m)
+            {
+                try
+                {
+                    giaPhong = _bookingDal.GetDonGiaNgayByPhong(_room.PhongID);
+                }
+                catch (Exception ex)
+                {
+                    AppLogger.Warn("Cannot resolve nightly rate when saving stay info.", new Dictionary<string, object>
+                    {
+                        ["RoomId"] = _room.PhongID,
+                        ["Error"] = ex.Message
+                    });
+                }
+            }
+            if (giaPhong <= 0m)
+                giaPhong = PricingService.Instance.GetDefaultNightlyRate(_room.LoaiPhongID);
+
+            int soDemLuuTru = existing != null && existing.SoDemLuuTru > 0
+                ? existing.SoDemLuuTru
+                : 1;
+
+            return new BookingDAL.StayInfoRecord
+            {
+                DatPhongID = bookingId,
+                LyDoLuuTru = cboLyDoLuuTru.SelectedItem == null ? null : cboLyDoLuuTru.SelectedItem.ToString(),
+                GioiTinh = null,
+                NgaySinh = null,
+                LoaiGiayTo = null,
+                SoGiayTo = null,
+                QuocTich = null,
+                NoiCuTru = null,
+                LaDiaBanCu = false,
+                MaTinhMoi = null,
+                MaXaMoi = null,
+                MaTinhCu = null,
+                MaHuyenCu = null,
+                MaXaCu = null,
+                DiaChiChiTiet = null,
+                GiaPhong = giaPhong,
+                SoDemLuuTru = soDemLuuTru,
+                GuestListJson = BuildGuestListForSave(existing == null ? null : existing.GuestListJson)
+            };
+        }
+
+        private BookingDAL.StayInfoRecord ResolveExistingStayInfoForSave(int bookingId)
+        {
+            if (_loadedStayInfo != null)
+                return _loadedStayInfo;
+
+            if (bookingId <= 0) return null;
+
             try
             {
-                LoadGeoDataAndBindInitial();
-            }
-            catch (FileNotFoundException ex)
-            {
-                MessageBox.Show("Không tìm thấy file địa bàn.\n\n" + ex.Message, "Thiếu dữ liệu địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (JsonException ex)
-            {
-                MessageBox.Show("Không thể đọc dữ liệu địa bàn.\n\n" + ex.Message, "Lỗi dữ liệu địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return _bookingDal.GetStayInfoByBooking(bookingId);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Không thể tải lại dữ liệu địa bàn.\n\n" + ex.Message, "Lỗi địa bàn", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AppLogger.Warn("Cannot load existing stay info before save.", new Dictionary<string, object>
+                {
+                    ["BookingId"] = bookingId,
+                    ["Error"] = ex.Message
+                });
+                return null;
             }
-            cboTinhThanh.SelectedIndex = -1;
-            cboTinhThanh.Text = string.Empty;
-            cboHuyen.SelectedIndex = -1;
-            cboHuyen.Text = string.Empty;
-            cboPhuongXa.SelectedIndex = -1;
-            cboPhuongXa.Text = string.Empty;
-            txtDiaChiChiTiet.Text = "";
         }
 
-        private string BuildGhiChuForSave()
+        private string BuildGuestListForSave(string existingGuestListJson)
         {
-            var tags = new List<string>();
-            tags.Add("LYDO=" + SafeTagValue(cboLyDoLuuTru.SelectedItem?.ToString()));
-            tags.Add("GT=" + SafeTagValue(cboGioiTinh.SelectedItem?.ToString() ?? cboGioiTinh.Text));
-            tags.Add("NS=" + dtpNgaySinh.Value.ToString("yyyyMMdd"));
-            tags.Add("LGT=" + SafeTagValue(cboLoaiGiayTo.SelectedItem?.ToString()));
-            tags.Add("SGT=" + SafeTagValue(txtSoGiayTo.Text.Trim()));
-            tags.Add("QT=" + SafeTagValue(cboQuocTich.SelectedItem?.ToString()));
-            tags.Add("NOICUTRU=" + SafeTagValue(GetNoiCuTruText()));
-            tags.Add("LOAIDB=" + SafeTagValue(rdoDiaBanCu.Checked ? "Địa bàn cũ" : "Địa bàn mới"));
-            var selectedTinh = GetSelectedTinh();
-            var selectedHuyen = GetSelectedHuyen();
-            var selectedXa = GetSelectedXa();
-            tags.Add("DBMATINH=" + SafeTagValue(selectedTinh?.MaTinh));
-            tags.Add("DBMAHUYEN=" + SafeTagValue(selectedHuyen?.MaHuyen));
-            tags.Add("DBMAXA=" + SafeTagValue(selectedXa?.MaXa));
-            tags.Add("DBTINH=" + SafeTagValue(selectedTinh?.TenTinh));
-            tags.Add("DBHUYEN=" + SafeTagValue(selectedHuyen?.TenHuyen));
-            tags.Add("DBXA=" + SafeTagValue(selectedXa?.TenXa));
-            tags.Add("DBDCCT=" + SafeTagValue(txtDiaChiChiTiet.Text.Trim()));
-            tags.Add("GIA=" + ParseMoneyToDecimal(txtGiaPhong.Text).ToString("0"));
-            if (dtpTraPhong.Checked) tags.Add("TRAP=" + dtpTraPhong.Value.ToString("yyyyMMdd"));
-            if (lstKhach.Items.Count > 0)
+            string primaryName = (txtHoTen.Text ?? string.Empty).Trim();
+            if (!string.IsNullOrWhiteSpace(primaryName))
+                return primaryName;
+
+            return string.IsNullOrWhiteSpace(existingGuestListJson)
+                ? string.Empty
+                : existingGuestListJson.Trim();
+        }
+
+        private string SerializeGuestList()
+        {
+            var items = new List<string>();
+            foreach (var it in lstKhach.Items)
             {
-                var guests = new List<string>();
-                foreach (var it in lstKhach.Items) {
-                    if (it == null) continue;
-                    string s = it.ToString().Trim();
-                    if (s.Length > 0) guests.Add(SafeTagValue(s));
-                }
-                if (guests.Count > 0) tags.Add("DSK=" + string.Join(";", guests));
+                if (it == null) continue;
+                string value = it.ToString();
+                if (string.IsNullOrWhiteSpace(value)) continue;
+                items.Add(value.Replace("\r", " ").Replace("\n", " ").Trim());
             }
-            return string.Join(" | ", tags);
+            return string.Join("\n", items);
+        }
+
+        private void LoadStayInfoState()
+        {
+            if (IsDisposed) return;
+            if (_isHourlyMode) return;
+            if (_room == null || _room.TrangThai != 1) return;
+            if (!_deferCheckinCommit && (!_room.KieuThue.HasValue || _room.KieuThue.Value != 1)) return;
+
+            var booking = _bookingDal.GetCurrentBookingByRoom(_room.PhongID);
+            if (booking == null || booking.BookingType != 2) return;
+
+            _loadedStayInfo = _bookingDal.GetStayInfoByBooking(booking.DatPhongID);
+            if (_loadedStayInfo == null) return;
+
+            SelectComboByText(cboLyDoLuuTru, _loadedStayInfo.LyDoLuuTru);
+            if (_loadedStayInfo.GiaPhong > 0m) txtGiaPhong.Text = _loadedStayInfo.GiaPhong.ToString("N0");
+
+            string savedGuestName = ExtractPrimaryGuestName(_loadedStayInfo.GuestListJson);
+            if (!string.IsNullOrWhiteSpace(savedGuestName))
+                txtHoTen.Text = savedGuestName;
+        }
+
+        private static string ExtractPrimaryGuestName(string guestListJson)
+        {
+            if (string.IsNullOrWhiteSpace(guestListJson))
+                return string.Empty;
+
+            string firstLine = guestListJson
+                .Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => (x ?? string.Empty).Trim())
+                .FirstOrDefault(x => x.Length > 0);
+
+            if (string.IsNullOrWhiteSpace(firstLine))
+                return string.Empty;
+
+            int idx = firstLine.IndexOf(GuestStorageSeparator, StringComparison.Ordinal);
+            return idx > 0 ? firstLine.Substring(0, idx).Trim() : firstLine;
         }
 
         private string GetNoiCuTruText()
@@ -1751,77 +1930,111 @@ namespace HotelManagement.Forms
             if (rdoTamTru.Checked) return "Tạm trú";
             return "Khác";
         }
-
-        private static string SafeTagValue(string s)
+        private GuestListEntry BuildGuestEntryFromCurrentForm()
         {
-            s = (s ?? "").Trim();
-            if (s.Length == 0) return "";
-            s = s.Replace("|", "/");
-            s = Regex.Replace(s, @"\s+", " ");
-            return s;
-        }
-
-        private static string GetStringTag(string text, string key, string defaultVal)
-        {
-            if (string.IsNullOrEmpty(text)) return defaultVal;
-            Match m = Regex.Match(text, @"\b" + Regex.Escape(key) + @"\s*=\s*([^|]+)", RegexOptions.IgnoreCase);
-            if (m.Success) return m.Groups[1].Value.Trim();
-            return defaultVal;
-        }
-
-        private void LoadStateFromGhiChu(string ghiChu)
-        {
-            if (string.IsNullOrWhiteSpace(ghiChu)) return;
-            string lyDo = GetStringTag(ghiChu, "LYDO", "");
-            if (string.Equals(lyDo, "Khác", StringComparison.OrdinalIgnoreCase)) lyDo = "Mục đích khác";
-            SelectComboByText(cboLyDoLuuTru, lyDo);
-            SelectComboByText(cboGioiTinh, GetStringTag(ghiChu, "GT", ""));
-            string ns = GetStringTag(ghiChu, "NS", "");
-            if (ns.Length == 8 && DateTime.TryParseExact(ns, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dob)) dtpNgaySinh.Value = dob;
-            txtSoGiayTo.Text = GetStringTag(ghiChu, "SGT", "");
-
-            string noiCuTru = GetStringTag(ghiChu, "NOICUTRU", "");
-            if (string.Equals(noiCuTru, "Thường trú", StringComparison.OrdinalIgnoreCase)) rdoThuongTru.Checked = true;
-            else if (string.Equals(noiCuTru, "Tạm trú", StringComparison.OrdinalIgnoreCase)) rdoTamTru.Checked = true;
-            else if (!string.IsNullOrWhiteSpace(noiCuTru)) rdoNoiKhac.Checked = true;
-
-            string loaiDiaBan = GetStringTag(ghiChu, "LOAIDB", "");
-            if (string.Equals(loaiDiaBan, "Địa bàn cũ", StringComparison.OrdinalIgnoreCase)) rdoDiaBanCu.Checked = true;
-            else if (string.Equals(loaiDiaBan, "Địa bàn mới", StringComparison.OrdinalIgnoreCase)) rdoDiaBanMoi.Checked = true;
-
-            string maTinh = GetStringTag(ghiChu, "DBMATINH", "");
-            string maHuyen = GetStringTag(ghiChu, "DBMAHUYEN", "");
-            string maXa = GetStringTag(ghiChu, "DBMAXA", "");
-            string tenTinh = GetStringTag(ghiChu, "DBTINH", "");
-            string tenHuyen = GetStringTag(ghiChu, "DBHUYEN", "");
-            string tenXa = GetStringTag(ghiChu, "DBXA", "");
-            if (string.IsNullOrWhiteSpace(tenXa))
-                tenXa = GetStringTag(ghiChu, "DBPX", "");
-
-            if (!string.IsNullOrWhiteSpace(maTinh)) SelectTinhByMa(maTinh);
-            else if (!string.IsNullOrWhiteSpace(tenTinh)) SelectTinhByNameContains(tenTinh);
-
-            if (!string.IsNullOrWhiteSpace(maHuyen)) SelectHuyenByMa(maHuyen);
-            else if (!string.IsNullOrWhiteSpace(tenHuyen)) SelectHuyenByNameContains(tenHuyen);
-
-            if (!string.IsNullOrWhiteSpace(maXa)) SelectXaByMa(maXa);
-            else if (!string.IsNullOrWhiteSpace(tenXa)) SelectXaByNameContains(tenXa);
-
-            string diaChiChiTiet = GetStringTag(ghiChu, "DBDCCT", "");
-            if (!string.IsNullOrWhiteSpace(diaChiChiTiet))
-                txtDiaChiChiTiet.Text = diaChiChiTiet;
-
-            string gia = GetStringTag(ghiChu, "GIA", "");
-            if (!string.IsNullOrWhiteSpace(gia))
+            return new GuestListEntry
             {
-                var giaDecimal = ParseMoneyToDecimal(gia);
-                txtGiaPhong.Text = giaDecimal.ToString("N0");
+                HoTen = (txtHoTen.Text ?? string.Empty).Trim(),
+                SoGiayTo = (txtSoGiayTo.Text ?? string.Empty).Trim(),
+                GioiTinh = (cboGioiTinh.SelectedItem?.ToString() ?? cboGioiTinh.Text ?? string.Empty).Trim(),
+                NgaySinh = dtpNgaySinh.Value,
+                LoaiGiayTo = (cboLoaiGiayTo.SelectedItem?.ToString() ?? string.Empty).Trim(),
+                QuocTich = (cboQuocTich.SelectedItem?.ToString() ?? string.Empty).Trim(),
+                NoiCuTru = GetNoiCuTruText(),
+                LaDiaBanCu = rdoDiaBanCu.Checked,
+                MaTinhMoi = GetSelectedTinh()?.MaTinh,
+                MaXaMoi = GetSelectedXa()?.MaXa,
+                MaTinhCu = GetSelectedTinhCu()?.MaTinh,
+                MaHuyenCu = GetSelectedHuyenCu()?.MaHuyen,
+                MaXaCu = GetSelectedXaCu()?.MaXa,
+                DiaChiChiTiet = (txtDiaChiChiTiet.Text ?? string.Empty).Trim()
+            };
+        }
+
+        private static bool TryGetGuestEntry(object item, out GuestListEntry entry)
+        {
+            entry = null;
+            if (item == null) return false;
+
+            if (item is GuestListEntry ge)
+            {
+                entry = ge;
+                return true;
             }
-            string dsk = GetStringTag(ghiChu, "DSK", "");
-            if (!string.IsNullOrWhiteSpace(dsk)) {
-                var parts = dsk.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var p in parts) lstKhach.Items.Add(p.Trim());
+
+            entry = ParseGuestEntryFromLegacyText(item.ToString());
+            return entry != null;
+        }
+
+        private void ApplyGuestEntryToForm(GuestListEntry entry)
+        {
+            if (entry == null) return;
+
+            if (!string.IsNullOrWhiteSpace(entry.HoTen))
+                txtHoTen.Text = entry.HoTen;
+            if (!string.IsNullOrWhiteSpace(entry.SoGiayTo))
+                txtSoGiayTo.Text = entry.SoGiayTo;
+            if (!string.IsNullOrWhiteSpace(entry.GioiTinh))
+                SelectComboByText(cboGioiTinh, entry.GioiTinh);
+            if (entry.NgaySinh.HasValue)
+                dtpNgaySinh.Value = entry.NgaySinh.Value;
+            if (!string.IsNullOrWhiteSpace(entry.LoaiGiayTo))
+                SelectComboByText(cboLoaiGiayTo, entry.LoaiGiayTo);
+            if (!string.IsNullOrWhiteSpace(entry.QuocTich))
+                SelectComboByText(cboQuocTich, entry.QuocTich);
+            if (!string.IsNullOrWhiteSpace(entry.DiaChiChiTiet))
+                txtDiaChiChiTiet.Text = entry.DiaChiChiTiet;
+
+            if (string.Equals(entry.NoiCuTru, "Thường trú", StringComparison.OrdinalIgnoreCase))
+                rdoThuongTru.Checked = true;
+            else if (string.Equals(entry.NoiCuTru, "Tạm trú", StringComparison.OrdinalIgnoreCase))
+                rdoTamTru.Checked = true;
+            else if (!string.IsNullOrWhiteSpace(entry.NoiCuTru))
+                rdoNoiKhac.Checked = true;
+
+            if (entry.LaDiaBanCu.HasValue)
+                rdoDiaBanCu.Checked = entry.LaDiaBanCu.Value;
+
+            if (!string.IsNullOrWhiteSpace(entry.MaTinhMoi))
+                SelectTinhByMa(entry.MaTinhMoi);
+            if (!string.IsNullOrWhiteSpace(entry.MaXaMoi))
+                SelectXaByMa(entry.MaXaMoi);
+
+            bool hasLegacyGeo =
+                !string.IsNullOrWhiteSpace(entry.MaTinhCu) ||
+                !string.IsNullOrWhiteSpace(entry.MaHuyenCu) ||
+                !string.IsNullOrWhiteSpace(entry.MaXaCu);
+            if (hasLegacyGeo)
+                EnsureLegacyGeoBound();
+
+            if (!string.IsNullOrWhiteSpace(entry.MaTinhCu))
+                SelectTinhCuByMa(entry.MaTinhCu);
+            if (!string.IsNullOrWhiteSpace(entry.MaHuyenCu))
+                SelectHuyenCuByMa(entry.MaHuyenCu);
+            if (!string.IsNullOrWhiteSpace(entry.MaXaCu))
+                SelectXaCuByMa(entry.MaXaCu);
+        }
+
+        private static GuestListEntry ParseGuestEntryFromLegacyText(string text)
+        {
+            string raw = (text ?? string.Empty).Trim();
+            if (raw.Length == 0) return null;
+
+            int idx = raw.IndexOf(GuestStorageSeparator, StringComparison.Ordinal);
+            if (idx <= 0)
+            {
+                return new GuestListEntry
+                {
+                    HoTen = raw,
+                    SoGiayTo = string.Empty
+                };
             }
+
+            return new GuestListEntry
+            {
+                HoTen = raw.Substring(0, idx).Trim(),
+                SoGiayTo = raw.Substring(idx + GuestStorageSeparator.Length).Trim()
+            };
         }
 
         private bool SelectTinhByNameContains(string input)
@@ -1854,6 +2067,40 @@ namespace HotelManagement.Forms
             return false;
         }
 
+        private bool SelectTinhCuByNameContains(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return false;
+            EnsureLegacyGeoBound();
+            if (_cboTinhThanhCu == null) return false;
+            string key = NormalizeForCompare(input);
+            for (int i = 0; i < _cboTinhThanhCu.Items.Count; i++)
+            {
+                var item = _cboTinhThanhCu.Items[i] as GeoComboItem<Tinh>;
+                if (item == null || item.Value == null) continue;
+                if (!NormalizeForCompare(item.Value.TenTinh).Contains(key) && !key.Contains(NormalizeForCompare(item.Value.TenTinh))) continue;
+                _cboTinhThanhCu.SelectedIndex = i;
+                return true;
+            }
+            return false;
+        }
+
+        private bool SelectHuyenCuByNameContains(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return false;
+            EnsureLegacyGeoBound();
+            if (_cboHuyenCu == null) return false;
+            string key = NormalizeForCompare(input);
+            for (int i = 0; i < _cboHuyenCu.Items.Count; i++)
+            {
+                var item = _cboHuyenCu.Items[i] as GeoComboItem<Huyen>;
+                if (item == null || item.Value == null) continue;
+                if (!NormalizeForCompare(item.Value.TenHuyen).Contains(key) && !key.Contains(NormalizeForCompare(item.Value.TenHuyen))) continue;
+                _cboHuyenCu.SelectedIndex = i;
+                return true;
+            }
+            return false;
+        }
+
         private bool SelectXaByNameContains(string input)
         {
             if (string.IsNullOrWhiteSpace(input)) return false;
@@ -1864,6 +2111,23 @@ namespace HotelManagement.Forms
                 if (item == null || item.Value == null) continue;
                 if (!NormalizeForCompare(item.Value.TenXa).Contains(key) && !key.Contains(NormalizeForCompare(item.Value.TenXa))) continue;
                 cboPhuongXa.SelectedIndex = i;
+                return true;
+            }
+            return false;
+        }
+
+        private bool SelectXaCuByNameContains(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return false;
+            EnsureLegacyGeoBound();
+            if (_cboPhuongXaCu == null) return false;
+            string key = NormalizeForCompare(input);
+            for (int i = 0; i < _cboPhuongXaCu.Items.Count; i++)
+            {
+                var item = _cboPhuongXaCu.Items[i] as GeoComboItem<Xa>;
+                if (item == null || item.Value == null) continue;
+                if (!NormalizeForCompare(item.Value.TenXa).Contains(key) && !key.Contains(NormalizeForCompare(item.Value.TenXa))) continue;
+                _cboPhuongXaCu.SelectedIndex = i;
                 return true;
             }
             return false;
@@ -1887,7 +2151,7 @@ namespace HotelManagement.Forms
                 }
             }
 
-            if (rdoDiaBanMoi.Checked && GetSelectedTinh() != null && GetSelectedXa() == null)
+            if (GetSelectedTinh() != null && GetSelectedXa() == null)
             {
                 for (int i = 0; i < cboPhuongXa.Items.Count; i++)
                 {
@@ -1897,32 +2161,284 @@ namespace HotelManagement.Forms
                     cboPhuongXa.SelectedIndex = i;
                     break;
                 }
+            }
+        }
+
+        private void cboTinhCu_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isGeoBinding || _isComboFiltering) return;
+            try
+            {
+                BindHuyenCuComboBySelectedTinh(false);
+                SyncNewFromOldTinh();
+            }
+            catch (Exception ex)
+            {
+                ShowFriendlyError("RoomDetail.BindHuyenCu", "Không thể tải quận/huyện cũ. Vui lòng thử lại.", ex, "Lỗi địa bàn");
+            }
+        }
+
+        private void cboTinhCu_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            cboTinhCu_SelectedIndexChanged(sender, e);
+        }
+
+        private void cboTinhCu_Leave(object sender, EventArgs e)
+        {
+            TrySelectComboByTextContains(_cboTinhThanhCu, _cboTinhThanhCu.Text);
+        }
+
+        private void cboTinhCu_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Enter) return;
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+            TrySelectComboByTextContains(_cboTinhThanhCu, _cboTinhThanhCu.Text);
+        }
+
+        private void cboHuyenCu_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isGeoBinding || _isComboFiltering) return;
+            try
+            {
+                BindXaCuComboBySelectedHuyen(false);
+                SyncNewFromOldHuyen();
+            }
+            catch (Exception ex)
+            {
+                ShowFriendlyError("RoomDetail.BindXaCu", "Không thể tải phường/xã cũ. Vui lòng thử lại.", ex, "Lỗi địa bàn");
+            }
+        }
+
+        private void cboHuyenCu_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            cboHuyenCu_SelectedIndexChanged(sender, e);
+        }
+
+        private void cboHuyenCu_Leave(object sender, EventArgs e)
+        {
+            TrySelectComboByTextContains(_cboHuyenCu, _cboHuyenCu.Text);
+        }
+
+        private void cboHuyenCu_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Enter) return;
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+            TrySelectComboByTextContains(_cboHuyenCu, _cboHuyenCu.Text);
+        }
+
+        private void cboPhuongXaCu_Leave(object sender, EventArgs e)
+        {
+            TrySelectComboByTextContains(_cboPhuongXaCu, _cboPhuongXaCu.Text);
+        }
+
+        private void cboPhuongXaCu_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isGeoBinding || _isComboFiltering) return;
+            SyncNewFromOldXa();
+        }
+
+        private void cboPhuongXaCu_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            cboPhuongXaCu_SelectedIndexChanged(sender, e);
+        }
+
+        private void cboPhuongXaCu_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Enter) return;
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+            TrySelectComboByTextContains(_cboPhuongXaCu, _cboPhuongXaCu.Text);
+        }
+
+        private void SyncNewFromOldTinh()
+        {
+            var oldTinh = GetSelectedTinhCu();
+            if (oldTinh == null) return;
+
+            string mappedProvince = ResolveNewProvinceFromOldTinh(oldTinh.MaTinh);
+            if (string.IsNullOrWhiteSpace(mappedProvince))
+                mappedProvince = oldTinh.MaTinh;
+
+            if (!string.IsNullOrWhiteSpace(mappedProvince))
+                SelectTinhByMa(mappedProvince);
+
+            ClearNewXaSelection();
+        }
+
+        private void SyncNewFromOldHuyen()
+        {
+            var oldTinh = GetSelectedTinhCu();
+            var oldHuyen = GetSelectedHuyenCu();
+            if (oldTinh == null || oldHuyen == null) return;
+
+            string mappedProvince;
+            string mappedXa;
+            if (TryResolveUniqueNewXaByOldDistrict(oldTinh.MaTinh, oldHuyen.MaHuyen, out mappedProvince, out mappedXa))
+            {
+                SelectMappedNewLocation(mappedProvince, mappedXa);
                 return;
             }
 
-            if (GetSelectedTinh() != null && GetSelectedHuyen() == null)
+            mappedProvince = ResolveNewProvinceFromOldTinh(oldTinh.MaTinh);
+            if (string.IsNullOrWhiteSpace(mappedProvince))
+                mappedProvince = oldTinh.MaTinh;
+
+            if (!string.IsNullOrWhiteSpace(mappedProvince))
+                SelectTinhByMa(mappedProvince);
+            ClearNewXaSelection();
+        }
+
+        private void SyncNewFromOldXa()
+        {
+            var oldXa = GetSelectedXaCu();
+            var oldTinh = GetSelectedTinhCu();
+            if (oldXa == null)
             {
-                for (int i = 0; i < cboHuyen.Items.Count; i++)
-                {
-                    var hItem = cboHuyen.Items[i] as GeoComboItem<Huyen>;
-                    if (hItem == null || hItem.Value == null) continue;
-                    if (!raw.Contains(NormalizeForCompare(hItem.Value.TenHuyen))) continue;
-                    cboHuyen.SelectedIndex = i;
-                    break;
-                }
+                SyncNewFromOldHuyen();
+                return;
             }
 
-            if (GetSelectedHuyen() != null && GetSelectedXa() == null)
+            if (TryResolveNewByOldXa(oldXa.MaXa, out var mappedProvince, out var mappedXa))
             {
-                for (int i = 0; i < cboPhuongXa.Items.Count; i++)
+                SelectMappedNewLocation(mappedProvince, mappedXa);
+                return;
+            }
+
+            if (oldTinh != null)
+            {
+                SelectTinhByMa(oldTinh.MaTinh);
+                if (!TrySelectComboByTextContains(cboPhuongXa, oldXa.TenXa))
+                    ClearNewXaSelection();
+            }
+        }
+
+        private bool TryResolveNewByOldXa(string oldMaXa, out string newProvinceCode, out string newCommuneCode)
+        {
+            newProvinceCode = null;
+            newCommuneCode = null;
+            if (string.IsNullOrWhiteSpace(oldMaXa) || _oldToNewXaMap == null || _oldToNewXaMap.Count == 0)
+                return false;
+
+            if (!_oldToNewXaMap.TryGetValue(oldMaXa.Trim(), out var mapped) || mapped == null)
+                return false;
+
+            newProvinceCode = mapped.ProvinceCodeNew;
+            newCommuneCode = mapped.CommuneCodeNew;
+            return !string.IsNullOrWhiteSpace(newCommuneCode);
+        }
+
+        private string ResolveNewProvinceFromOldTinh(string oldProvinceCode)
+        {
+            if (string.IsNullOrWhiteSpace(oldProvinceCode) || _oldToNewXaMap == null || _oldToNewXaMap.Count == 0)
+                return string.Empty;
+
+            string oldCode = oldProvinceCode.Trim();
+            var most = _oldToNewXaMap.Values
+                .Where(x => x != null
+                    && string.Equals(x.ProvinceCodeOld, oldCode, StringComparison.OrdinalIgnoreCase)
+                    && !string.IsNullOrWhiteSpace(x.ProvinceCodeNew))
+                .GroupBy(x => x.ProvinceCodeNew, StringComparer.OrdinalIgnoreCase)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .FirstOrDefault();
+
+            return most ?? string.Empty;
+        }
+
+        private bool TryResolveUniqueNewXaByOldDistrict(string oldProvinceCode, string oldDistrictCode, out string newProvinceCode, out string newCommuneCode)
+        {
+            newProvinceCode = null;
+            newCommuneCode = null;
+            if (string.IsNullOrWhiteSpace(oldProvinceCode) || string.IsNullOrWhiteSpace(oldDistrictCode) || _oldToNewXaMap == null || _oldToNewXaMap.Count == 0)
+                return false;
+
+            var candidates = _oldToNewXaMap.Values
+                .Where(x => x != null
+                    && string.Equals(x.ProvinceCodeOld, oldProvinceCode.Trim(), StringComparison.OrdinalIgnoreCase)
+                    && string.Equals(x.DistrictCodeOld, oldDistrictCode.Trim(), StringComparison.OrdinalIgnoreCase)
+                    && !string.IsNullOrWhiteSpace(x.ProvinceCodeNew)
+                    && !string.IsNullOrWhiteSpace(x.CommuneCodeNew))
+                .GroupBy(x => (x.ProvinceCodeNew ?? string.Empty).Trim() + "|" + (x.CommuneCodeNew ?? string.Empty).Trim(), StringComparer.OrdinalIgnoreCase)
+                .Select(g => new { Key = g.Key, Count = g.Count() })
+                .OrderByDescending(x => x.Count)
+                .ToList();
+
+            if (candidates.Count != 1)
+                return false;
+
+            var parts = candidates[0].Key.Split('|');
+            if (parts.Length != 2)
+                return false;
+
+            newProvinceCode = parts[0];
+            newCommuneCode = parts[1];
+            return !string.IsNullOrWhiteSpace(newCommuneCode);
+        }
+
+        private void SelectMappedNewLocation(string newProvinceCode, string newCommuneCode)
+        {
+            bool oldBinding = _isGeoBinding;
+            _isGeoBinding = true;
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(newProvinceCode))
+                    SelectTinhByMa(newProvinceCode);
+
+                BindXaComboBySelectedTinhForNewMode(false);
+                if (!string.IsNullOrWhiteSpace(newCommuneCode))
                 {
-                    var xItem = cboPhuongXa.Items[i] as GeoComboItem<Xa>;
-                    if (xItem == null || xItem.Value == null) continue;
-                    if (!raw.Contains(NormalizeForCompare(xItem.Value.TenXa))) continue;
-                    cboPhuongXa.SelectedIndex = i;
-                    break;
+                    if (!TrySelectComboByKey<Xa>(cboPhuongXa, newCommuneCode, x => x.MaXa))
+                        TrySelectComboByTextContains(cboPhuongXa, GetNewNameByCode(newCommuneCode));
                 }
             }
+            finally
+            {
+                _isGeoBinding = oldBinding;
+            }
+        }
+
+        private string GetNewNameByCode(string newCommuneCode)
+        {
+            if (string.IsNullOrWhiteSpace(newCommuneCode) || _oldToNewXaMap == null || _oldToNewXaMap.Count == 0)
+                return string.Empty;
+
+            return _oldToNewXaMap.Values
+                .Where(x => x != null && string.Equals(x.CommuneCodeNew, newCommuneCode.Trim(), StringComparison.OrdinalIgnoreCase))
+                .Select(x => x.NameViNew)
+                .FirstOrDefault() ?? string.Empty;
+        }
+
+        private void ClearNewXaSelection()
+        {
+            if (cboPhuongXa == null) return;
+            cboPhuongXa.SelectedIndex = -1;
+            cboPhuongXa.Text = string.Empty;
+        }
+
+        private void SelectTinhCuByMa(string maTinh)
+        {
+            if (string.IsNullOrWhiteSpace(maTinh)) return;
+            EnsureLegacyGeoBound();
+            if (_cboTinhThanhCu == null) return;
+            TrySelectComboByKey<Tinh>(_cboTinhThanhCu, maTinh, x => x.MaTinh);
+        }
+
+        private void SelectHuyenCuByMa(string maHuyen)
+        {
+            if (string.IsNullOrWhiteSpace(maHuyen)) return;
+            EnsureLegacyGeoBound();
+            if (_cboHuyenCu == null) return;
+            TrySelectComboByKey<Huyen>(_cboHuyenCu, maHuyen, x => x.MaHuyen);
+        }
+
+        private void SelectXaCuByMa(string maXa)
+        {
+            if (string.IsNullOrWhiteSpace(maXa)) return;
+            EnsureLegacyGeoBound();
+            if (_cboPhuongXaCu == null) return;
+            TrySelectComboByKey<Xa>(_cboPhuongXaCu, maXa, x => x.MaXa);
         }
 
         private static string NormalizeForCompare(string text)

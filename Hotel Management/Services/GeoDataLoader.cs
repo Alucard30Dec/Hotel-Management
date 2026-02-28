@@ -11,9 +11,32 @@ namespace HotelManagement.Services
 {
     public sealed class GeoDataLoader
     {
+        public sealed class OldNewGeoMapping
+        {
+            public string ProvinceCodeOld { get; set; }
+            public string DistrictCodeOld { get; set; }
+            public string CommuneCodeOld { get; set; }
+            public string ProvinceCodeNew { get; set; }
+            public string CommuneCodeNew { get; set; }
+            public string NameViOld { get; set; }
+            public string NameViNew { get; set; }
+        }
+
         private readonly string _jsonFilePath;
+        private string _resolvedOptimizedJsonPath;
+        private bool _optimizedPathResolved;
         private const string AddressFolderName = "Address";
         private const string OptimizedJsonFileName = "dvhc_optimized.json";
+        private static readonly object OptimizedCacheLock = new object();
+        private static readonly Dictionary<string, OptimizedCacheEntry> OptimizedCacheByPath =
+            new Dictionary<string, OptimizedCacheEntry>(StringComparer.OrdinalIgnoreCase);
+
+        private sealed class OptimizedCacheEntry
+        {
+            public DateTime LastWriteUtc { get; set; }
+            public IReadOnlyList<Tinh> GeoData { get; set; }
+            public IReadOnlyDictionary<string, OldNewGeoMapping> OldToNewMap { get; set; }
+        }
 
         public GeoDataLoader(string jsonFilePath)
         {
@@ -26,9 +49,9 @@ namespace HotelManagement.Services
         public IReadOnlyList<Tinh> Load()
         {
             bool requestedOptimized = IsOptimizedJsonPath(_jsonFilePath);
-            string optimizedPath = ResolveOptimizedJsonPath(_jsonFilePath);
+            string optimizedPath = ResolveOptimizedJsonPathCached();
             if (!string.IsNullOrWhiteSpace(optimizedPath))
-                return LoadOptimizedJson(optimizedPath);
+                return EnsureOptimizedCache(optimizedPath).GeoData;
 
             if (requestedOptimized)
             {
@@ -41,7 +64,81 @@ namespace HotelManagement.Services
             return LoadLegacyJson();
         }
 
-        private List<Tinh> LoadOptimizedJson(string fullPath)
+        public IReadOnlyDictionary<string, OldNewGeoMapping> LoadOldToNewCommuneMap()
+        {
+            bool requestedOptimized = IsOptimizedJsonPath(_jsonFilePath);
+            string optimizedPath = ResolveOptimizedJsonPathCached();
+            if (string.IsNullOrWhiteSpace(optimizedPath))
+            {
+                if (requestedOptimized)
+                {
+                    string resolvedExpected = ResolveLegacyJsonPath(_jsonFilePath);
+                    throw new FileNotFoundException(
+                        "Không tìm thấy file địa bàn tối ưu (dvhc_optimized.json). Vui lòng kiểm tra lại thư mục Address.",
+                        resolvedExpected);
+                }
+
+                return new Dictionary<string, OldNewGeoMapping>(StringComparer.OrdinalIgnoreCase);
+            }
+
+            return EnsureOptimizedCache(optimizedPath).OldToNewMap;
+        }
+
+        private string ResolveOptimizedJsonPathCached()
+        {
+            if (_optimizedPathResolved)
+                return _resolvedOptimizedJsonPath;
+
+            _resolvedOptimizedJsonPath = ResolveOptimizedJsonPath(_jsonFilePath);
+            _optimizedPathResolved = true;
+            return _resolvedOptimizedJsonPath;
+        }
+
+        private OptimizedCacheEntry EnsureOptimizedCache(string fullPath)
+        {
+            if (string.IsNullOrWhiteSpace(fullPath))
+                throw new FileNotFoundException("Không tìm thấy file địa bàn tối ưu (dvhc_optimized.json).");
+
+            if (!File.Exists(fullPath))
+                throw new FileNotFoundException("Không tìm thấy file địa bàn tối ưu (dvhc_optimized.json).", fullPath);
+
+            DateTime lastWriteUtc = File.GetLastWriteTimeUtc(fullPath);
+            lock (OptimizedCacheLock)
+            {
+                if (OptimizedCacheByPath.TryGetValue(fullPath, out var cached)
+                    && cached != null
+                    && cached.LastWriteUtc == lastWriteUtc
+                    && cached.GeoData != null
+                    && cached.OldToNewMap != null)
+                {
+                    return cached;
+                }
+            }
+
+            var root = DeserializeOptimizedRoot(fullPath);
+            if (root == null || root.Old == null || root.New == null)
+                throw new JsonException("File dvhc_optimized.json thiếu dữ liệu bắt buộc (old/new).");
+
+            var data = BuildGeoFromOptimized(root);
+            NormalizeCollections(data);
+            var map = BuildOldToNewMap(root);
+
+            var fresh = new OptimizedCacheEntry
+            {
+                LastWriteUtc = lastWriteUtc,
+                GeoData = data,
+                OldToNewMap = map
+            };
+
+            lock (OptimizedCacheLock)
+            {
+                OptimizedCacheByPath[fullPath] = fresh;
+            }
+
+            return fresh;
+        }
+
+        private static DvhcOptimizedRoot DeserializeOptimizedRoot(string fullPath)
         {
             try
             {
@@ -53,13 +150,7 @@ namespace HotelManagement.Services
                         {
                             UseSimpleDictionaryFormat = true
                         });
-                    var root = serializer.ReadObject(stream) as DvhcOptimizedRoot;
-                    if (root == null || root.Old == null || root.New == null)
-                        throw new JsonException("File dvhc_optimized.json thiếu dữ liệu bắt buộc (old/new).");
-
-                    var data = BuildGeoFromOptimized(root);
-                    NormalizeCollections(data);
-                    return data;
+                    return serializer.ReadObject(stream) as DvhcOptimizedRoot;
                 }
             }
             catch (FileNotFoundException)
@@ -74,6 +165,40 @@ namespace HotelManagement.Services
             {
                 throw new JsonException("File dvhc_optimized.json không đúng định dạng mong đợi.", ex);
             }
+        }
+
+        private static IReadOnlyDictionary<string, OldNewGeoMapping> BuildOldToNewMap(DvhcOptimizedRoot root)
+        {
+            if (root == null)
+                throw new JsonException("File dvhc_optimized.json thiếu dữ liệu map địa bàn.");
+
+            int provincePad = root.CodePadding?.Province > 0 ? root.CodePadding.Province : 2;
+            int districtPad = root.CodePadding?.District > 0 ? root.CodePadding.District : 3;
+            int communePad = root.CodePadding?.Commune > 0 ? root.CodePadding.Commune : 5;
+
+            var map = new Dictionary<string, OldNewGeoMapping>(StringComparer.OrdinalIgnoreCase);
+            foreach (var item in root.MapOldNewHeuristic ?? Enumerable.Empty<OldNewMapDto>())
+            {
+                string oldComm = NormalizeCode(item.CommuneCodeOld, communePad);
+                if (string.IsNullOrWhiteSpace(oldComm))
+                    continue;
+
+                if (map.ContainsKey(oldComm))
+                    continue;
+
+                map[oldComm] = new OldNewGeoMapping
+                {
+                    ProvinceCodeOld = NormalizeCode(item.ProvinceCodeOld, provincePad),
+                    DistrictCodeOld = NormalizeCode(item.DistrictCodeOld, districtPad),
+                    CommuneCodeOld = oldComm,
+                    ProvinceCodeNew = NormalizeCode(item.ProvinceCodeNew, provincePad),
+                    CommuneCodeNew = NormalizeCode(item.CommuneCodeNew, communePad),
+                    NameViOld = (item.NameViOld ?? string.Empty).Trim(),
+                    NameViNew = (item.NameViNew ?? string.Empty).Trim()
+                };
+            }
+
+            return map;
         }
 
         private List<Tinh> LoadLegacyJson()
@@ -702,6 +827,18 @@ namespace HotelManagement.Services
 
             [DataMember(Name = "commune_code_old")]
             public string CommuneCodeOld { get; set; }
+
+            [DataMember(Name = "name_vi_old")]
+            public string NameViOld { get; set; }
+
+            [DataMember(Name = "province_code_new")]
+            public string ProvinceCodeNew { get; set; }
+
+            [DataMember(Name = "commune_code_new")]
+            public string CommuneCodeNew { get; set; }
+
+            [DataMember(Name = "name_vi_new")]
+            public string NameViNew { get; set; }
 
             [DataMember(Name = "source_note")]
             public string SourceNote { get; set; }

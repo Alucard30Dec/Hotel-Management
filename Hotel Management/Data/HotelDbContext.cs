@@ -20,6 +20,7 @@ namespace HotelManagement.Data
             modelBuilder.Entity<Room>().ToTable("PHONG");
             modelBuilder.Entity<Customer>().ToTable("KHACHHANG");
             modelBuilder.Entity<Booking>().ToTable("DATPHONG");
+            modelBuilder.Entity<Booking>().Ignore(x => x.BookingType);
             modelBuilder.Entity<Invoice>().ToTable("HOADON");
             modelBuilder.Entity<User>().ToTable("USERS");
 

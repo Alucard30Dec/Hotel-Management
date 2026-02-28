@@ -11,7 +11,6 @@ namespace HotelManagement.Models
         public int LoaiPhongID { get; set; }
         public int Tang { get; set; }
         public int TrangThai { get; set; }
-        public string GhiChu { get; set; }
         public DateTime? ThoiGianBatDau { get; set; }
         public int? KieuThue { get; set; }
         public string TenKhachHienThi { get; set; }

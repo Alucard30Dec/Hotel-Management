@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 #if USE_CCCD_EXTERNAL_LIBS
 using Tesseract;
@@ -141,14 +142,48 @@ namespace HotelManagement.Services
         private static Bitmap Threshold(Bitmap source, byte threshold)
         {
             var bw = new Bitmap(source.Width, source.Height, PixelFormat.Format24bppRgb);
-            for (int y = 0; y < source.Height; y++)
+            var srcRect = new Rectangle(0, 0, source.Width, source.Height);
+            BitmapData srcData = null;
+            BitmapData dstData = null;
+            try
             {
-                for (int x = 0; x < source.Width; x++)
+                srcData = source.LockBits(srcRect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+                dstData = bw.LockBits(srcRect, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+
+                int srcStride = srcData.Stride;
+                int dstStride = dstData.Stride;
+                int srcBytes = srcStride * source.Height;
+                int dstBytes = dstStride * source.Height;
+                var srcBuffer = new byte[srcBytes];
+                var dstBuffer = new byte[dstBytes];
+
+                Marshal.Copy(srcData.Scan0, srcBuffer, 0, srcBytes);
+                for (int y = 0; y < source.Height; y++)
                 {
-                    var p = source.GetPixel(x, y);
-                    var luminance = (byte)((p.R + p.G + p.B) / 3);
-                    bw.SetPixel(x, y, luminance >= threshold ? Color.White : Color.Black);
+                    int srcRowOffset = y * srcStride;
+                    int dstRowOffset = y * dstStride;
+                    for (int x = 0; x < source.Width; x++)
+                    {
+                        int srcIndex = srcRowOffset + (x * 3);
+                        byte b = srcBuffer[srcIndex];
+                        byte g = srcBuffer[srcIndex + 1];
+                        byte r = srcBuffer[srcIndex + 2];
+                        byte luminance = (byte)((r + g + b) / 3);
+                        byte value = luminance >= threshold ? (byte)255 : (byte)0;
+
+                        int dstIndex = dstRowOffset + (x * 3);
+                        dstBuffer[dstIndex] = value;
+                        dstBuffer[dstIndex + 1] = value;
+                        dstBuffer[dstIndex + 2] = value;
+                    }
                 }
+
+                Marshal.Copy(dstBuffer, 0, dstData.Scan0, dstBytes);
+            }
+            finally
+            {
+                if (srcData != null) source.UnlockBits(srcData);
+                if (dstData != null) bw.UnlockBits(dstData);
             }
 
             return bw;
