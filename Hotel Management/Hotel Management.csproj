@@ -165,6 +165,7 @@
     <Compile Include="Services\CccdInfo.cs" />
     <Compile Include="Services\CameraScannerService.cs" />
     <Compile Include="Services\PricingService.cs" />
+    <Compile Include="Services\OperationalDataResetService.cs" />
     <Compile Include="Services\QrDecoderService.cs" />
     <Compile Include="Services\OcrService.cs" />
     <Compile Include="Services\CccdParser.cs" />

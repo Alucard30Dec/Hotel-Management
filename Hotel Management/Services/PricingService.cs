@@ -12,6 +12,12 @@ namespace HotelManagement.Services
         public sealed class OvernightChargeBreakdown
         {
             public decimal RoomBaseAmount { get; set; }
+            public decimal NightAmount { get; set; }
+            public decimal DayAmount { get; set; }
+            public decimal NightUnitPrice { get; set; }
+            public decimal DayUnitPrice { get; set; }
+            public int NightUnits { get; set; }
+            public int DayUnits { get; set; }
             public decimal LateFeeAmount { get; set; }
             public decimal TotalAmount { get; set; }
             public bool FirstSegmentIsNight { get; set; }
@@ -254,7 +260,13 @@ namespace HotelManagement.Services
             return IsOvernightNightWindow(at.TimeOfDay, cfg.OvernightNightStartHour, cfg.OvernightCheckoutHour);
         }
 
-        public OvernightChargeBreakdown CalculateOvernightChargeBreakdown(DateTime checkIn, int nights, int roomTypeId, decimal nightlyRate, DateTime now)
+        public OvernightChargeBreakdown CalculateOvernightChargeBreakdown(
+            DateTime checkIn,
+            int nights,
+            int roomTypeId,
+            decimal nightlyRate,
+            DateTime now,
+            decimal dailyRate = 0m)
         {
             int safeNights = Math.Max(1, nights);
             var cfg = GetCurrentPricing();
@@ -262,22 +274,28 @@ namespace HotelManagement.Services
             if (safeNightlyRate <= 0m)
                 safeNightlyRate = roomTypeId == 2 ? cfg.DefaultNightlyDouble : cfg.DefaultNightlySingle;
 
-            decimal dailyRate = roomTypeId == 2 ? cfg.DefaultDailyDouble : cfg.DefaultDailySingle;
+            decimal defaultDailyRate = roomTypeId == 2 ? cfg.DefaultDailyDouble : cfg.DefaultDailySingle;
             decimal safeDailyRate = Math.Max(0m, dailyRate);
+            if (safeDailyRate <= 0m)
+                safeDailyRate = Math.Max(0m, defaultDailyRate);
 
             bool firstSegmentIsNight = IsOvernightNightWindow(checkIn.TimeOfDay, cfg.OvernightNightStartHour, cfg.OvernightCheckoutHour);
 
-            decimal roomBase;
+            int nightUnits;
+            int dayUnits;
             if (firstSegmentIsNight)
             {
-                roomBase = safeNightlyRate;
-                if (safeNights > 1)
-                    roomBase += (safeNights - 1) * safeDailyRate;
+                nightUnits = 1;
+                dayUnits = Math.Max(0, safeNights - 1);
             }
             else
             {
-                roomBase = safeNights * safeDailyRate;
+                nightUnits = 0;
+                dayUnits = safeNights;
             }
+            decimal nightAmount = nightUnits * safeNightlyRate;
+            decimal dayAmount = dayUnits * safeDailyRate;
+            decimal roomBase = nightAmount + dayAmount;
 
             DateTime deadline = CalculateOvernightCheckoutDeadline(checkIn, safeNights, roomTypeId);
             decimal lateFee = now > deadline ? Math.Max(0m, GetOvernightLateFee(roomTypeId)) : 0m;
@@ -285,15 +303,21 @@ namespace HotelManagement.Services
             return new OvernightChargeBreakdown
             {
                 RoomBaseAmount = roomBase,
+                NightAmount = nightAmount,
+                DayAmount = dayAmount,
+                NightUnitPrice = safeNightlyRate,
+                DayUnitPrice = safeDailyRate,
+                NightUnits = nightUnits,
+                DayUnits = dayUnits,
                 LateFeeAmount = lateFee,
                 TotalAmount = roomBase + lateFee,
                 FirstSegmentIsNight = firstSegmentIsNight
             };
         }
 
-        public decimal CalculateOvernightCharge(DateTime checkIn, int nights, int roomTypeId, decimal nightlyRate, DateTime now)
+        public decimal CalculateOvernightCharge(DateTime checkIn, int nights, int roomTypeId, decimal nightlyRate, DateTime now, decimal dailyRate = 0m)
         {
-            return CalculateOvernightChargeBreakdown(checkIn, nights, roomTypeId, nightlyRate, now).TotalAmount;
+            return CalculateOvernightChargeBreakdown(checkIn, nights, roomTypeId, nightlyRate, now, dailyRate).TotalAmount;
         }
 
         private void EnsureLoaded()

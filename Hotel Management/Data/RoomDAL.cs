@@ -16,21 +16,14 @@ namespace HotelManagement.Data
                 string query = @"SELECT COUNT(*) AS RoomCount,
                                         COALESCE(SUM(TrangThai), 0) AS StatusSum,
                                         COALESCE(SUM(COALESCE(KieuThue, 0)), 0) AS RentalTypeSum,
-                                        COALESCE(MAX(UpdatedAtUtc), '1970-01-01 00:00:00') AS MaxUpdatedAtUtc,
                                         COALESCE(
-                                            SUM(
-                                                CRC32(
-                                                    CONCAT_WS('|',
-                                                        PhongID,
-                                                        COALESCE(TrangThai, 0),
-                                                        COALESCE(DATE_FORMAT(ThoiGianBatDau, '%Y%m%d%H%i%s'), ''),
-                                                        COALESCE(KieuThue, ''),
-                                                        COALESCE(TenKhachHienThi, '')
-                                                    )
-                                                )
-                                            ),
+                                            SUM(CASE
+                                                    WHEN ThoiGianBatDau IS NULL THEN 0
+                                                    ELSE UNIX_TIMESTAMP(ThoiGianBatDau)
+                                                END),
                                             0
-                                        ) AS FingerprintCrc
+                                        ) AS CheckinUnixSum,
+                                        COALESCE(MAX(COALESCE(UpdatedAtUtc, ThoiGianBatDau)), '1970-01-01 00:00:00') AS MaxUpdatedAtUtc
                                  FROM PHONG
                                  WHERE COALESCE(DataStatus, 'active') <> 'deleted'";
 
@@ -42,10 +35,10 @@ namespace HotelManagement.Data
                     string roomCount = rd.IsDBNull(0) ? "0" : Convert.ToString(rd.GetValue(0));
                     string statusSum = rd.IsDBNull(1) ? "0" : Convert.ToString(rd.GetValue(1));
                     string rentalTypeSum = rd.IsDBNull(2) ? "0" : Convert.ToString(rd.GetValue(2));
-                    string maxUpdated = rd.IsDBNull(3) ? "19700101000000" : rd.GetDateTime(3).ToString("yyyyMMddHHmmss");
-                    string crc = rd.IsDBNull(4) ? "0" : Convert.ToString(rd.GetValue(4));
+                    string checkinSum = rd.IsDBNull(3) ? "0" : Convert.ToString(rd.GetValue(3));
+                    string maxUpdated = rd.IsDBNull(4) ? "19700101000000" : rd.GetDateTime(4).ToString("yyyyMMddHHmmss");
 
-                    return string.Join("|", roomCount, statusSum, rentalTypeSum, maxUpdated, crc);
+                    return string.Join("|", roomCount, statusSum, rentalTypeSum, checkinSum, maxUpdated);
                 }
             }
         }

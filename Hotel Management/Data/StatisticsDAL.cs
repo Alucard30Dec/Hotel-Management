@@ -990,7 +990,7 @@ namespace HotelManagement.Data
         private static string FormatBookingType(int bookingType)
         {
             if (bookingType == 1) return "Phòng giờ";
-            if (bookingType == 2) return "Phòng đêm";
+            if (bookingType == 2) return "Phòng ngày/đêm";
             return "Không xác định";
         }
 

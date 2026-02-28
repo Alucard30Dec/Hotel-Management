@@ -34,16 +34,21 @@ namespace HotelManagement.Forms
         private int _pendingSoftDrinkCount;
         private int _pendingWaterBottleCount;
         private decimal _nightlyRate;
+        private decimal _dailyRate;
 
         private Label lblTitleRoom;
         private Label lblChipRoom;
         private Label lblCheckin;
+        private DateTimePicker dtpCheckinTime;
         private Label lblNightCount;
         private Label lblRateFrameInline;
+        private Label lblNightlyRate;
+        private Label lblDailyRate;
         private Label lblPendingDrink;
         private Label lblPendingWater;
         private Label lblDrinkSubtotal;
         private Label lblRoomChargeValue;
+        private Label lblRoomChargeDetail;
         private Label lblDrinkChargeValue;
         private Label lblLateFeeValue;
         private Label lblSurchargeReasonValue;
@@ -51,16 +56,25 @@ namespace HotelManagement.Forms
         private Label lblCollectedValue;
         private Label lblDueValue;
         private TextBox txtGuestName;
+        private Button btnCancel;
+        private Button btnSave;
         private Button btnPay;
+        private Button btnCancelRoom;
         private Timer _refreshTimer;
         private TableLayoutPanel _contentGrid;
         private TableLayoutPanel _contentLeftColumn;
         private TableLayoutPanel _contentRightColumn;
         private bool _isCompactLayout;
+        private bool _isSyncingCheckinInput;
+        private const decimal NightlyRateStep = 10000m;
+        private const decimal MinNightlyRate = 10000m;
+        private const decimal DailyRateStep = 10000m;
+        private const decimal MinDailyRate = 10000m;
 
         public event EventHandler BackRequested;
         public event EventHandler Saved;
         public event EventHandler PaymentCompleted;
+        public event EventHandler RoomCancelled;
 
         public OvernightCheckoutForm(Room room)
         {
@@ -94,10 +108,13 @@ namespace HotelManagement.Forms
                     _nightlyRate = stayInfo == null ? 0m : stayInfo.GiaPhong;
                     if (_nightlyRate <= 0m)
                         _nightlyRate = loadData.DefaultNightRate > 0m ? loadData.DefaultNightRate : GetDefaultNightRateByRoomType();
+                    if (_dailyRate <= 0m)
+                        _dailyRate = GetDefaultDailyRateByRoomType();
 
                     lblTitleRoom.Text = "Quản lý phòng qua đêm - Phòng " + _room.MaPhong;
                     lblChipRoom.Text = "  Phòng " + _room.MaPhong + "  ";
-                    lblCheckin.Text = "Check-in: " + (_room.ThoiGianBatDau ?? DateTime.Now).ToString("dd/MM/yyyy HH:mm");
+                    lblCheckin.Text = "Check-in: " + (_room.ThoiGianBatDau ?? DateTime.Now).ToString("dd/MM/yyyy HH:mm:ss");
+                    SyncCheckinInputFromRoom();
                     if (txtGuestName != null)
                         txtGuestName.Text = ResolveGuestNameForForm(stayInfo);
 
@@ -164,6 +181,8 @@ namespace HotelManagement.Forms
             _pricing = _pricingService.GetCurrentPricing();
             if (_nightlyRate <= 0m)
                 _nightlyRate = GetDefaultNightRateByRoomType();
+            if (_dailyRate <= 0m)
+                _dailyRate = GetDefaultDailyRateByRoomType();
             RefreshTotals();
         }
 
@@ -214,8 +233,8 @@ namespace HotelManagement.Forms
             var panel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 96,
-                Padding = new Padding(12, 10, 12, 6),
+                Height = 86,
+                Padding = new Padding(10, 8, 10, 4),
                 BackColor = _pageBackground,
                 Margin = new Padding(0)
             };
@@ -225,7 +244,7 @@ namespace HotelManagement.Forms
                 AutoSize = true,
                 ForeColor = _textPrimary,
                 Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold),
-                Margin = new Padding(0, 0, 0, 6)
+                Margin = new Padding(0, 0, 0, 4)
             };
 
             var row = new FlowLayoutPanel
@@ -294,7 +313,7 @@ namespace HotelManagement.Forms
             var wrapper = new Panel
             {
                 Dock = DockStyle.Fill,
-                Padding = new Padding(10, 4, 10, 8),
+                Padding = new Padding(10, 2, 10, 8),
                 AutoScroll = true,
                 BackColor = _pageBackground,
                 Margin = new Padding(0)
@@ -310,8 +329,8 @@ namespace HotelManagement.Forms
                 Margin = new Padding(0),
                 Padding = new Padding(0)
             };
-            _contentGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 63F));
-            _contentGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 37F));
+            _contentGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 64F));
+            _contentGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 36F));
 
             _contentLeftColumn = new TableLayoutPanel
             {
@@ -371,11 +390,11 @@ namespace HotelManagement.Forms
                 Dock = DockStyle.Top,
                 AutoSize = true,
                 ColumnCount = 2,
-                Margin = new Padding(0, 6, 0, 0),
+                Margin = new Padding(0, 2, 0, 0),
                 Padding = new Padding(0)
             };
-            stayGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 48F));
-            stayGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 52F));
+            stayGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 43F));
+            stayGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 57F));
 
             var lblStayLabel = new Label
             {
@@ -383,7 +402,7 @@ namespace HotelManagement.Forms
                 AutoSize = true,
                 ForeColor = _textSecondary,
                 Font = new Font("Segoe UI", 9.5F),
-                Margin = new Padding(0, 4, 0, 6)
+                Margin = new Padding(0, 6, 0, 2)
             };
             var stepNight = CreateStepper(
                 getValue: () => _nightCount,
@@ -395,13 +414,35 @@ namespace HotelManagement.Forms
                 minusColor: _danger,
                 plusColor: _success,
                 out lblNightCount);
-            stepNight.Dock = DockStyle.Right;
-
-            var rightNight = new Panel { Dock = DockStyle.Fill };
-            rightNight.Controls.Add(stepNight);
+            stepNight.Dock = DockStyle.None;
+            stepNight.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
             stayGrid.Controls.Add(lblStayLabel, 0, 0);
-            stayGrid.Controls.Add(rightNight, 1, 0);
+            stayGrid.Controls.Add(stepNight, 1, 0);
+
+            var lblCheckinLabel = new Label
+            {
+                Text = "Giờ vào:",
+                AutoSize = true,
+                ForeColor = _textSecondary,
+                Font = new Font("Segoe UI", 9.5F),
+                Margin = new Padding(0, 0, 0, 2)
+            };
+            dtpCheckinTime = new DateTimePicker
+            {
+                Format = DateTimePickerFormat.Custom,
+                CustomFormat = "dd/MM/yyyy HH:mm:ss",
+                ShowUpDown = false,
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0),
+                Font = new Font("Segoe UI", 9.5F)
+            };
+            dtpCheckinTime.ValueChanged += (s, e) => HandleCheckinTimeChanged();
+
+            var checkinHost = CreateInputFrame(dtpCheckinTime, 34);
+            checkinHost.Margin = new Padding(0, 0, 0, 2);
+            stayGrid.Controls.Add(lblCheckinLabel, 0, 1);
+            stayGrid.Controls.Add(checkinHost, 1, 1);
 
             var lblStartLabel = new Label
             {
@@ -409,42 +450,92 @@ namespace HotelManagement.Forms
                 AutoSize = true,
                 ForeColor = _textSecondary,
                 Font = new Font("Segoe UI", 9.5F),
-                Margin = new Padding(0, 0, 0, 6)
+                Margin = new Padding(0, 0, 0, 1)
             };
             lblRateFrameInline = new Label
             {
                 Text = string.Empty,
                 Dock = DockStyle.Fill,
-                Margin = new Padding(0, 0, 0, 6),
+                Margin = new Padding(0, 0, 0, 1),
                 TextAlign = ContentAlignment.MiddleRight,
                 AutoSize = false,
                 AutoEllipsis = true,
                 ForeColor = _textPrimary,
                 Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold)
             };
-            stayGrid.Controls.Add(lblStartLabel, 0, 1);
-            stayGrid.Controls.Add(lblRateFrameInline, 1, 1);
+            stayGrid.Controls.Add(lblStartLabel, 0, 2);
+            stayGrid.Controls.Add(lblRateFrameInline, 1, 2);
 
-            var lblGuestLabel = new Label
+            var lblNightlyRateLabel = new Label
             {
-                Text = "Tên khách:",
+                Text = "Giá đêm áp dụng:",
                 AutoSize = true,
                 ForeColor = _textSecondary,
                 Font = new Font("Segoe UI", 9.5F),
-                Margin = new Padding(0, 0, 0, 6)
+                Margin = new Padding(0, 0, 0, 2)
+            };
+            var stepNightlyRate = CreateMoneyStepper(
+                getValue: () => _nightlyRate,
+                setValue: v =>
+                {
+                    _nightlyRate = Math.Max(MinNightlyRate, v);
+                    RefreshTotals();
+                },
+                step: NightlyRateStep,
+                minValue: MinNightlyRate,
+                minusColor: _danger,
+                plusColor: _success,
+                out lblNightlyRate);
+            stepNightlyRate.Dock = DockStyle.None;
+            stepNightlyRate.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            stayGrid.Controls.Add(lblNightlyRateLabel, 0, 3);
+            stayGrid.Controls.Add(stepNightlyRate, 1, 3);
+
+            var lblDailyRateLabel = new Label
+            {
+                Text = "Giá ngày áp dụng:",
+                AutoSize = true,
+                ForeColor = _textSecondary,
+                Font = new Font("Segoe UI", 9.5F),
+                Margin = new Padding(0, 0, 0, 2)
+            };
+            var stepDailyRate = CreateMoneyStepper(
+                getValue: () => _dailyRate,
+                setValue: v =>
+                {
+                    _dailyRate = Math.Max(MinDailyRate, v);
+                    RefreshTotals();
+                },
+                step: DailyRateStep,
+                minValue: MinDailyRate,
+                minusColor: _danger,
+                plusColor: _success,
+                out lblDailyRate);
+            stepDailyRate.Dock = DockStyle.None;
+            stepDailyRate.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            stayGrid.Controls.Add(lblDailyRateLabel, 0, 4);
+            stayGrid.Controls.Add(stepDailyRate, 1, 4);
+
+            var lblGuestLabel = new Label
+            {
+                Text = "Tên khách (không bắt buộc):",
+                AutoSize = true,
+                ForeColor = _textSecondary,
+                Font = new Font("Segoe UI", 9.5F),
+                Margin = new Padding(0, 0, 0, 2)
             };
             txtGuestName = new TextBox
             {
                 Dock = DockStyle.Fill,
-                Margin = new Padding(0, 0, 0, 6),
+                Margin = new Padding(0, 0, 0, 2),
                 BorderStyle = BorderStyle.FixedSingle,
                 Font = new Font("Segoe UI", 9.5F)
             };
-            stayGrid.Controls.Add(lblGuestLabel, 0, 2);
-            stayGrid.Controls.Add(txtGuestName, 1, 2);
+            stayGrid.Controls.Add(lblGuestLabel, 0, 5);
+            stayGrid.Controls.Add(txtGuestName, 1, 5);
 
             body.Controls.Add(stayGrid, 0, 1);
-            body.Controls.Add(CreateDivider(0, 6), 0, 2);
+            body.Controls.Add(CreateDivider(0, 4), 0, 2);
 
             var drinkTitle = new Label
             {
@@ -452,16 +543,26 @@ namespace HotelManagement.Forms
                 AutoSize = true,
                 ForeColor = _textPrimary,
                 Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold),
-                Margin = new Padding(0, 0, 0, 2)
+                Margin = new Padding(0, 0, 0, 1)
             };
             body.Controls.Add(drinkTitle, 0, 3);
+
+            var drinkHint = new Label
+            {
+                Text = "Double-click vào ô số để nhập số lượng bất kỳ",
+                AutoSize = true,
+                ForeColor = _textSecondary,
+                Font = new Font("Segoe UI", 8.8F),
+                Margin = new Padding(0, 0, 0, 2)
+            };
+            body.Controls.Add(drinkHint, 0, 4);
 
             var drinkRows = new TableLayoutPanel
             {
                 Dock = DockStyle.Top,
                 AutoSize = true,
                 ColumnCount = 1,
-                RowCount = 5,
+                RowCount = 4,
                 Margin = new Padding(0, 0, 0, 0),
                 Padding = new Padding(0)
             };
@@ -470,23 +571,31 @@ namespace HotelManagement.Forms
             drinkRows.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             drinkRows.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             drinkRows.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            drinkRows.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
             drinkRows.Controls.Add(CreateDrinkRow("Nước ngọt", ToMoneyCompact(_pricing.DrinkSoftPrice),
-                () => _pendingSoftDrinkCount,
-                v => { _pendingSoftDrinkCount = v; RefreshTotals(); },
+                () => Math.Max(0, _savedSoftDrinkCount + _pendingSoftDrinkCount),
+                v =>
+                {
+                    int target = Math.Max(0, v);
+                    _pendingSoftDrinkCount = target - _savedSoftDrinkCount;
+                    RefreshTotals();
+                },
                 out lblPendingDrink), 0, 0);
-            drinkRows.Controls.Add(CreateDivider(0, 4), 0, 1);
+            drinkRows.Controls.Add(CreateDivider(0, 2), 0, 1);
             drinkRows.Controls.Add(CreateDrinkRow("Nước suối", ToMoneyCompact(_pricing.DrinkWaterPrice),
-                () => _pendingWaterBottleCount,
-                v => { _pendingWaterBottleCount = v; RefreshTotals(); },
+                () => Math.Max(0, _savedWaterBottleCount + _pendingWaterBottleCount),
+                v =>
+                {
+                    int target = Math.Max(0, v);
+                    _pendingWaterBottleCount = target - _savedWaterBottleCount;
+                    RefreshTotals();
+                },
                 out lblPendingWater), 0, 2);
-            drinkRows.Controls.Add(CreateDivider(0, 4), 0, 3);
+            drinkRows.Controls.Add(CreateDivider(0, 2), 0, 3);
 
             // Hide drink subtotal line as requested.
             lblDrinkSubtotal = null;
-            body.Controls.Add(drinkRows, 0, 4);
-            body.Controls.Add(new Panel { Height = 1, Dock = DockStyle.Top, Margin = new Padding(0) }, 0, 5);
+            body.Controls.Add(drinkRows, 0, 5);
 
             card.Controls.Add(body);
             return card;
@@ -504,9 +613,11 @@ namespace HotelManagement.Forms
                 Dock = DockStyle.Fill,
                 AutoSize = true,
                 ColumnCount = 1,
-                RowCount = 9
+                RowCount = 11
             };
             body.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
@@ -577,6 +688,16 @@ namespace HotelManagement.Forms
             AddSummaryRow(grid, 2, "Phụ thu:", out lblLateFeeValue);
             body.Controls.Add(grid, 0, 2);
 
+            lblRoomChargeDetail = new Label
+            {
+                Text = "",
+                AutoSize = true,
+                ForeColor = _textSecondary,
+                Font = new Font("Segoe UI", 8.8F),
+                Margin = new Padding(0, 2, 0, 0)
+            };
+            body.Controls.Add(lblRoomChargeDetail, 0, 3);
+
             lblSurchargeReasonValue = new Label
             {
                 Text = "",
@@ -585,9 +706,9 @@ namespace HotelManagement.Forms
                 Font = new Font("Segoe UI", 8.8F),
                 Margin = new Padding(0, 2, 0, 0)
             };
-            body.Controls.Add(lblSurchargeReasonValue, 0, 3);
+            body.Controls.Add(lblSurchargeReasonValue, 0, 4);
 
-            body.Controls.Add(CreateDivider(6, 6), 0, 4);
+            body.Controls.Add(CreateDivider(4, 4), 0, 5);
 
             var totalRow = new TableLayoutPanel
             {
@@ -618,7 +739,7 @@ namespace HotelManagement.Forms
             };
             totalRow.Controls.Add(totalLabel, 0, 0);
             totalRow.Controls.Add(lblTotalChargeValue, 1, 0);
-            body.Controls.Add(totalRow, 0, 5);
+            body.Controls.Add(totalRow, 0, 6);
 
             var collectedRow = new TableLayoutPanel
             {
@@ -649,7 +770,7 @@ namespace HotelManagement.Forms
             };
             collectedRow.Controls.Add(collectedLabel, 0, 0);
             collectedRow.Controls.Add(lblCollectedValue, 1, 0);
-            body.Controls.Add(collectedRow, 0, 6);
+            body.Controls.Add(collectedRow, 0, 7);
 
             var suggestionRow = new FlowLayoutPanel
             {
@@ -657,7 +778,7 @@ namespace HotelManagement.Forms
                 AutoSize = true,
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = false,
-                Margin = new Padding(0, 6, 0, 0),
+                Margin = new Padding(0, 4, 0, 0),
                 Padding = new Padding(0)
             };
             var btnSuggestRoomOnly = BuildActionButton("Thu tiền phòng", Color.White, _brandA, _cardBorder);
@@ -676,25 +797,32 @@ namespace HotelManagement.Forms
 
             suggestionRow.Controls.Add(btnSuggestRoomOnly);
             suggestionRow.Controls.Add(btnSuggestFull);
-            body.Controls.Add(suggestionRow, 0, 7);
+            body.Controls.Add(suggestionRow, 0, 8);
+
+            var actionWrap = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 38,
+                Margin = new Padding(0, 6, 0, 0),
+                Padding = new Padding(0)
+            };
 
             var actionRow = new TableLayoutPanel
             {
-                Dock = DockStyle.Top,
-                AutoSize = true,
+                Dock = DockStyle.Fill,
                 ColumnCount = 3,
-                Margin = new Padding(0, 10, 0, 0)
+                RowCount = 1
             };
-            actionRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 84F));
-            actionRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 88F));
+            actionRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80F));
+            actionRow.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80F));
             actionRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
 
-            var btnCancel = BuildActionButton("Hủy", Color.White, _textPrimary, _cardBorder);
+            btnCancel = BuildActionButton("Hủy", Color.White, _textPrimary, _cardBorder);
             btnCancel.Margin = new Padding(0, 0, 8, 0);
             btnCancel.Dock = DockStyle.Fill;
-            btnCancel.Click += (s, e) => BackRequested?.Invoke(this, EventArgs.Empty);
+            btnCancel.Click += (s, e) => HandleCancelRequest();
 
-            var btnSave = BuildActionButton("Lưu", Color.White, _brandA, _cardBorder);
+            btnSave = BuildActionButton("Lưu", _brandA, Color.White, _brandA);
             btnSave.Margin = new Padding(0, 0, 8, 0);
             btnSave.Dock = DockStyle.Fill;
             btnSave.Click += BtnSave_Click;
@@ -706,7 +834,21 @@ namespace HotelManagement.Forms
             actionRow.Controls.Add(btnCancel, 0, 0);
             actionRow.Controls.Add(btnSave, 1, 0);
             actionRow.Controls.Add(btnPay, 2, 0);
-            body.Controls.Add(actionRow, 0, 8);
+            actionWrap.Controls.Add(actionRow);
+            body.Controls.Add(actionWrap, 0, 9);
+
+            var cancelRoomWrap = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 36,
+                Padding = new Padding(0),
+                Margin = new Padding(0, 6, 0, 0)
+            };
+            btnCancelRoom = BuildActionButton("Hủy phòng về trống", Color.White, _danger, Color.FromArgb(230, 179, 179));
+            btnCancelRoom.Dock = DockStyle.Fill;
+            btnCancelRoom.Click += BtnCancelRoom_Click;
+            cancelRoomWrap.Controls.Add(btnCancelRoom);
+            body.Controls.Add(cancelRoomWrap, 0, 10);
 
             card.Controls.Add(body);
             return card;
@@ -731,13 +873,18 @@ namespace HotelManagement.Forms
             return _pricingService.GetDefaultNightlyRate(_room.LoaiPhongID);
         }
 
+        private decimal GetDefaultDailyRateByRoomType()
+        {
+            return _pricingService.GetDefaultDailyRate(_room.LoaiPhongID);
+        }
+
         private void ApplyCollectedSuggestion(bool includeDrinks)
         {
             DateTime now = DateTime.Now;
             DateTime start = _room.ThoiGianBatDau ?? now;
             if (start > now) start = now;
             int roomType = _room.LoaiPhongID == 2 ? 2 : 1;
-            var breakdown = _pricingService.CalculateOvernightChargeBreakdown(start, Math.Max(1, _nightCount), roomType, _nightlyRate, now);
+            var breakdown = _pricingService.CalculateOvernightChargeBreakdown(start, Math.Max(1, _nightCount), roomType, _nightlyRate, now, _dailyRate);
             decimal roomCharge = breakdown.RoomBaseAmount;
             decimal drinks = _savedDrinkCharge
                            + _pendingSoftDrinkCount * _pricing.DrinkSoftPrice
@@ -782,7 +929,7 @@ namespace HotelManagement.Forms
 
         private async void BtnSave_Click(object sender, EventArgs e)
         {
-            if (btnPay != null) btnPay.Enabled = false;
+            SetActionButtonsEnabled(false);
             UseWaitCursor = true;
             try
             {
@@ -796,21 +943,10 @@ namespace HotelManagement.Forms
                         if (_bookingId <= 0)
                             throw new DomainException("Phiên đặt phòng chưa được khởi tạo. Vui lòng tải lại màn hình.");
                         string guestName = GetGuestNameInput();
-                        if (string.IsNullOrWhiteSpace(guestName))
-                        {
-                            MessageBox.Show("Vui lòng nhập tên khách.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            if (txtGuestName != null) txtGuestName.Focus();
-                            return;
-                        }
                         _room.TenKhachHienThi = guestName;
 
-                        if (_pendingSoftDrinkCount > 0 || _pendingWaterBottleCount > 0)
-                        {
-                            _savedSoftDrinkCount += _pendingSoftDrinkCount;
-                            _savedWaterBottleCount += _pendingWaterBottleCount;
-                            _pendingSoftDrinkCount = 0;
-                            _pendingWaterBottleCount = 0;
-                        }
+                        int finalDrink = Math.Max(0, _savedSoftDrinkCount + _pendingSoftDrinkCount);
+                        int finalWater = Math.Max(0, _savedWaterBottleCount + _pendingWaterBottleCount);
 
                         DateTime startTime = _room.ThoiGianBatDau ?? DateTime.Now;
                         var request = new CheckoutService.SaveOvernightRequest
@@ -821,20 +957,22 @@ namespace HotelManagement.Forms
                             GuestDisplayName = guestName,
                             NightCount = Math.Max(1, _nightCount),
                             NightlyRate = _nightlyRate,
-                            SoftDrinkQty = _savedSoftDrinkCount,
-                            WaterBottleQty = _savedWaterBottleCount,
+                            SoftDrinkQty = finalDrink,
+                            WaterBottleQty = finalWater,
                             SoftDrinkUnitPrice = _pricing.DrinkSoftPrice,
                             WaterBottleUnitPrice = _pricing.DrinkWaterPrice,
                             TargetCollectedAmount = _savedCollectedAmount
                         };
                         var result = await Task.Run(() => _checkoutService.SaveOvernight(request)).ConfigureAwait(true);
 
+                        _pendingSoftDrinkCount = 0;
+                        _pendingWaterBottleCount = 0;
                         _savedCollectedAmount = result.PaidAmountAfterOperation;
                         LoadExtrasFromDatabase();
 
                         _room.TrangThai = 1;
                         _room.KieuThue = 1;
-                        if (!_room.ThoiGianBatDau.HasValue) _room.ThoiGianBatDau = startTime;
+                        _room.ThoiGianBatDau = startTime;
 
                         Saved?.Invoke(this, EventArgs.Empty);
                         RefreshTotals();
@@ -847,13 +985,13 @@ namespace HotelManagement.Forms
             finally
             {
                 UseWaitCursor = false;
-                if (btnPay != null) btnPay.Enabled = true;
+                SetActionButtonsEnabled(true);
             }
         }
 
         private async void BtnPay_Click(object sender, EventArgs e)
         {
-            if (btnPay != null) btnPay.Enabled = false;
+            SetActionButtonsEnabled(false);
             UseWaitCursor = true;
             try
             {
@@ -867,16 +1005,11 @@ namespace HotelManagement.Forms
                         if (_bookingId <= 0)
                             throw new DomainException("Phiên đặt phòng chưa được khởi tạo. Vui lòng tải lại màn hình.");
                         string guestName = GetGuestNameInput();
-                        if (string.IsNullOrWhiteSpace(guestName))
-                        {
-                            MessageBox.Show("Vui lòng nhập tên khách.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            if (txtGuestName != null) txtGuestName.Focus();
-                            return;
-                        }
                         _room.TenKhachHienThi = guestName;
 
-                        int finalDrink = _savedSoftDrinkCount + _pendingSoftDrinkCount;
-                        int finalWater = _savedWaterBottleCount + _pendingWaterBottleCount;
+                        int finalDrink = Math.Max(0, _savedSoftDrinkCount + _pendingSoftDrinkCount);
+                        int finalWater = Math.Max(0, _savedWaterBottleCount + _pendingWaterBottleCount);
+                        DateTime startTime = _room.ThoiGianBatDau ?? DateTime.Now;
 
                         decimal totalCharge = CalculateOvernightCharge(_nightCount)
                                             + finalDrink * _pricing.DrinkSoftPrice
@@ -895,6 +1028,7 @@ namespace HotelManagement.Forms
                             BookingId = _bookingId,
                             RoomId = _room.PhongID,
                             PaidAt = DateTime.Now,
+                            StartTime = startTime,
                             NightCount = Math.Max(1, _nightCount),
                             NightlyRate = _nightlyRate,
                             SoftDrinkQty = finalDrink,
@@ -929,8 +1063,139 @@ namespace HotelManagement.Forms
             finally
             {
                 UseWaitCursor = false;
-                if (btnPay != null) btnPay.Enabled = true;
+                SetActionButtonsEnabled(true);
             }
+        }
+
+        private async void BtnCancelRoom_Click(object sender, EventArgs e)
+        {
+            if (_bookingId <= 0)
+            {
+                MessageBox.Show("Không xác định được booking hiện tại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                "Xác nhận hủy phòng " + _room.MaPhong + " và đưa về trạng thái trống?",
+                "Hủy phòng",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+            if (confirm != DialogResult.Yes)
+                return;
+
+            SetActionButtonsEnabled(false);
+            UseWaitCursor = true;
+            try
+            {
+                await UiExceptionHandler.RunAsync(this, "OvernightCheckout.CancelRoom", async () =>
+                {
+                    using (var perf = PerformanceTracker.Measure("OvernightCheckout.CancelRoom", new Dictionary<string, object>
+                    {
+                        ["BookingId"] = _bookingId,
+                        ["RoomId"] = _room.PhongID
+                    }))
+                    {
+                        var request = new CheckoutService.CancelOvernightRequest
+                        {
+                            BookingId = _bookingId,
+                            RoomId = _room.PhongID,
+                            CancelledAt = DateTime.Now
+                        };
+                        await Task.Run(() => _checkoutService.CancelOvernight(request)).ConfigureAwait(true);
+
+                        _savedSoftDrinkCount = 0;
+                        _savedWaterBottleCount = 0;
+                        _pendingSoftDrinkCount = 0;
+                        _pendingWaterBottleCount = 0;
+                        _savedDrinkCharge = 0m;
+
+                        _room.TrangThai = (int)RoomStatus.Trong;
+                        _room.KieuThue = null;
+                        _room.ThoiGianBatDau = null;
+                        _room.TenKhachHienThi = null;
+
+                        RoomCancelled?.Invoke(this, EventArgs.Empty);
+                        BackRequested?.Invoke(this, EventArgs.Empty);
+                        perf.AddContext("Action", "CancelledToEmpty");
+                    }
+                }).ConfigureAwait(true);
+            }
+            finally
+            {
+                UseWaitCursor = false;
+                SetActionButtonsEnabled(true);
+            }
+        }
+
+        private void HandleCancelRequest()
+        {
+            bool hasUnsaved = _pendingSoftDrinkCount != 0 || _pendingWaterBottleCount != 0;
+            if (!hasUnsaved)
+            {
+                BackRequested?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+
+            var confirm = MessageBox.Show(
+                "Bạn đang có nước chưa lưu. Xác nhận hủy?",
+                "Xác nhận",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (confirm == DialogResult.Yes)
+                BackRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void SyncCheckinInputFromRoom()
+        {
+            if (dtpCheckinTime == null) return;
+
+            DateTime start = _room.ThoiGianBatDau ?? DateTime.Now;
+            DateTime now = DateTime.Now;
+            if (start > now) start = now;
+
+            _isSyncingCheckinInput = true;
+            try
+            {
+                dtpCheckinTime.Value = start;
+            }
+            finally
+            {
+                _isSyncingCheckinInput = false;
+            }
+
+            UpdateCheckinLabel(start);
+        }
+
+        private void HandleCheckinTimeChanged()
+        {
+            if (_isSyncingCheckinInput || dtpCheckinTime == null) return;
+
+            DateTime selected = dtpCheckinTime.Value;
+            DateTime now = DateTime.Now;
+            if (selected > now)
+            {
+                selected = now;
+                _isSyncingCheckinInput = true;
+                try
+                {
+                    dtpCheckinTime.Value = selected;
+                }
+                finally
+                {
+                    _isSyncingCheckinInput = false;
+                }
+            }
+
+            _room.ThoiGianBatDau = selected;
+            UpdateCheckinLabel(selected);
+            RefreshTotals();
+        }
+
+        private void UpdateCheckinLabel(DateTime startTime)
+        {
+            if (lblCheckin != null)
+                lblCheckin.Text = "Check-in: " + startTime.ToString("dd/MM/yyyy HH:mm:ss");
         }
 
         private void RefreshTotals()
@@ -938,13 +1203,28 @@ namespace HotelManagement.Forms
             DateTime now = DateTime.Now;
             DateTime start = _room.ThoiGianBatDau ?? now;
             if (start > now) start = now;
+            UpdateCheckinLabel(start);
+
+            if (dtpCheckinTime != null && !_isSyncingCheckinInput && !dtpCheckinTime.Focused)
+            {
+                _isSyncingCheckinInput = true;
+                try
+                {
+                    if (dtpCheckinTime.Value != start)
+                        dtpCheckinTime.Value = start;
+                }
+                finally
+                {
+                    _isSyncingCheckinInput = false;
+                }
+            }
 
             if (lblNightCount != null) lblNightCount.Text = _nightCount.ToString();
             if (lblPendingDrink != null) lblPendingDrink.Text = (_savedSoftDrinkCount + _pendingSoftDrinkCount).ToString();
             if (lblPendingWater != null) lblPendingWater.Text = (_savedWaterBottleCount + _pendingWaterBottleCount).ToString();
 
             int roomType = _room.LoaiPhongID == 2 ? 2 : 1;
-            var breakdown = _pricingService.CalculateOvernightChargeBreakdown(start, Math.Max(1, _nightCount), roomType, _nightlyRate, now);
+            var breakdown = _pricingService.CalculateOvernightChargeBreakdown(start, Math.Max(1, _nightCount), roomType, _nightlyRate, now, _dailyRate);
             decimal roomCharge = breakdown.RoomBaseAmount;
             decimal pendingDrinkCharge = _pendingSoftDrinkCount * _pricing.DrinkSoftPrice
                                        + _pendingWaterBottleCount * _pricing.DrinkWaterPrice;
@@ -956,12 +1236,20 @@ namespace HotelManagement.Forms
             decimal nightRate = _nightlyRate > 0m
                 ? _nightlyRate
                 : (isDouble ? _pricing.DefaultNightlyDouble : _pricing.DefaultNightlySingle);
-            decimal dayRate = isDouble ? _pricing.DefaultDailyDouble : _pricing.DefaultDailySingle;
+            decimal dayRate = _dailyRate > 0m
+                ? _dailyRate
+                : (isDouble ? _pricing.DefaultDailyDouble : _pricing.DefaultDailySingle);
             if (lblRateFrameInline != null)
             {
                 string firstType = breakdown.FirstSegmentIsNight ? "Phòng đêm" : "Phòng ngày";
                 lblRateFrameInline.Text = firstType + " | Đêm " + ToMoneyCompact(nightRate) + " | Ngày " + ToMoneyCompact(dayRate);
             }
+            if (lblNightlyRate != null)
+                lblNightlyRate.Text = ToMoneyCompact(Math.Max(MinNightlyRate, _nightlyRate));
+            if (lblDailyRate != null)
+                lblDailyRate.Text = ToMoneyCompact(Math.Max(MinDailyRate, _dailyRate));
+            if (lblRoomChargeDetail != null)
+                lblRoomChargeDetail.Text = "Tiền phòng gồm: Đêm " + ToMoneyCompact(breakdown.NightAmount) + " | Ngày " + ToMoneyCompact(breakdown.DayAmount);
 
             if (lblRoomChargeValue != null) lblRoomChargeValue.Text = ToMoneyCompact(roomCharge);
             if (lblDrinkChargeValue != null) lblDrinkChargeValue.Text = ToMoneyCompact(drinkCharge);
@@ -1003,8 +1291,8 @@ namespace HotelManagement.Forms
             {
                 _contentGrid.ColumnCount = 2;
                 _contentGrid.RowCount = 1;
-                _contentGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 63F));
-                _contentGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 37F));
+                _contentGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 64F));
+                _contentGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 36F));
                 _contentGrid.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
                 _contentLeftColumn.Margin = new Padding(0, 0, 8, 0);
@@ -1018,7 +1306,7 @@ namespace HotelManagement.Forms
             if (nights <= 0) return 0m;
             DateTime start = _room.ThoiGianBatDau ?? DateTime.Now;
             int roomType = _room.LoaiPhongID == 2 ? 2 : 1;
-            return _pricingService.CalculateOvernightCharge(start, nights, roomType, _nightlyRate, DateTime.Now);
+            return _pricingService.CalculateOvernightCharge(start, nights, roomType, _nightlyRate, DateTime.Now, _dailyRate);
         }
 
         private string BuildLateFeeReasonText(decimal lateFeeAmount)
@@ -1149,7 +1437,7 @@ namespace HotelManagement.Forms
                 Dock = DockStyle.Top,
                 AutoSize = true,
                 ColumnCount = 3,
-                Margin = new Padding(0, 2, 0, 2)
+                Margin = new Padding(0, 1, 0, 1)
             };
             row.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 45F));
             row.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
@@ -1161,7 +1449,7 @@ namespace HotelManagement.Forms
                 AutoSize = true,
                 ForeColor = _textPrimary,
                 Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold),
-                Margin = new Padding(0, 4, 0, 4)
+                Margin = new Padding(0, 2, 0, 2)
             }, 0, 0);
             row.Controls.Add(new Label
             {
@@ -1169,15 +1457,46 @@ namespace HotelManagement.Forms
                 AutoSize = true,
                 ForeColor = _textPrimary,
                 Font = new Font("Segoe UI", 10.5F),
-                Margin = new Padding(0, 6, 0, 4)
+                Margin = new Padding(0, 2, 0, 2)
             }, 1, 0);
 
             var stepper = CreateStepper(getValue, setValue, _danger, _success, out valueLabel);
-            stepper.Dock = DockStyle.Right;
-            var right = new Panel { Dock = DockStyle.Fill };
-            right.Controls.Add(stepper);
-            row.Controls.Add(right, 2, 0);
+            stepper.Dock = DockStyle.None;
+            stepper.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            row.Controls.Add(stepper, 2, 0);
             return row;
+        }
+
+        private Panel CreateInputFrame(Control innerControl, int height)
+        {
+            var frame = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = Math.Max(30, height),
+                BackColor = Color.FromArgb(248, 250, 254),
+                Padding = new Padding(6, 4, 6, 4),
+                Margin = new Padding(0)
+            };
+
+            if (innerControl != null)
+            {
+                innerControl.Dock = DockStyle.Fill;
+                frame.Controls.Add(innerControl);
+            }
+
+            frame.Paint += (s, e) =>
+            {
+                var rect = frame.ClientRectangle;
+                rect.Inflate(-1, -1);
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                using (var path = RoundedRect(rect, 6))
+                using (var pen = new Pen(_cardBorder))
+                {
+                    e.Graphics.DrawPath(pen, path);
+                }
+            };
+            ApplyRoundedRegion(frame, 6);
+            return frame;
         }
 
         private Panel CreateDivider(int marginTop, int marginBottom)
@@ -1227,9 +1546,139 @@ namespace HotelManagement.Forms
                 using (var pen = new Pen(_cardBorder))
                     e.Graphics.DrawRectangle(pen, 0, 0, label.Width - 1, label.Height - 1);
             };
+            valueLabel.Cursor = Cursors.IBeam;
+            valueLabel.DoubleClick += (s, e) =>
+            {
+                int current = Math.Max(0, getValue());
+                int edited = ShowQuantityEditor(current);
+                setValue(Math.Max(0, edited));
+            };
 
             var btnPlus = BuildSquareButton("+", plusColor);
             btnPlus.Click += (s, e) => setValue(Math.Min(999, getValue() + 1));
+
+            host.Controls.Add(btnMinus, 0, 0);
+            host.Controls.Add(valueLabel, 1, 0);
+            host.Controls.Add(btnPlus, 2, 0);
+            return host;
+        }
+
+        private int ShowQuantityEditor(int currentValue)
+        {
+            int initial = Math.Max(0, currentValue);
+            using (var dialog = new Form())
+            {
+                dialog.Text = "Nhập số lượng";
+                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
+                dialog.StartPosition = FormStartPosition.CenterParent;
+                dialog.MinimizeBox = false;
+                dialog.MaximizeBox = false;
+                dialog.ShowInTaskbar = false;
+                dialog.ClientSize = new Size(260, 112);
+
+                var lbl = new Label
+                {
+                    Text = "Số lượng:",
+                    AutoSize = true,
+                    Location = new Point(14, 16),
+                    Font = new Font("Segoe UI", 9.5F)
+                };
+
+                var nud = new NumericUpDown
+                {
+                    Minimum = 0,
+                    Maximum = 99999,
+                    Value = Math.Min(99999, initial),
+                    ThousandsSeparator = true,
+                    Location = new Point(14, 38),
+                    Size = new Size(232, 25),
+                    Font = new Font("Segoe UI", 9.5F)
+                };
+
+                var btnOk = new Button
+                {
+                    Text = "OK",
+                    DialogResult = DialogResult.OK,
+                    Location = new Point(90, 74),
+                    Size = new Size(74, 28)
+                };
+                var btnCancelLocal = new Button
+                {
+                    Text = "Hủy",
+                    DialogResult = DialogResult.Cancel,
+                    Location = new Point(172, 74),
+                    Size = new Size(74, 28)
+                };
+
+                dialog.Controls.Add(lbl);
+                dialog.Controls.Add(nud);
+                dialog.Controls.Add(btnOk);
+                dialog.Controls.Add(btnCancelLocal);
+                dialog.AcceptButton = btnOk;
+                dialog.CancelButton = btnCancelLocal;
+
+                var result = dialog.ShowDialog(this);
+                if (result != DialogResult.OK)
+                    return initial;
+
+                return Convert.ToInt32(nud.Value);
+            }
+        }
+
+        private Control CreateMoneyStepper(
+            Func<decimal> getValue,
+            Action<decimal> setValue,
+            decimal step,
+            decimal minValue,
+            Color minusColor,
+            Color plusColor,
+            out Label valueLabel)
+        {
+            var host = new TableLayoutPanel
+            {
+                AutoSize = true,
+                ColumnCount = 3,
+                RowCount = 1,
+                Margin = new Padding(0),
+                Padding = new Padding(0),
+                Dock = DockStyle.Right
+            };
+            host.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            host.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 104));
+            host.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+
+            decimal safeStep = step <= 0m ? 10000m : step;
+            decimal safeMin = minValue < 0m ? 0m : minValue;
+
+            var btnMinus = BuildSquareButton("−", minusColor);
+            btnMinus.Click += (s, e) =>
+            {
+                decimal next = getValue() - safeStep;
+                if (next < safeMin) next = safeMin;
+                setValue(next);
+            };
+
+            valueLabel = new Label
+            {
+                Text = ToMoneyCompact(Math.Max(safeMin, getValue())),
+                AutoSize = false,
+                Width = 104,
+                Height = 34,
+                TextAlign = ContentAlignment.MiddleCenter,
+                BackColor = Color.FromArgb(250, 251, 253),
+                ForeColor = _textPrimary,
+                Font = new Font("Segoe UI Semibold", 9.8F, FontStyle.Bold),
+                Margin = new Padding(0)
+            };
+            valueLabel.Paint += (s, e) =>
+            {
+                if (!(s is Label label)) return;
+                using (var pen = new Pen(_cardBorder))
+                    e.Graphics.DrawRectangle(pen, 0, 0, label.Width - 1, label.Height - 1);
+            };
+
+            var btnPlus = BuildSquareButton("+", plusColor);
+            btnPlus.Click += (s, e) => setValue(Math.Max(safeMin, getValue() + safeStep));
 
             host.Controls.Add(btnMinus, 0, 0);
             host.Controls.Add(valueLabel, 1, 0);
@@ -1264,7 +1713,7 @@ namespace HotelManagement.Forms
             var btn = new Button
             {
                 Text = text,
-                Height = 34,
+                Height = 36,
                 FlatStyle = FlatStyle.Flat,
                 BackColor = back,
                 ForeColor = fore,
@@ -1279,6 +1728,14 @@ namespace HotelManagement.Forms
             btn.FlatAppearance.MouseDownBackColor = back == Color.White ? Color.FromArgb(236, 241, 250) : ControlPaint.Dark(back);
             ApplyRoundedRegion(btn, 5);
             return btn;
+        }
+
+        private void SetActionButtonsEnabled(bool enabled)
+        {
+            if (btnCancel != null && !btnCancel.IsDisposed) btnCancel.Enabled = enabled;
+            if (btnSave != null && !btnSave.IsDisposed) btnSave.Enabled = enabled;
+            if (btnPay != null && !btnPay.IsDisposed) btnPay.Enabled = enabled;
+            if (btnCancelRoom != null && !btnCancelRoom.IsDisposed) btnCancelRoom.Enabled = enabled;
         }
 
         private void ApplyRoundedRegion(Control control, int radius)

@@ -34,6 +34,13 @@ namespace HotelManagement.Services
             public decimal DueAmount { get; set; }
         }
 
+        public sealed class CancelHourlyRequest
+        {
+            public int BookingId { get; set; }
+            public int RoomId { get; set; }
+            public DateTime CancelledAt { get; set; }
+        }
+
         public sealed class SaveOvernightRequest
         {
             public int BookingId { get; set; }
@@ -49,11 +56,19 @@ namespace HotelManagement.Services
             public decimal TargetCollectedAmount { get; set; }
         }
 
+        public sealed class CancelOvernightRequest
+        {
+            public int BookingId { get; set; }
+            public int RoomId { get; set; }
+            public DateTime CancelledAt { get; set; }
+        }
+
         public sealed class PayOvernightRequest
         {
             public int BookingId { get; set; }
             public int RoomId { get; set; }
             public DateTime PaidAt { get; set; }
+            public DateTime StartTime { get; set; }
             public string GuestDisplayName { get; set; }
             public int NightCount { get; set; }
             public decimal NightlyRate { get; set; }
@@ -88,6 +103,7 @@ namespace HotelManagement.Services
                 {
                     LockBookingAndRoom(conn, tx, request.BookingId, request.RoomId);
                     UpsertExtras(conn, tx, request.BookingId, request.SoftDrinkQty, request.WaterBottleQty, request.SoftDrinkUnitPrice, request.WaterBottleUnitPrice, actor, nowUtc);
+                    UpdateBookingCheckinTime(conn, tx, request.BookingId, request.StartTime, actor, nowUtc);
                     UpdateBookingStatus(conn, tx, request.BookingId, (int)BookingStatus.DangO, null, actor, nowUtc);
                     UpdateRoomState(conn, tx, request.RoomId, 1, request.StartTime, 3, request.GuestDisplayName, actor, nowUtc);
 
@@ -137,6 +153,32 @@ namespace HotelManagement.Services
                 });
         }
 
+        public CheckoutResult CancelHourly(CancelHourlyRequest request)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            ValidateBookingAndRoom(request.BookingId, request.RoomId);
+            if (request.CancelledAt == DateTime.MinValue)
+                throw new ValidationException("Thời điểm hủy phòng không hợp lệ.");
+
+            return ExecuteInTransaction(
+                operation: "CheckoutService.CancelHourly",
+                bookingId: request.BookingId,
+                roomId: request.RoomId,
+                work: (conn, tx, actor, nowUtc) =>
+                {
+                    LockBookingAndRoom(conn, tx, request.BookingId, request.RoomId);
+                    UpdateBookingStatus(conn, tx, request.BookingId, (int)BookingStatus.DaHuy, request.CancelledAt, actor, nowUtc);
+                    UpdateRoomState(conn, tx, request.RoomId, (int)RoomStatus.Trong, null, null, null, actor, nowUtc);
+
+                    return new CheckoutResult
+                    {
+                        AddedCollectedAmount = 0m,
+                        SettlementAmount = 0m,
+                        PaidAmountAfterOperation = GetPaidAmount(conn, tx, request.BookingId)
+                    };
+                });
+        }
+
         public CheckoutResult SaveOvernight(SaveOvernightRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
@@ -158,6 +200,7 @@ namespace HotelManagement.Services
                     UpsertExtras(conn, tx, request.BookingId, request.SoftDrinkQty, request.WaterBottleQty, request.SoftDrinkUnitPrice, request.WaterBottleUnitPrice, actor, nowUtc);
                     UpdateStayInfoRates(conn, tx, request.BookingId, request.NightlyRate, request.NightCount, actor, nowUtc);
                     UpdateStayInfoGuestName(conn, tx, request.BookingId, request.GuestDisplayName, actor, nowUtc);
+                    UpdateBookingCheckinTime(conn, tx, request.BookingId, request.StartTime, actor, nowUtc);
 
                     decimal paidBefore = GetPaidAmount(conn, tx, request.BookingId);
                     decimal targetCollected = Math.Max(0m, request.TargetCollectedAmount);
@@ -179,6 +222,32 @@ namespace HotelManagement.Services
                 });
         }
 
+        public CheckoutResult CancelOvernight(CancelOvernightRequest request)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            ValidateBookingAndRoom(request.BookingId, request.RoomId);
+            if (request.CancelledAt == DateTime.MinValue)
+                throw new ValidationException("Thời điểm hủy phòng không hợp lệ.");
+
+            return ExecuteInTransaction(
+                operation: "CheckoutService.CancelOvernight",
+                bookingId: request.BookingId,
+                roomId: request.RoomId,
+                work: (conn, tx, actor, nowUtc) =>
+                {
+                    LockBookingAndRoom(conn, tx, request.BookingId, request.RoomId);
+                    UpdateBookingStatus(conn, tx, request.BookingId, (int)BookingStatus.DaHuy, request.CancelledAt, actor, nowUtc);
+                    UpdateRoomState(conn, tx, request.RoomId, (int)RoomStatus.Trong, null, null, null, actor, nowUtc);
+
+                    return new CheckoutResult
+                    {
+                        AddedCollectedAmount = 0m,
+                        SettlementAmount = 0m,
+                        PaidAmountAfterOperation = GetPaidAmount(conn, tx, request.BookingId)
+                    };
+                });
+        }
+
         public CheckoutResult PayOvernight(PayOvernightRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
@@ -189,6 +258,7 @@ namespace HotelManagement.Services
             if (request.TargetCollectedAmount < 0m) throw new ValidationException("Tiền đã thu không hợp lệ.");
             if (request.TotalCharge < 0m) throw new ValidationException("Tổng tiền không hợp lệ.");
             if (request.PaidAt == DateTime.MinValue) throw new ValidationException("Thời điểm trả phòng không hợp lệ.");
+            if (request.StartTime == DateTime.MinValue) throw new ValidationException("Thời gian bắt đầu không hợp lệ.");
 
             return ExecuteInTransaction(
                 operation: "CheckoutService.PayOvernight",
@@ -201,6 +271,7 @@ namespace HotelManagement.Services
                     UpsertExtras(conn, tx, request.BookingId, request.SoftDrinkQty, request.WaterBottleQty, request.SoftDrinkUnitPrice, request.WaterBottleUnitPrice, actor, nowUtc);
                     UpdateStayInfoRates(conn, tx, request.BookingId, request.NightlyRate, request.NightCount, actor, nowUtc);
                     UpdateStayInfoGuestName(conn, tx, request.BookingId, request.GuestDisplayName, actor, nowUtc);
+                    UpdateBookingCheckinTime(conn, tx, request.BookingId, request.StartTime, actor, nowUtc);
 
                     decimal paidBefore = GetPaidAmount(conn, tx, request.BookingId);
                     decimal targetCollected = Math.Max(0m, request.TargetCollectedAmount);
@@ -545,6 +616,35 @@ namespace HotelManagement.Services
                 int affected = cmd.ExecuteNonQuery();
                 if (affected <= 0)
                     throw new DomainException("Không thể cập nhật trạng thái booking.");
+            }
+        }
+
+        private static void UpdateBookingCheckinTime(
+            MySqlConnection conn,
+            MySqlTransaction tx,
+            int bookingId,
+            DateTime checkinAt,
+            string actor,
+            DateTime nowUtc)
+        {
+            if (checkinAt == DateTime.MinValue)
+                throw new ValidationException("Thời gian check-in không hợp lệ.");
+
+            const string sql = @"UPDATE DATPHONG
+                                 SET NgayDen = @NgayDen,
+                                     UpdatedAtUtc = @UpdatedAtUtc,
+                                     UpdatedBy = @UpdatedBy,
+                                     DataStatus = 'active'
+                                 WHERE DatPhongID = @DatPhongID";
+            using (var cmd = new MySqlCommand(sql, conn, tx))
+            {
+                cmd.Parameters.AddWithValue("@NgayDen", checkinAt);
+                cmd.Parameters.AddWithValue("@UpdatedAtUtc", nowUtc);
+                cmd.Parameters.AddWithValue("@UpdatedBy", actor);
+                cmd.Parameters.AddWithValue("@DatPhongID", bookingId);
+                int affected = cmd.ExecuteNonQuery();
+                if (affected <= 0)
+                    throw new DomainException("Không thể cập nhật thời gian check-in booking.");
             }
         }
 

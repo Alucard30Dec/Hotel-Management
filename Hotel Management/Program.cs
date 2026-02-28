@@ -20,7 +20,7 @@ namespace HotelManagement
         private static int _fatalErrorShown;
         private static int _startupMaintenanceScheduled;
         private static bool _deferDatabaseInitialize;
-        private static readonly TimeSpan StartupMaintenanceDelay = TimeSpan.FromSeconds(15);
+        private static readonly TimeSpan StartupMaintenanceDelay = TimeSpan.FromSeconds(2);
         private static readonly TimeSpan StartupMaintenanceInterval = TimeSpan.FromHours(12);
         private const string StartupMaintenanceStampFileName = "startup-maintenance.stamp";
 
@@ -65,8 +65,6 @@ namespace HotelManagement
                             {
                                 EnsureDatabaseInitialized();
                             }
-                            EnsureStatisticsSchema(interactiveWarning: false);
-
                             var mainForm = new MainForm();
                             mainForm.Shown += MainForm_Shown;
                             Application.Run(mainForm);
@@ -164,11 +162,13 @@ namespace HotelManagement
                     _deferDatabaseInitialize = false;
                 }
 
+                // Keep schema sync off the critical startup path, but still run every launch.
+                EnsureStatisticsSchema(interactiveWarning: false);
+
                 if (!ShouldRunStartupMaintenance()) return;
 
                 using (PerformanceTracker.Measure("Program.StartupMaintenance.Background"))
                 {
-                    EnsureStatisticsSchema(interactiveWarning: false);
                     EnsurePerformanceIndexes();
                 }
 

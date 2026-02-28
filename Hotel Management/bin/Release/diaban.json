@@ -1,0 +1,86 @@
+[
+  {
+    "MaTinh": "01",
+    "TenTinh": "Hà Nội",
+    "IsActive": true,
+    "GhiChu": "",
+    "Huyens": [
+      {
+        "MaHuyen": "001",
+        "TenHuyen": "Ba Đình",
+        "IsActive": true,
+        "GhiChu": "",
+        "Xas": [
+          {
+            "MaXa": "00001",
+            "TenXa": "Phúc Xá",
+            "IsActive": true,
+            "GhiChu": ""
+          },
+          {
+            "MaXa": "00002",
+            "TenXa": "Trúc Bạch",
+            "IsActive": true,
+            "GhiChu": ""
+          }
+        ]
+      },
+      {
+        "MaHuyen": "999",
+        "TenHuyen": "Huyện Cũ A",
+        "IsActive": false,
+        "GhiChu": "Sát nhập vào Ba Đình từ 01/01/2025.",
+        "Xas": [
+          {
+            "MaXa": "99901",
+            "TenXa": "Xã Cũ A1",
+            "IsActive": false,
+            "GhiChu": "Sát nhập vào phường Phúc Xá từ 01/01/2025."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "MaTinh": "79",
+    "TenTinh": "TP Hồ Chí Minh",
+    "IsActive": true,
+    "GhiChu": "",
+    "Huyens": [
+      {
+        "MaHuyen": "760",
+        "TenHuyen": "Quận 1",
+        "IsActive": true,
+        "GhiChu": "",
+        "Xas": [
+          {
+            "MaXa": "26734",
+            "TenXa": "Bến Nghé",
+            "IsActive": true,
+            "GhiChu": ""
+          },
+          {
+            "MaXa": "26737",
+            "TenXa": "Bến Thành",
+            "IsActive": true,
+            "GhiChu": ""
+          }
+        ]
+      },
+      {
+        "MaHuyen": "998",
+        "TenHuyen": "Quận Cũ B",
+        "IsActive": false,
+        "GhiChu": "Sát nhập vào Quận 1 từ 01/01/2025.",
+        "Xas": [
+          {
+            "MaXa": "99801",
+            "TenXa": "Phường Cũ B1",
+            "IsActive": false,
+            "GhiChu": "Sát nhập vào phường Bến Thành từ 01/01/2025."
+          }
+        ]
+      }
+    ]
+  }
+]

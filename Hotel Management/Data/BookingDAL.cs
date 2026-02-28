@@ -11,6 +11,10 @@ namespace HotelManagement.Data
     public class BookingDAL                                                         
     {
         private readonly AuditLogDAL _auditLogDal = new AuditLogDAL();
+        private readonly object _activeSnapshotCacheSync = new object();
+        private Dictionary<int, ActiveRoomBillingSnapshot> _activeSnapshotCache;
+        private DateTime _activeSnapshotCacheAtUtc = DateTime.MinValue;
+        private const int ACTIVE_SNAPSHOT_CACHE_MS = 1500;
 
         public class BookingDateRangeInfo
         {
@@ -458,6 +462,16 @@ namespace HotelManagement.Data
 
         public Dictionary<int, ActiveRoomBillingSnapshot> GetActiveRoomBillingSnapshotsByRoom()
         {
+            DateTime nowUtc = DateTime.UtcNow;
+            lock (_activeSnapshotCacheSync)
+            {
+                if (_activeSnapshotCache != null
+                    && (nowUtc - _activeSnapshotCacheAtUtc).TotalMilliseconds < ACTIVE_SNAPSHOT_CACHE_MS)
+                {
+                    return CloneActiveRoomSnapshotMap(_activeSnapshotCache);
+                }
+            }
+
             var result = new Dictionary<int, ActiveRoomBillingSnapshot>();
             var pricing = PricingService.Instance.GetCurrentPricing();
             decimal defaultSingle = pricing.DefaultNightlySingle;
@@ -528,7 +542,7 @@ namespace HotelManagement.Data
                 try
                 {
                     LoadActiveRoomBillingSnapshots(conn, queryWithLoaiPhong, result, defaultSingle, defaultDouble);
-                    return result;
+                    return UpdateActiveSnapshotCacheAndClone(result);
                 }
                 catch (MySqlException ex)
                 {
@@ -599,7 +613,47 @@ namespace HotelManagement.Data
                 LoadActiveRoomBillingSnapshots(conn, queryFallback, result, defaultSingle, defaultDouble);
             }
 
-            return result;
+            return UpdateActiveSnapshotCacheAndClone(result);
+        }
+
+        private Dictionary<int, ActiveRoomBillingSnapshot> UpdateActiveSnapshotCacheAndClone(
+            Dictionary<int, ActiveRoomBillingSnapshot> source)
+        {
+            var cached = CloneActiveRoomSnapshotMap(source);
+            lock (_activeSnapshotCacheSync)
+            {
+                _activeSnapshotCache = cached;
+                _activeSnapshotCacheAtUtc = DateTime.UtcNow;
+            }
+
+            return CloneActiveRoomSnapshotMap(cached);
+        }
+
+        private static Dictionary<int, ActiveRoomBillingSnapshot> CloneActiveRoomSnapshotMap(
+            Dictionary<int, ActiveRoomBillingSnapshot> source)
+        {
+            var clone = new Dictionary<int, ActiveRoomBillingSnapshot>();
+            if (source == null || source.Count == 0) return clone;
+
+            foreach (var kv in source)
+            {
+                var snapshot = kv.Value;
+                if (snapshot == null) continue;
+                clone[kv.Key] = new ActiveRoomBillingSnapshot
+                {
+                    DatPhongID = snapshot.DatPhongID,
+                    PhongID = snapshot.PhongID,
+                    BookingType = snapshot.BookingType,
+                    NgayDen = snapshot.NgayDen,
+                    NightlyRate = snapshot.NightlyRate,
+                    SoDemLuuTru = snapshot.SoDemLuuTru,
+                    ExtrasAmount = snapshot.ExtrasAmount,
+                    ExtrasReason = snapshot.ExtrasReason,
+                    PaidAmount = snapshot.PaidAmount
+                };
+            }
+
+            return clone;
         }
 
         private static void LoadActiveRoomBillingSnapshots(
@@ -676,24 +730,7 @@ namespace HotelManagement.Data
                                              COALESCE(SUM(COALESCE(b.TrangThai, 0)), 0) AS StatusSum,
                                              COALESCE(SUM(COALESCE(b.BookingType, 0)), 0) AS TypeSum,
                                              COALESCE(SUM(COALESCE(b.TienCoc, 0)), 0) AS DepositSum,
-                                             COALESCE(MAX(COALESCE(b.UpdatedAtUtc, b.NgayDen)), '1970-01-01 00:00:00') AS BookingMaxUpdated,
-                                             COALESCE(
-                                                SUM(
-                                                    CRC32(
-                                                        CONCAT_WS('|',
-                                                            b.DatPhongID,
-                                                            COALESCE(b.PhongID, 0),
-                                                            COALESCE(DATE_FORMAT(b.NgayDen, '%Y%m%d%H%i%s'), ''),
-                                                            COALESCE(DATE_FORMAT(b.NgayDiDuKien, '%Y%m%d%H%i%s'), ''),
-                                                            COALESCE(DATE_FORMAT(b.NgayDiThucTe, '%Y%m%d%H%i%s'), ''),
-                                                            COALESCE(b.TrangThai, 0),
-                                                            COALESCE(b.BookingType, 0),
-                                                            COALESCE(b.TienCoc, 0)
-                                                        )
-                                                    )
-                                                ),
-                                                0
-                                             ) AS BookingCrc
+                                             COALESCE(MAX(COALESCE(b.UpdatedAtUtc, b.NgayDen)), '1970-01-01 00:00:00') AS BookingMaxUpdated
                                       FROM DATPHONG b
                                       WHERE b.NgayDen >= @FromDate
                                         AND b.NgayDen < @ToDateExclusive
@@ -738,8 +775,7 @@ namespace HotelManagement.Data
                             rd.IsDBNull(1) ? "0" : Convert.ToString(rd.GetValue(1), CultureInfo.InvariantCulture),
                             rd.IsDBNull(2) ? "0" : Convert.ToString(rd.GetValue(2), CultureInfo.InvariantCulture),
                             rd.IsDBNull(3) ? "0" : Convert.ToString(rd.GetValue(3), CultureInfo.InvariantCulture),
-                            rd.IsDBNull(4) ? "19700101000000" : rd.GetDateTime(4).ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture),
-                            rd.IsDBNull(5) ? "0" : Convert.ToString(rd.GetValue(5), CultureInfo.InvariantCulture));
+                            rd.IsDBNull(4) ? "19700101000000" : rd.GetDateTime(4).ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture));
                     }
                 }
 
@@ -945,39 +981,34 @@ namespace HotelManagement.Data
 
             using (var conn = DbHelper.GetConnection())
             {
-                const string countSql = @"SELECT
-                                                COALESCE(SUM(CASE WHEN COALESCE(b.BookingType, 2) = 1 THEN 1 ELSE 0 END), 0) AS HourlyGuests,
-                                                COALESCE(SUM(CASE WHEN COALESCE(b.BookingType, 2) <> 1 THEN 1 ELSE 0 END), 0) AS OvernightGuests
-                                          FROM DATPHONG b
-                                          WHERE b.NgayDen >= @FromDate
-                                            AND b.NgayDen < @ToDateExclusive
-                                            AND COALESCE(b.DataStatus, 'active') <> 'deleted'";
-                using (var countCmd = new MySqlCommand(countSql, conn))
+                const string summarySql = @"SELECT
+                                                  COALESCE(SUM(CASE WHEN COALESCE(b.BookingType, 2) = 1 THEN 1 ELSE 0 END), 0) AS HourlyGuests,
+                                                  COALESCE(SUM(CASE WHEN COALESCE(b.BookingType, 2) <> 1 THEN 1 ELSE 0 END), 0) AS OvernightGuests,
+                                                  (
+                                                      SELECT COALESCE(SUM(i.TongTien), 0)
+                                                      FROM HOADON i
+                                                      WHERE i.NgayLap >= @FromDate
+                                                        AND i.NgayLap < @ToDateExclusive
+                                                        AND i.DaThanhToan = 1
+                                                        AND COALESCE(i.DataStatus, 'active') <> 'deleted'
+                                                  ) AS TotalRevenue
+                                           FROM DATPHONG b
+                                           WHERE b.NgayDen >= @FromDate
+                                             AND b.NgayDen < @ToDateExclusive
+                                             AND COALESCE(b.DataStatus, 'active') <> 'deleted'";
+                using (var cmd = new MySqlCommand(summarySql, conn))
                 {
-                    countCmd.Parameters.AddWithValue("@FromDate", from);
-                    countCmd.Parameters.AddWithValue("@ToDateExclusive", toExclusive);
-                    using (var rd = countCmd.ExecuteReader())
+                    cmd.Parameters.AddWithValue("@FromDate", from);
+                    cmd.Parameters.AddWithValue("@ToDateExclusive", toExclusive);
+                    using (var rd = cmd.ExecuteReader())
                     {
                         if (rd.Read())
                         {
                             summary.HourlyGuests = rd.IsDBNull(0) ? 0 : Convert.ToInt32(rd.GetValue(0), CultureInfo.InvariantCulture);
                             summary.OvernightGuests = rd.IsDBNull(1) ? 0 : Convert.ToInt32(rd.GetValue(1), CultureInfo.InvariantCulture);
+                            summary.TotalRevenue = rd.IsDBNull(2) ? 0m : Convert.ToDecimal(rd.GetValue(2), CultureInfo.InvariantCulture);
                         }
                     }
-                }
-
-                const string revenueSql = @"SELECT COALESCE(SUM(i.TongTien), 0)
-                                            FROM HOADON i
-                                            WHERE i.NgayLap >= @FromDate
-                                              AND i.NgayLap < @ToDateExclusive
-                                              AND i.DaThanhToan = 1
-                                              AND COALESCE(i.DataStatus, 'active') <> 'deleted'";
-                using (var revenueCmd = new MySqlCommand(revenueSql, conn))
-                {
-                    revenueCmd.Parameters.AddWithValue("@FromDate", from);
-                    revenueCmd.Parameters.AddWithValue("@ToDateExclusive", toExclusive);
-                    object val = revenueCmd.ExecuteScalar();
-                    summary.TotalRevenue = val == null || val == DBNull.Value ? 0m : Convert.ToDecimal(val, CultureInfo.InvariantCulture);
                 }
             }
 

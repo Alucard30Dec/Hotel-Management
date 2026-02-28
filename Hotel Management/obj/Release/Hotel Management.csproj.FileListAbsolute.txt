@@ -21,7 +21,6 @@ E:\Project\Hotel-Management\Hotel Management\bin\Release\System.Diagnostics.Diag
 E:\Project\Hotel-Management\Hotel Management\bin\Release\System.IO.Pipelines.dll
 E:\Project\Hotel-Management\Hotel Management\bin\Release\System.Memory.dll
 E:\Project\Hotel-Management\Hotel Management\bin\Release\System.Numerics.Vectors.dll
-E:\Project\Hotel-Management\Hotel Management\bin\Release\System.Runtime.CompilerServices.Unsafe.dll
 E:\Project\Hotel-Management\Hotel Management\bin\Release\System.Threading.Tasks.Extensions.dll
 E:\Project\Hotel-Management\Hotel Management\bin\Release\Ubiety.Dns.Core.dll
 E:\Project\Hotel-Management\Hotel Management\bin\Release\Zstandard.Net.dll
@@ -46,7 +45,6 @@ E:\Project\Hotel-Management\Hotel Management\bin\Release\System.Diagnostics.Diag
 E:\Project\Hotel-Management\Hotel Management\bin\Release\System.IO.Pipelines.xml
 E:\Project\Hotel-Management\Hotel Management\bin\Release\System.Memory.xml
 E:\Project\Hotel-Management\Hotel Management\bin\Release\System.Numerics.Vectors.xml
-E:\Project\Hotel-Management\Hotel Management\bin\Release\System.Runtime.CompilerServices.Unsafe.xml
 E:\Project\Hotel-Management\Hotel Management\bin\Release\System.Threading.Tasks.Extensions.xml
 E:\Project\Hotel-Management\Hotel Management\obj\Release\Hotel Management.csproj.AssemblyReference.cache
 E:\Project\Hotel-Management\Hotel Management\obj\Release\Hotel Management.csproj.SuggestedBindingRedirects.cache
@@ -58,3 +56,8 @@ E:\Project\Hotel-Management\Hotel Management\obj\Release\Hotel Management.csproj
 E:\Project\Hotel-Management\Hotel Management\obj\Release\Hotel Ma.07462F3B.Up2Date
 E:\Project\Hotel-Management\Hotel Management\obj\Release\Hotel Management.exe
 E:\Project\Hotel-Management\Hotel Management\obj\Release\Hotel Management.pdb
+E:\Project\Hotel-Management\Hotel Management\bin\Release\Address\dvhc_optimized.json
+E:\Project\Hotel-Management\Hotel Management\bin\Release\diaban.json
+E:\Project\Hotel-Management\Hotel Management\obj\Release\Hotel_Management.Migrations.TenMigrationMoi.resources
+E:\Project\Hotel-Management\Hotel Management\obj\Release\Hotel_Management.Migrations.UpdateRoomLayoutByFloor.resources
+E:\Project\Hotel-Management\Hotel Management\obj\Release\Hotel_Management.Migrations.RemoveRoomGhiChu.resources

@@ -22,6 +22,7 @@ namespace HotelManagement.Forms
         private readonly StatisticsDAL _statisticsDal = new StatisticsDAL();
         private readonly ToolTip _roomToolTip = new ToolTip();
         private readonly PricingService _pricingService = PricingService.Instance;
+        private readonly OperationalDataResetService _operationalDataResetService = new OperationalDataResetService();
 
         private int? _currentFilterStatus = null;
         
@@ -47,10 +48,14 @@ namespace HotelManagement.Forms
         private bool _isRevenueReportLoading;
         private bool _isReportSeedLoading;
         private bool _isRevenueCsvExporting;
+        private bool _isOperationalResetRunning;
         private readonly List<RoomTileInfo> _roomTileInfos = new List<RoomTileInfo>();
         private readonly Dictionary<string, Font> _roomTileFontCache = new Dictionary<string, Font>(StringComparer.Ordinal);
         private Dictionary<int, BookingDAL.ActiveRoomBillingSnapshot> _roomBillingSnapshots = new Dictionary<int, BookingDAL.ActiveRoomBillingSnapshot>();
+        private BookingDAL.BookingSummaryStats _roomMapSummaryCache = new BookingDAL.BookingSummaryStats();
         private DateTime _lastBillingSnapshotRefreshUtc = DateTime.MinValue;
+        private DateTime _lastRoomMapSummaryRefreshUtc = DateTime.MinValue;
+        private DateTime _lastRoomMapSummaryDate = DateTime.MinValue;
         private DateTime _lastBillingSnapshotErrorToastUtc = DateTime.MinValue;
         private DateTime _lastRoomTilesErrorToastUtc = DateTime.MinValue;
         private DateTime _lastExplorerDetailErrorToastUtc = DateTime.MinValue;
@@ -77,6 +82,9 @@ namespace HotelManagement.Forms
         private const int ROOMMAP_FINGERPRINT_MIN_INTERVAL_MS = 6000;
         private const int BOOKING_STATS_FINGERPRINT_MIN_INTERVAL_MS = 8000;
         private const int BILLING_SNAPSHOT_REFRESH_SECONDS = 5;
+        private const int ROOMMAP_SUMMARY_REFRESH_SECONDS = 15;
+        private const int ROOMMAP_INITIAL_LOAD_DELAY_MS = 120;
+        private bool _initialRoomMapLoadScheduled;
 
         private enum ActiveViewMode
         {
@@ -207,6 +215,7 @@ namespace HotelManagement.Forms
             _roomToolTip.ReshowDelay = 120;
             _roomToolTip.ShowAlways = true;
             InitializeDebounceTimers();
+            Shown += MainForm_Shown;
         }
 
         public MainForm(User user) : this()
@@ -221,12 +230,22 @@ namespace HotelManagement.Forms
                 InitializePerformanceSettings();
                 UpdateUserUI();
                 InitSearchPlaceholder();
-                LoadRoomTiles();
-                SetupRoomTimer();
-                SetupRealtimeWatcher();
-                BeginInvoke(new Action(StartGeoDataWarmup));
-                BeginInvoke(new Action(StartRoomDetailWarmup));
             }
+        }
+
+        private async void MainForm_Shown(object sender, EventArgs e)
+        {
+            if (_initialRoomMapLoadScheduled || IsDisposed) return;
+            _initialRoomMapLoadScheduled = true;
+
+            await Task.Delay(ROOMMAP_INITIAL_LOAD_DELAY_MS);
+            if (IsDisposed) return;
+
+            SetupRoomTimer();
+            SetupRealtimeWatcher();
+            LoadRoomTiles();
+            BeginInvoke(new Action(StartGeoDataWarmup));
+            BeginInvoke(new Action(StartRoomDetailWarmup));
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -511,32 +530,38 @@ namespace HotelManagement.Forms
                         || _roomBillingSnapshots == null
                         || _roomBillingSnapshots.Count == 0
                         || (DateTime.UtcNow - _lastBillingSnapshotRefreshUtc).TotalSeconds >= BILLING_SNAPSHOT_REFRESH_SECONDS;
+                    bool shouldRefreshSummary = ShouldRefreshRoomMapSummary(forceBillingRefresh);
 
                     Task<List<Room>> roomTask = Task.Run(() => _roomDal.GetAll());
-                    Task<string> roomFingerprintTask = Task.Run(() => _roomDal.GetRoomStateFingerprint());
-                    Task<BookingDAL.BookingSummaryStats> roomMapSummaryTask =
-                        Task.Run(() => _bookingDal.GetRoomMapDailySummary(DateTime.Today));
+                    Task<BookingDAL.BookingSummaryStats> roomMapSummaryTask = shouldRefreshSummary
+                        ? Task.Run(() => _bookingDal.GetRoomMapDailySummary(DateTime.Today))
+                        : Task.FromResult(_roomMapSummaryCache ?? new BookingDAL.BookingSummaryStats());
                     Task<Dictionary<int, BookingDAL.ActiveRoomBillingSnapshot>> billingTask = shouldRefreshBilling
                         ? Task.Run(() => _bookingDal.GetActiveRoomBillingSnapshotsByRoom())
                         : Task.FromResult(_roomBillingSnapshots ?? new Dictionary<int, BookingDAL.ActiveRoomBillingSnapshot>());
 
-                    await Task.WhenAll(roomTask, roomFingerprintTask, billingTask, roomMapSummaryTask);
+                    await Task.WhenAll(roomTask, billingTask, roomMapSummaryTask);
                     if (IsDisposed) return;
 
                     var allRooms = roomTask.Result ?? new List<Room>();
-                    _lastRoomStateFingerprint = roomFingerprintTask.Result ?? string.Empty;
 
                     if (shouldRefreshBilling)
                     {
                         _roomBillingSnapshots = billingTask.Result ?? new Dictionary<int, BookingDAL.ActiveRoomBillingSnapshot>();
                         _lastBillingSnapshotRefreshUtc = DateTime.UtcNow;
                     }
+                    if (shouldRefreshSummary)
+                    {
+                        _roomMapSummaryCache = roomMapSummaryTask.Result ?? new BookingDAL.BookingSummaryStats();
+                        _lastRoomMapSummaryRefreshUtc = DateTime.UtcNow;
+                        _lastRoomMapSummaryDate = DateTime.Today;
+                    }
 
                     var rooms = allRooms;
                     if (_currentFilterStatus.HasValue)
                         rooms = rooms.FindAll(r => r.TrangThai == _currentFilterStatus.Value);
                     var tangGroups = rooms.GroupBy(r => r.Tang).OrderBy(g => g.Key);
-                    UpdateRoomMapFilterSummary(roomMapSummaryTask.Result);
+                    UpdateRoomMapFilterSummary(_roomMapSummaryCache);
 
                     flowRooms.SuspendLayout();
                     try
@@ -564,9 +589,6 @@ namespace HotelManagement.Forms
 
                     if (_roomTimer != null)
                         RoomTimer_Tick(this, EventArgs.Empty);
-
-                    if (!_isRealtimeRefreshing)
-                        await CheckRoomMapChangesAsync();
                 }
             }
             catch (Exception ex)
@@ -1405,6 +1427,14 @@ namespace HotelManagement.Forms
             lblFilterTodayIncome.Text = "Thu hôm nay: " + todayRevenue.ToString("N0") + "đ";
         }
 
+        private bool ShouldRefreshRoomMapSummary(bool force)
+        {
+            if (force) return true;
+            if (_roomMapSummaryCache == null) return true;
+            if (_lastRoomMapSummaryDate.Date != DateTime.Today) return true;
+            return (DateTime.UtcNow - _lastRoomMapSummaryRefreshUtc).TotalSeconds >= ROOMMAP_SUMMARY_REFRESH_SECONDS;
+        }
+
         #endregion
 
         #region Điều hướng/forms
@@ -1907,6 +1937,11 @@ namespace HotelManagement.Forms
                     LoadRoomTiles();
                     ShowToast("Đã thanh toán thành công.");
                 };
+                view.RoomCancelled += (s, e) =>
+                {
+                    LoadRoomTiles();
+                    ShowToast("Đã hủy phòng, phòng trở về trạng thái trống.");
+                };
                 return view;
             });
 
@@ -1937,6 +1972,12 @@ namespace HotelManagement.Forms
                 {
                     LoadRoomTiles();
                     ShowToast("Đã trả phòng thành công.");
+                };
+                view.RoomCancelled += (s, e) =>
+                {
+                    LoadRoomTiles();
+                    ShowRoomMap();
+                    ShowToast("Đã hủy phòng, phòng trở về trạng thái trống.");
                 };
                 return view;
             });
@@ -2034,12 +2075,21 @@ namespace HotelManagement.Forms
             {
                 using (PerformanceTracker.Measure("MainForm.RefreshRoomBillingSnapshots"))
                 {
+                    bool shouldRefreshSummary = ShouldRefreshRoomMapSummary(force: false);
                     var snapshotsTask = Task.Run(() => _bookingDal.GetActiveRoomBillingSnapshotsByRoom());
-                    var summaryTask = Task.Run(() => _bookingDal.GetRoomMapDailySummary(DateTime.Today));
+                    var summaryTask = shouldRefreshSummary
+                        ? Task.Run(() => _bookingDal.GetRoomMapDailySummary(DateTime.Today))
+                        : Task.FromResult(_roomMapSummaryCache ?? new BookingDAL.BookingSummaryStats());
                     await Task.WhenAll(snapshotsTask, summaryTask);
                     if (IsDisposed) return;
                     _roomBillingSnapshots = snapshotsTask.Result ?? new Dictionary<int, BookingDAL.ActiveRoomBillingSnapshot>();
-                    UpdateRoomMapFilterSummary(summaryTask.Result);
+                    if (shouldRefreshSummary)
+                    {
+                        _roomMapSummaryCache = summaryTask.Result ?? new BookingDAL.BookingSummaryStats();
+                        _lastRoomMapSummaryRefreshUtc = DateTime.UtcNow;
+                        _lastRoomMapSummaryDate = DateTime.Today;
+                    }
+                    UpdateRoomMapFilterSummary(_roomMapSummaryCache);
                     _lastBillingSnapshotRefreshUtc = DateTime.UtcNow;
                 }
             }
@@ -2423,6 +2473,31 @@ namespace HotelManagement.Forms
                 ForeColor = Color.FromArgb(31, 53, 89)
             };
 
+            var actionFlow = new FlowLayoutPanel
+            {
+                AutoSize = true,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                Anchor = AnchorStyles.Right | AnchorStyles.Top,
+                Margin = new Padding(0),
+                Padding = new Padding(0)
+            };
+
+            var btnResetData = new Button
+            {
+                Text = "Reset dữ liệu vận hành",
+                Width = 168,
+                Height = 34,
+                Margin = new Padding(0, 4, 8, 4),
+                Font = new Font("Segoe UI", 9.2F, FontStyle.Bold),
+                FlatStyle = FlatStyle.Flat,
+                ForeColor = Color.FromArgb(168, 53, 53),
+                BackColor = Color.White
+            };
+            btnResetData.FlatAppearance.BorderSize = 1;
+            btnResetData.FlatAppearance.BorderColor = Color.FromArgb(236, 186, 186);
+            btnResetData.Click += (s, e) => ResetOperationalDataFromStatisticsAsync();
+
             var btnBack = new Button
             {
                 Text = "Quay lại sơ đồ",
@@ -2438,8 +2513,11 @@ namespace HotelManagement.Forms
             btnBack.FlatAppearance.BorderColor = Color.FromArgb(178, 197, 224);
             btnBack.Click += (s, e) => ShowRoomMap();
 
+            actionFlow.Controls.Add(btnResetData);
+            actionFlow.Controls.Add(btnBack);
+
             headerTable.Controls.Add(title, 0, 0);
-            headerTable.Controls.Add(btnBack, 1, 0);
+            headerTable.Controls.Add(actionFlow, 1, 0);
             header.Controls.Add(headerTable);
 
             var filterCard = new Panel
@@ -2516,7 +2594,7 @@ namespace HotelManagement.Forms
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Margin = new Padding(0, 5, 14, 0)
             };
-            _statsBookingTypeCombo.Items.AddRange(new object[] { "Tất cả", "Phòng giờ", "Phòng đêm" });
+            _statsBookingTypeCombo.Items.AddRange(new object[] { "Tất cả", "Phòng giờ", "Phòng ngày/đêm" });
             _statsBookingTypeCombo.SelectedIndex = 0;
             _statsBookingTypeCombo.SelectedIndexChanged += (s, e) =>
             {
@@ -2589,7 +2667,7 @@ namespace HotelManagement.Forms
             };
             for (int i = 0; i < 5; i++) summaryGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20f));
             summaryGrid.Controls.Add(CreateStatCard("Khách giờ", out _statsHourlyGuestsValue, Color.FromArgb(31, 71, 136)), 0, 0);
-            summaryGrid.Controls.Add(CreateStatCard("Khách đêm", out _statsOvernightGuestsValue, Color.FromArgb(236, 137, 41)), 1, 0);
+            summaryGrid.Controls.Add(CreateStatCard("Khách ngày/đêm", out _statsOvernightGuestsValue, Color.FromArgb(236, 137, 41)), 1, 0);
             summaryGrid.Controls.Add(CreateStatCard("Đang ở", out _statsStayingValue, Color.FromArgb(42, 118, 207)), 2, 0);
             summaryGrid.Controls.Add(CreateStatCard("Đã trả", out _statsCompletedValue, Color.FromArgb(43, 145, 114)), 3, 0);
             summaryGrid.Controls.Add(CreateStatCard("Tổng doanh thu", out _statsRevenueValue, Color.FromArgb(188, 79, 94)), 4, 0);
@@ -2607,7 +2685,7 @@ namespace HotelManagement.Forms
             kpiGrid.Controls.Add(CreateStatCard("Tổng lượt đặt", out _kpiTotalBookingsValue, Color.FromArgb(33, 106, 186)), 0, 0);
             kpiGrid.Controls.Add(CreateStatCard("Tổng doanh thu", out _kpiTotalRevenueValue, Color.FromArgb(31, 71, 136)), 1, 0);
             kpiGrid.Controls.Add(CreateStatCard("Lượt PHÒNG GIỜ", out _kpiHourlyBookingsValue, Color.FromArgb(188, 79, 94)), 2, 0);
-            kpiGrid.Controls.Add(CreateStatCard("Lượt PHÒNG ĐÊM", out _kpiOvernightBookingsValue, Color.FromArgb(71, 120, 66)), 3, 0);
+            kpiGrid.Controls.Add(CreateStatCard("Lượt PHÒNG NGÀY/ĐÊM", out _kpiOvernightBookingsValue, Color.FromArgb(71, 120, 66)), 3, 0);
             kpiGrid.Controls.Add(CreateStatCard("Doanh thu phát sinh", out _kpiExtrasRevenueValue, Color.FromArgb(236, 137, 41)), 4, 0);
             kpiGrid.Controls.Add(CreateStatCard("Hủy / No-show", out _kpiCancelCountValue, Color.FromArgb(214, 94, 83)), 5, 0);
 
@@ -2783,7 +2861,7 @@ namespace HotelManagement.Forms
 
             flow.Controls.Add(new Label { Text = "Loại đặt", AutoSize = true, Margin = new Padding(0, 9, 6, 0), Font = new Font("Segoe UI", 9F, FontStyle.Bold) });
             _explorerBookingTypeCombo = new ComboBox { Width = 110, DropDownStyle = ComboBoxStyle.DropDownList, Margin = new Padding(0, 6, 10, 0) };
-            _explorerBookingTypeCombo.Items.AddRange(new object[] { "Tất cả", "Phòng giờ", "Phòng đêm" });
+            _explorerBookingTypeCombo.Items.AddRange(new object[] { "Tất cả", "Phòng giờ", "Phòng ngày/đêm" });
             _explorerBookingTypeCombo.SelectedIndex = 0;
             flow.Controls.Add(_explorerBookingTypeCombo);
 
@@ -3449,6 +3527,86 @@ namespace HotelManagement.Forms
             RequestLoadBookingStatisticsData(force: true);
         }
 
+        private async void ResetOperationalDataFromStatisticsAsync()
+        {
+            if (_isOperationalResetRunning) return;
+
+            var firstConfirm = MessageBox.Show(
+                this,
+                "Thao tác này sẽ xóa toàn bộ lịch sử đặt phòng/hóa đơn/phụ thu và đưa phòng đang hoạt động về trạng thái trống.\n\nBạn có chắc chắn muốn tiếp tục?",
+                "Xác nhận reset dữ liệu",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2);
+            if (firstConfirm != DialogResult.Yes) return;
+
+            var secondConfirm = MessageBox.Show(
+                this,
+                "Xác nhận lần 2: dữ liệu lịch sử đặt phòng sẽ không thể hoàn tác sau khi reset.",
+                "Xác nhận lần 2",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2);
+            if (secondConfirm != DialogResult.Yes) return;
+
+            _isOperationalResetRunning = true;
+            UseWaitCursor = true;
+            try
+            {
+                OperationalDataResetService.ResetResult result;
+                using (var perf = PerformanceTracker.Measure("MainForm.ResetOperationalData"))
+                {
+                    result = await Task.Run(() => _operationalDataResetService.ResetRoomStateAndBookingHistory());
+                    perf.AddContext("RoomsReset", result?.RoomsReset ?? 0);
+                    perf.AddContext("BookingsDeleted", result?.BookingsDeleted ?? 0);
+                    perf.AddContext("InvoicesDeleted", result?.InvoicesDeleted ?? 0);
+                }
+
+                ResetRuntimeCachesAfterOperationalReset();
+                RequestLoadBookingStatisticsData(force: true);
+                _explorerCurrentPage = 1;
+                LoadExplorerData(force: true);
+                _auditCurrentPage = 1;
+                LoadAuditAndAlerts(force: true);
+                RequestLoadRoomTiles(forceBillingRefresh: true);
+
+                MessageBox.Show(
+                    this,
+                    (result == null ? "Đã reset dữ liệu." : result.ToSummaryText()),
+                    "Reset thành công",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                ShowFriendlyError(
+                    "MainForm.ResetOperationalData",
+                    "Không thể reset dữ liệu. Vui lòng thử lại.",
+                    ex,
+                    "Lỗi reset dữ liệu");
+            }
+            finally
+            {
+                UseWaitCursor = false;
+                _isOperationalResetRunning = false;
+            }
+        }
+
+        private void ResetRuntimeCachesAfterOperationalReset()
+        {
+            _lastRoomStateFingerprint = string.Empty;
+            _lastBookingStatsFingerprint = string.Empty;
+            _lastRoomMapFingerprintCheckUtc = DateTime.MinValue;
+            _lastBookingStatsFingerprintCheckUtc = DateTime.MinValue;
+            _lastBillingSnapshotRefreshUtc = DateTime.MinValue;
+            _lastRoomMapSummaryRefreshUtc = DateTime.MinValue;
+            _lastRoomMapSummaryDate = DateTime.MinValue;
+            _roomBillingSnapshots = new Dictionary<int, BookingDAL.ActiveRoomBillingSnapshot>();
+            _roomMapSummaryCache = new BookingDAL.BookingSummaryStats();
+            _statsCurrentBookings = new List<BookingDAL.BookingDetailStats>();
+            _selectedStatsPeriodKey = string.Empty;
+        }
+
         private int? GetSelectedStatsBookingType()
         {
             if (_statsBookingTypeCombo == null) return null;
@@ -3734,7 +3892,7 @@ namespace HotelManagement.Forms
                 {
                     DatPhongID = x.DatPhongID,
                     BookingType = x.BookingType,
-                    LoaiDat = x.IsHourly ? "Phòng giờ" : "Phòng đêm",
+                    LoaiDat = x.IsHourly ? "Phòng giờ" : "Phòng ngày/đêm",
                     SoPhong = x.MaPhong,
                     ThoiGianNhan = x.CheckInTime.ToString("dd/MM/yyyy HH:mm"),
                     ThoiGianTra = x.CheckOutTime.HasValue ? x.CheckOutTime.Value.ToString("dd/MM/yyyy HH:mm") : string.Empty,
@@ -4671,7 +4829,7 @@ namespace HotelManagement.Forms
             if (_statsDailyGrid.Columns["KyBatDau"] != null) _statsDailyGrid.Columns["KyBatDau"].Visible = false;
             if (_statsDailyGrid.Columns["KyThongKe"] != null) _statsDailyGrid.Columns["KyThongKe"].HeaderText = "Kỳ thống kê";
             if (_statsDailyGrid.Columns["KhachGio"] != null) _statsDailyGrid.Columns["KhachGio"].HeaderText = "Khách giờ";
-            if (_statsDailyGrid.Columns["KhachDem"] != null) _statsDailyGrid.Columns["KhachDem"].HeaderText = "Khách đêm";
+            if (_statsDailyGrid.Columns["KhachDem"] != null) _statsDailyGrid.Columns["KhachDem"].HeaderText = "Khách ngày/đêm";
             if (_statsDailyGrid.Columns["DangO"] != null) _statsDailyGrid.Columns["DangO"].HeaderText = "Đang ở";
             if (_statsDailyGrid.Columns["DaTra"] != null) _statsDailyGrid.Columns["DaTra"].HeaderText = "Đã trả";
             if (_statsDailyGrid.Columns["TongDoanhThu"] != null)

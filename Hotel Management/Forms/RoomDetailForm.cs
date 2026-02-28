@@ -1757,6 +1757,9 @@ namespace HotelManagement.Forms
 
         private bool ValidateForm()
         {
+            if (!_isHourlyMode)
+                return true;
+
             if (string.IsNullOrWhiteSpace(GetPrimaryGuestName()))
             {
                 MessageBox.Show("Vui lòng nhập Họ tên.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
